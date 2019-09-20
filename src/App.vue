@@ -1,29 +1,36 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
-  </div>
+	<div id="app">
+		<div class="section" v-for="origin in origins" :key="origin.name">
+			<h2 class="title is-2">{{ origin.name }}</h2>
+			<CharacterElement
+				v-for="character in origin.characters"
+				:key="character.name"
+				:character="character"
+			></CharacterElement>
+		</div>
+	</div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import HelloWorld from "./components/HelloWorld.vue";
+	// Vue basics
+	import { Component, Vue } from "vue-property-decorator";
+	// Vue components
+	import CharacterElement from "./components/CharacterElement.vue";
+	// TS models
+	import Origin from "./models/Origin";
+	// static resources
+	import Characters from "./resources/characters.json";
 
-@Component({
-  components: {
-    HelloWorld
-  }
-})
-export default class App extends Vue {}
+	@Component({
+		components: {
+			CharacterElement
+		},
+		created() {}
+	})
+	export default class App extends Vue {
+		private origins: Origin[] = Characters;
+	}
 </script>
 
 <style lang="scss">
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 </style>
