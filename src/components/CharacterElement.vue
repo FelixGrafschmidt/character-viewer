@@ -1,65 +1,23 @@
 <template>
 	<div class="columns is-centered">
 		<div class="column has-text-centered">
-			<!-- <div
-				class="modal"
-				:class="{ 'is-active': variantsVisible }"
-				style="width:100vw;"
-			>
-				<div
-					class="modal-background"
-					@click="variantsVisible = false"
-				></div>
-				<div class="modal-content columns">
-					<div
-						v-for="variant in character.variants"
-						:key="variant.name"
-						class="column"
-					>
-						<h3 class="title is-3">{{ variant.name }}</h3>
-						<img
-							:alt="variant.name"
-							class="character-image"
-							:src="variant.imageUrl"
-						/>
-					</div>
-				</div>
-			</div>
-			<div
-				class="modal"
-				:class="{ 'is-active': partnersVisible }"
-				style="width:100vw;"
-			>
-				<div
-					class="modal-background"
-					@click="partnersVisible = false"
-				></div>
-				<div class="modal-content columns">
-					<div
-						v-for="partner in character.partners"
-						:key="partner.name"
-						class="column"
-					>
-						<h3 class="title is-3">{{ partner.name }}</h3>
-						<img
-							:alt="partner.name"
-							class="character-image"
-							:src="partner.imageUrl"
-						/>
-					</div>
-				</div>
-			</div> -->
 			<h2 class="title is-2">{{ character.origin }}</h2>
 			<div class="character-card">
 				<button
 					class="button"
 					@click="
-						character.variants !== undefined
+						!(
+							character.variants === undefined ||
+							character.variants.length === 0
+						)
 							? (variantsVisible = !variantsVisible)
 							: false
 					"
 					:class="
-						character.variants !== undefined
+						!(
+							character.variants === undefined ||
+							character.variants.length === 0
+						)
 							? 'is-success'
 							: 'is-danger'
 					"
@@ -68,12 +26,18 @@
 				</button>
 				<button
 					@click="
-						character.partners !== undefined
+						!(
+							character.partners === undefined ||
+							character.partners.length === 0
+						)
 							? (partnersVisible = !partnersVisible)
 							: false
 					"
 					:class="
-						character.partners !== undefined
+						!(
+							character.partners === undefined ||
+							character.partners.length === 0
+						)
 							? 'is-success'
 							: 'is-danger'
 					"
@@ -139,10 +103,4 @@
 </script>
 
 <style scoped lang="scss">
-	.content.is-vcentered {
-		display: flex;
-		flex-wrap: wrap;
-		align-content: center; /* used this for multiple child */
-		align-items: center; /* if an only child */
-	}
 </style>

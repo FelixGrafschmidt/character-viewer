@@ -5,14 +5,6 @@
 				<CharacterElement :character="character"></CharacterElement>
 			</slide>
 		</carousel>
-		<!-- <div class="section" v-for="origin in origins" :key="origin.name">
-			<h2 class="title is-2">{{ origin.name }}</h2>
-			<CharacterElement
-				v-for="character in origin.characters"
-				:key="character.name"
-				:character="character"
-			></CharacterElement>
-		</div> -->
 	</div>
 </template>
 
@@ -25,8 +17,9 @@
 	import { Carousel, Slide } from "vue-carousel";
 	// TS models
 	import Character from "./models/Character";
+	// import { Character } from "./models/CharacterInterface";
 	// static resources
-	import Characters from "./resources/characters.json";
+	import CharactersJson from "./resources/characters.json";
 
 	@Component({
 		components: {
@@ -37,7 +30,7 @@
 		created() {}
 	})
 	export default class App extends Vue {
-		private characters: Character[] = Characters;
+		private characters: Character[] = CharactersJson;
 	}
 </script>
 
