@@ -1,9 +1,10 @@
-import "./registerServiceWorker";
+import "@/styles/bulma.scss";
 import "@/themes/bulmaswatch.min.css";
 
 import Vue from "vue";
 
 import App from "./App.vue";
+
 
 Vue.config.productionTip = false;
 
