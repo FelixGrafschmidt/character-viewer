@@ -5,41 +5,27 @@
 			<div class="character-card">
 				<button
 					class="button"
-					@click="
-						!(
-							character.variants === undefined ||
-							character.variants.length === 0
-						)
-							? (variantsVisible = !variantsVisible)
-							: false
-					"
+					@click="toggleVariants"
 					:class="
 						!(
 							character.variants === undefined ||
 							character.variants.length === 0
 						)
 							? 'is-success'
-							: 'is-danger'
+							: 'is-disabled'
 					"
 				>
 					{{ variantsVisible ? "Hide variants" : "Show variants" }}
 				</button>
 				<button
-					@click="
-						!(
-							character.partners === undefined ||
-							character.partners.length === 0
-						)
-							? (partnersVisible = !partnersVisible)
-							: false
-					"
+					@click="togglePartners"
 					:class="
 						!(
 							character.partners === undefined ||
 							character.partners.length === 0
 						)
 							? 'is-success'
-							: 'is-danger'
+							: 'is-disabled'
 					"
 					class="button"
 				>
@@ -97,10 +83,20 @@
 		variantsVisible: boolean = false;
 		partnersVisible: boolean = false;
 
-		private showVariants(): void {}
-		private showPartners(): void {}
+		private toggleVariants(): void {
+			this.variantsVisible = !this.variantsVisible;
+			this.partnersVisible = false;
+		}
+		private togglePartners(): void {
+			this.partnersVisible = !this.partnersVisible;
+			this.variantsVisible = false;
+		}
 	}
 </script>
 
 <style scoped lang="scss">
+	.is-disabled {
+		pointer-events: none;
+		background: #ff000020;
+	}
 </style>

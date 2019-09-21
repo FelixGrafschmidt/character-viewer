@@ -1,4 +1,4 @@
-import { Partner } from "./CharacterInterface";
+import Partner from "./Partner";
 import Variant from "./Variant";
 
 export default class Character {

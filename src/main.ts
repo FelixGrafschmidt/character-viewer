@@ -1,4 +1,3 @@
-import "@/styles/bulma.scss";
 import "@/themes/bulmaswatch.min.css";
 
 import Vue from "vue";

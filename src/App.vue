@@ -1,6 +1,6 @@
 <template>
 	<div id="app">
-		<carousel :perPage="1">
+		<carousel :perPage="1" :navigationEnabled="true">
 			<slide v-for="character in characters" :key="character.name">
 				<CharacterElement :character="character"></CharacterElement>
 			</slide>
@@ -17,7 +17,6 @@
 	import { Carousel, Slide } from "vue-carousel";
 	// TS models
 	import Character from "./models/Character";
-	// import { Character } from "./models/CharacterInterface";
 	// static resources
 	import CharactersJson from "./resources/characters.json";
 
