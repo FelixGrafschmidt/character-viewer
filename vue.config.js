@@ -7,17 +7,5 @@ module.exports = {
 		? '/character-viewer/'
 		: '/',
 	configureWebpack: {
-		// optimization: {
-		// 	splitChunks: false
-		// },
-		// plugins: [
-		// 	new HtmlWebpackPlugin({
-		// 		inlineSource: '.(js|css)$' // embed all javascript and css inline
-		// 	}),
-		// 	new HtmlWebpackInlineSourcePlugin()
-		// ]
-	},
-	// css: {
-	// 	extract: false,
-	// },
+	}
 }

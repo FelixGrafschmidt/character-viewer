@@ -1,5 +1,5 @@
-import Partner from "./Partner";
-import Variant from "./Variant";
+import Partner from "@/models/Partner";
+import Variant from "@/models/Variant";
 
 export default class Character {
 	private _name?: string;

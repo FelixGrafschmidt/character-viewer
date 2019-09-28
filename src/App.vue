@@ -1,37 +1,50 @@
 <template>
 	<div id="app">
-		<carousel :perPage="1" :navigationEnabled="true">
-			<slide v-for="character in characters" :key="character.name">
-				<CharacterElement :character="character"></CharacterElement>
-			</slide>
-		</carousel>
+		<nav
+			class="navbar"
+			role="navigation"
+			aria-label="main navigation"
+		>
+			<div class="navbar-brand">
+				<a
+					role="button"
+					class="navbar-burger burger"
+					aria-label="menu"
+					aria-expanded="false"
+					data-target="navbarBasicExample"
+				>
+					<span aria-hidden="true"></span>
+					<span aria-hidden="true"></span>
+					<span aria-hidden="true"></span>
+				</a>
+			</div>
+
+			<div class="navbar-menu">
+				<div class="navbar-start">
+					<router-link
+						class="navbar-item"
+						to="/"
+					>Viewer</router-link>
+					<router-link
+						class="navbar-item"
+						to="/edit"
+					>Editor</router-link>
+				</div>
+			</div>
+		</nav>
+		<router-view></router-view>
 	</div>
 </template>
-
 <script lang="ts">
 	// Vue basics
 	import { Component, Vue } from "vue-property-decorator";
-	// Vue components
-	import CharacterElement from "./components/CharacterElement.vue";
-	// 3rd Party
-	import { Carousel, Slide } from "vue-carousel";
-	// TS models
-	import Character from "./models/Character";
-	// static resources
-	import CharactersJson from "./resources/characters.json";
+	import RouterLink from "vue-router";
 
 	@Component({
-		components: {
-			CharacterElement,
-			Carousel,
-			Slide
-		},
+		components: {},
 		created() {}
 	})
-	export default class App extends Vue {
-		private characters: Character[] = CharactersJson;
-	}
+	export default class MoeNavigation extends Vue {}
 </script>
-
 <style lang="scss">
 </style>
