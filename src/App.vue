@@ -54,6 +54,7 @@
 	})
 	export default class MoeNavigation extends Vue {
 		editCharacter(): void {
+			this.$store.state.characterToEdit = this.$store.state.currentCharacter;
 			this.$router.push("/edit");
 		}
 	}

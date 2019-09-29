@@ -7,7 +7,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
 	state: {
-		currentCharacter: Character
+		currentCharacter: Character,
+		characterToEdit: Character
 	},
 	mutations: {
 

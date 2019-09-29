@@ -1,80 +1,82 @@
 <template>
 	<form class="narrow-center container is-centered">
-		<div class="container has-text-centered title is-2">
-			Add a new character
-		</div>
-		<div class="field">
-			<label class="label">Character Name</label>
-			<div class="control">
-				<input
-					class="input name-input"
-					type="text"
-					placeholder="Text input"
-					:value="currentCharacter.name"
-				/>
+		<section class="section">
+			<div class="container has-text-centered title is-2">
+				Add a new character
 			</div>
-		</div>
-		<div class="field">
-			<label class="label">Origin</label>
-			<div class="control">
-				<input
-					class="input name-input"
-					type="text"
-					placeholder="Text input"
-					:value="currentCharacter.origin"
-				/>
+			<div class="field">
+				<label class="label">Character Name</label>
+				<div class="control">
+					<input
+						class="input name-input"
+						type="text"
+						placeholder="Text input"
+						:value="currentCharacter.name"
+					/>
+				</div>
 			</div>
-		</div>
+			<div class="field">
+				<label class="label">Origin</label>
+				<div class="control">
+					<input
+						class="input name-input"
+						type="text"
+						placeholder="Text input"
+						:value="currentCharacter.origin"
+					/>
+				</div>
+			</div>
 
-		<label class="label">Character Image Url</label>
-		<div class="field has-addons">
-			<div class="control image-url-input">
-				<input
-					class="input"
-					type="text"
-					placeholder="Text input"
-					:value="currentCharacter.imageUrl"
-					ref="mainCharacterImageInput"
+			<label class="label">Character Image Url</label>
+			<div class="field has-addons">
+				<div class="control image-url-input">
+					<input
+						class="input"
+						type="text"
+						placeholder="Text input"
+						:value="currentCharacter.imageUrl"
+						ref="mainCharacterImageInput"
+					/>
+				</div>
+				<div class="control">
+					<a
+						class="image-submit-button button is-primary"
+						@click="loadMainCharacterImage"
+					>
+						Submit
+					</a>
+				</div>
+			</div>
+			<div>
+				<div class="label">Image Preview</div>
+				<div v-show="imageErrorMessage" class="has-text-danger">
+					Error! Could not load image!
+					<div>{{ imageErrorMessage }}</div>
+				</div>
+				<img
+					class="image"
+					alt="mainCharacter"
+					:src="
+						currentCharacter.imageUrl
+							? currentCharacter.imageUrl
+							: mainImageUrl
+					"
+					v-show="mainImageUrl || currentCharacter.imageUrl"
 				/>
 			</div>
-			<div class="control">
-				<a
-					class="image-submit-button button is-primary"
-					@click="loadMainCharacterImage"
-				>
-					Submit
-				</a>
-			</div>
-		</div>
-		<div>
-			<div class="label">Image Preview</div>
-			<div v-show="imageErrorMessage" class="has-text-danger">
-				Error! Could not load image!
-				<div>{{ imageErrorMessage }}</div>
-			</div>
-			<img
-				class="image"
-				alt="mainCharacter"
-				:src="
-					currentCharacter.imageUrl
-						? currentCharacter.imageUrl
-						: mainImageUrl
-				"
-				v-show="mainImageUrl || currentCharacter.imageUrl"
-			/>
-		</div>
-		<div class="columns">
+		</section>
+		<section class="columns">
 			<div class="column">
 				Variants?
 				<div class="field">
 					<input
-						id="switchRoundedDefault"
+						id="variantsSwitch"
 						type="checkbox"
-						name="switchRoundedDefault"
+						name="variantsSwitch"
 						class="switch is-rounded"
 						checked="checked"
 					/>
-					<label for="switchRoundedDefault"
+					<label for="variantsSwitch"
 						>Does this character have variants?</label
 					>
 				</div>
@@ -83,18 +85,18 @@
 				Partners?
 				<div class="field">
 					<input
-						id="switchRoundedDefault"
+						id="partnersSwitch"
 						type="checkbox"
-						name="switchRoundedDefault"
+						name="partnersSwitch"
 						class="switch is-rounded"
 						checked="checked"
 					/>
-					<label for="switchRoundedDefault"
+					<label for="partnersSwitch"
 						>Does this character have partners?</label
 					>
 				</div>
 			</div>
-		</div>
+		</section>
 	</form>
 </template>
 
@@ -112,7 +114,7 @@
 	})
 	export default class Editor extends Vue {
 		mainImageUrl: string = "";
-		currentCharacter: Character = this.$store.state.currentCharacter;
+		currentCharacter: Character = this.$store.state.characterToEdit;
 		imageErrorMessage: string = "";
 
 		loadMainCharacterImage(): void {
