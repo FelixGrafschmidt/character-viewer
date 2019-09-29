@@ -27,6 +27,9 @@
 					<router-link class="navbar-item" to="/edit">
 						Editor
 					</router-link>
+					<router-link class="navbar-item" to="/json">
+						View raw json
+					</router-link>
 				</div>
 			</div>
 			<div class="navbar-end">

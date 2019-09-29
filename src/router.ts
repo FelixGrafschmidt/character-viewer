@@ -1,4 +1,5 @@
 import Editor from "@/views/Editor/Editor.vue";
+import Json from "@/views/Json.vue";
 import Viewer from "@/views/Viewer.vue";
 import Vue from "vue";
 import Router from "vue-router";
@@ -11,6 +12,11 @@ export default new Router({
 			path: '/',
 			name: 'view',
 			component: Viewer
+		},
+		{
+			path: '/json',
+			name: 'json',
+			component: Json
 		},
 		{
 			path: '/edit',
