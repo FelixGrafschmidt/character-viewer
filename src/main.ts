@@ -1,5 +1,5 @@
 import "@/registerServiceWorker";
-import "@/themes/bulmaswatch.min.css";
+import "@/styles/styles.scss";
 
 import App from "@/App.vue";
 import router from "@/router";

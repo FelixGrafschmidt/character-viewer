@@ -48,6 +48,10 @@
 		</div>
 		<div>
 			<div class="label">Image Preview</div>
+			<div v-show="imageErrorMessage" class="has-text-danger">
+				Error! Could not load image!
+				<div>{{ imageErrorMessage }}</div>
+			</div>
 			<img
 				class="image"
 				alt="mainCharacter"
@@ -58,6 +62,38 @@
 				"
 				v-show="mainImageUrl || currentCharacter.imageUrl"
 			/>
+		</div>
+		<div class="columns">
+			<div class="column">
+				Variants?
+				<div class="field">
+					<input
+						id="switchRoundedDefault"
+						type="checkbox"
+						name="switchRoundedDefault"
+						class="switch is-rounded"
+						checked="checked"
+					/>
+					<label for="switchRoundedDefault"
+						>Does this character have variants?</label
+					>
+				</div>
+			</div>
+			<div class="column">
+				Partners?
+				<div class="field">
+					<input
+						id="switchRoundedDefault"
+						type="checkbox"
+						name="switchRoundedDefault"
+						class="switch is-rounded"
+						checked="checked"
+					/>
+					<label for="switchRoundedDefault"
+						>Does this character have partners?</label
+					>
+				</div>
+			</div>
 		</div>
 	</form>
 </template>
@@ -77,8 +113,9 @@
 	export default class Editor extends Vue {
 		mainImageUrl: string = "";
 		currentCharacter: Character = this.$store.state.currentCharacter;
+		imageErrorMessage: string = "";
 
-		public loadMainCharacterImage(): void {
+		loadMainCharacterImage(): void {
 			const element: HTMLFormElement = this.$refs
 				.mainCharacterImageInput as HTMLFormElement;
 			const url: string = element.value;
@@ -86,11 +123,12 @@
 				.get(url)
 				.then(response => {
 					if (response.status === 200) {
+						this.imageErrorMessage = "";
 						this.mainImageUrl = url;
 					}
 				})
 				.catch(error => {
-					console.log(error);
+					this.imageErrorMessage = error.message;
 				});
 		}
 	}

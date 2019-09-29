@@ -59,4 +59,5 @@
 	}
 </script>
 <style lang="scss">
+	$text: white;
 </style>
