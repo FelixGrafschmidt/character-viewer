@@ -1,6 +1,10 @@
 <template>
 	<div id="app">
-		<nav class="navbar" role="navigation" aria-label="main navigation">
+		<nav
+			class="navbar moe-navbar"
+			role="navigation"
+			aria-label="main navigation"
+		>
 			<div class="navbar-brand">
 				<a
 					role="button"
@@ -37,6 +41,13 @@
 					>
 						Edit this character
 					</button>
+					<button
+						class="button is-primary"
+						v-show="this.$router.currentRoute.path === '/edit'"
+						@click="saveCharacter"
+					>
+						Save this character
+					</button>
 				</div>
 			</div>
 		</nav>
@@ -57,8 +68,15 @@
 			this.$store.state.characterToEdit = this.$store.state.currentCharacter;
 			this.$router.push("/edit");
 		}
+		saveCharacter(): void {}
 	}
 </script>
 <style lang="scss">
-	$text: white;
+	.moe-navbar {
+		position: fixed;
+		width: 100%;
+	}
+	.router-link-exact-active {
+		background-color: #00aa91c0;
+	}
 </style>

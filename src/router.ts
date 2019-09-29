@@ -1,4 +1,4 @@
-import Editor from "@/views/Editor.vue";
+import Editor from "@/views/Editor/Editor.vue";
 import Viewer from "@/views/Viewer.vue";
 import Vue from "vue";
 import Router from "vue-router";

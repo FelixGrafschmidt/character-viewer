@@ -1,7 +1,7 @@
 <template>
 	<div class="columns is-centered">
 		<div class="column has-text-centered">
-			<h2 class="title is-2">{{ character.origin }}</h2>
+			<h2 class="moe-origin title is-2">{{ character.origin }}</h2>
 			<div class="character-card">
 				<button
 					class="button"
@@ -98,5 +98,8 @@
 	.is-disabled {
 		pointer-events: none;
 		background: #ff000020;
+	}
+	.moe-origin {
+		padding-top: 80px;
 	}
 </style>
