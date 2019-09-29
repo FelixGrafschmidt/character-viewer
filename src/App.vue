@@ -1,10 +1,6 @@
 <template>
 	<div id="app">
-		<nav
-			class="navbar"
-			role="navigation"
-			aria-label="main navigation"
-		>
+		<nav class="navbar" role="navigation" aria-label="main navigation">
 			<div class="navbar-brand">
 				<a
 					role="button"
@@ -21,14 +17,26 @@
 
 			<div class="navbar-menu">
 				<div class="navbar-start">
-					<router-link
-						class="navbar-item"
-						to="/"
-					>Viewer</router-link>
-					<router-link
-						class="navbar-item"
-						to="/edit"
-					>Editor</router-link>
+					<router-link class="navbar-item" to="/">
+						Viewer
+					</router-link>
+					<router-link class="navbar-item" to="/edit">
+						Editor
+					</router-link>
+				</div>
+			</div>
+			<div class="navbar-end">
+				<div class="navbar-item">
+					<button
+						class="button is-primary"
+						v-show="
+							this.$router.currentRoute.path === '/' &&
+								this.$store.state.currentCharacter !== undefined
+						"
+						@click="editCharacter"
+					>
+						Edit this character
+					</button>
 				</div>
 			</div>
 		</nav>
@@ -44,7 +52,11 @@
 		components: {},
 		created() {}
 	})
-	export default class MoeNavigation extends Vue {}
+	export default class MoeNavigation extends Vue {
+		editCharacter(): void {
+			this.$router.push("/edit");
+		}
+	}
 </script>
 <style lang="scss">
 </style>

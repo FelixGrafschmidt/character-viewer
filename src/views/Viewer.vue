@@ -1,7 +1,13 @@
 <template>
-	<carousel :perPage="1" :navigationEnabled="true">
+	<carousel
+		:perPage="1"
+		:navigationEnabled="true"
+		@page-change="updateCurrentCharacter"
+	>
 		<slide v-for="character in characters" :key="character.name">
-			<moe-character-element :character="character"></moe-character-element>
+			<moe-character-element
+				:character="character"
+			></moe-character-element>
 		</slide>
 	</carousel>
 </template>
@@ -23,11 +29,20 @@
 			MoeCharacterElement,
 			Carousel,
 			Slide
-		},
-		created() {}
+		}
 	})
 	export default class Viewer extends Vue {
-		private characters: Character[] = CharactersJson;
+		characters: Character[] = CharactersJson;
+
+		updateCurrentCharacter(page: number): void {
+			this.$store.state.currentCharacter = this.characters[page];
+		}
+
+		private created(): void {
+			if (this.characters.length > 0) {
+				this.$store.state.currentCharacter = this.characters[0];
+			}
+		}
 	}
 </script>
 
