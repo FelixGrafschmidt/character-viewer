@@ -28,9 +28,9 @@
 
 		<label class="label">Character Image Url</label>
 		<div class="field has-addons">
-			<div class="control">
+			<div class="control image-url-input">
 				<input
-					class="input image-url-input"
+					class="input"
 					type="text"
 					placeholder="Text input"
 					:value="currentCharacter.imageUrl"
@@ -97,25 +97,11 @@
 </script>
 
 <style lang="scss">
-	// .image-url-input {
-	// 	width: 100%;
-	// }
-	// .name-input {
-	// 	width: 80%;
-	// }
-	// .image-submit-button {
-	// 	width: 20%;
-	// }
-	@media screen and (min-width: 1000px) {
-		.narrow-center {
-			padding-left: 10%;
-			padding-right: 10%;
-		}
+	.narrow-center {
+		padding-left: 10%;
+		padding-right: 10%;
 	}
-	@media screen and (max-width: 999px) {
-		.narrow-center {
-			padding-left: 10%;
-			padding-right: 10%;
-		}
+	.image-url-input {
+		width: 100%;
 	}
 </style>
