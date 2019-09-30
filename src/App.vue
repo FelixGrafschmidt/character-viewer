@@ -119,6 +119,9 @@
 				});
 		}
 		editCharacter(): void {
+			if (this.index === -1) {
+				this.index = 0;
+			}
 			this.$router.push("/edit");
 		}
 		goToEditor(): void {

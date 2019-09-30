@@ -36,9 +36,7 @@
 		@Prop()
 		index!: number;
 
-		created(): void {
-			this.updateCurrentCharacter(0);
-		}
+		created(): void {}
 
 		updateCurrentCharacter(page: number): void {
 			this.$emit("index-change", page);
