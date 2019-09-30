@@ -21,11 +21,18 @@
 
 			<div class="navbar-menu">
 				<div class="navbar-start">
-					<router-link class="navbar-item" to="/">
-						Viewer
-					</router-link>
 					<a
-						@click="emptyCurrentCharacter"
+						@click="goToViewer"
+						class="navbar-item"
+						:class="{
+							'router-link-exact-active':
+								this.$router.currentRoute.path === '/'
+						}"
+					>
+						Viewer
+					</a>
+					<a
+						@click="goToEditor"
 						class="navbar-item"
 						:class="{
 							'router-link-exact-active':
@@ -98,7 +105,7 @@
 	@Component({
 		components: {}
 	})
-	export default class MoeNavigation extends Vue {
+	export default class App extends Vue {
 		characters: Array<Character> = new Array<Character>();
 		index: number = -1;
 		private created(): void {
@@ -114,9 +121,12 @@
 		editCharacter(): void {
 			this.$router.push("/edit");
 		}
-		emptyCurrentCharacter(): void {
+		goToEditor(): void {
 			this.index = -1;
 			this.$router.push("/edit");
+		}
+		goToViewer(): void {
+			this.$router.push("/");
 		}
 	}
 </script>

@@ -2,6 +2,8 @@
 	<carousel
 		:perPage="1"
 		:navigationEnabled="true"
+		:navigateTo="index"
+		:navigationClickTargetSize="20"
 		@page-change="updateCurrentCharacter"
 	>
 		<slide v-for="character in characters" :key="character.name">
@@ -34,14 +36,32 @@
 		@Prop()
 		index!: number;
 
-		currentCharacter: Character = this.characters[this.index];
+		created(): void {
+			this.updateCurrentCharacter(0);
+		}
 
 		updateCurrentCharacter(page: number): void {
-			this.currentCharacter = this.characters[page];
 			this.$emit("index-change", page);
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
+</style>
+<style lang="scss">
+	@media screen and (min-width: 769px) {
+		.VueCarousel-navigation-button {
+			transform: unset !important;
+			margin-left: 200px !important;
+			margin-right: 200px !important;
+			border-radius: 4px !important;
+			border-color: transparent !important;
+			color: #fff !important;
+			transition: box-shadow 0.1s linear !important;
+			background: #00d1b2 !important;
+			box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.3) inset !important,
+				0 1px 15px 0 rgba(0, 0, 0, 0.6) inset !important;
+			border-width: 0 !important;
+		}
+	}
 </style>
