@@ -2,7 +2,6 @@
         "name": "Tohsaka Rin",
         "origin": "Fate",
         "imageUrl": "https://www.anime-planet.com/images/characters/rin-tohsaka-3799.jpg",
-        "partners": [],
         "variants": [{
             "name": "Ishtar",
             "imageUrl": "https://vignette.wikia.nocookie.net/fategrandorder/images/b/b8/Ishtar_1stage.png/revision/latest/scale-to-width-down/350?cb=20180227180333"
@@ -14,7 +13,6 @@
         "name": "Scathach",
         "origin": "Fate",
         "imageUrl": "https://vignette.wikia.nocookie.net/fategrandorder/images/e/e0/Scathach1.png/revision/latest/scale-to-width-down/350?cb=20151210053927",
-        "partners": [],
         "variants": [{
             "name": "Skadi",
             "imageUrl": "https://vignette.wikia.nocookie.net/fategrandorder/images/f/f6/ScathachSkadi1.png/revision/latest/scale-to-width-down/350?cb=20180729075400"
@@ -24,7 +22,6 @@
         "name": "Jeanne d'Arc",
         "origin": "Fate",
         "imageUrl": "https://vignette.wikia.nocookie.net/fategrandorder/images/5/56/Jeanne1.png/revision/latest/scale-to-width-down/350?cb=20170208180646",
-        "partners": [],
         "variants": [{
             "name": " Jeanne d'Arc (Alter)",
             "imageUrl": "https://vignette.wikia.nocookie.net/fategrandorder/images/9/98/JeanneAlter1.png/revision/latest/scale-to-width-down/350?cb=20160411111159"
@@ -33,35 +30,26 @@
     {
         "name": "Nitocris",
         "origin": "Fate",
-        "variants": [],
-        "imageUrl": "https://vignette.wikia.nocookie.net/fategrandorder/images/c/ce/NitocrisHD1.png/revision/latest/scale-to-width-down/350?cb=20171206155522",
-        "partners": []
+        "imageUrl": "https://vignette.wikia.nocookie.net/fategrandorder/images/c/ce/NitocrisHD1.png/revision/latest/scale-to-width-down/350?cb=20171206155522"
     },
     {
         "name": "Tamamo no Mae",
         "origin": "Fate",
-        "variants": [],
-        "imageUrl": "https://vignette.wikia.nocookie.net/fategrandorder/images/7/72/Tamamocaster.png/revision/latest/scale-to-width-down/350?cb=20151021214450",
-        "partners": []
+        "imageUrl": "https://vignette.wikia.nocookie.net/fategrandorder/images/7/72/Tamamocaster.png/revision/latest/scale-to-width-down/350?cb=20151021214450"
     },
     {
         "name": "Emilia",
         "origin": "Re;Zero",
-        "variants": [],
-        "imageUrl": "https://vignette.wikia.nocookie.net/rezero/images/c/c0/Emilia_Anime_2.png/revision/latest/scale-to-width-down/300?cb=20160408203829",
-        "partners": []
+        "imageUrl": "https://vignette.wikia.nocookie.net/rezero/images/c/c0/Emilia_Anime_2.png/revision/latest/scale-to-width-down/300?cb=20160408203829"
     },
     {
         "name": "Kaga Koko",
         "origin": "Golden Time",
-        "partners": [],
-        "variants": [],
         "imageUrl": "https://vignette.wikia.nocookie.net/goldentime/images/2/27/K%C5%8Dko_Kaga_G_T.jpg/revision/latest?cb=20180530060649"
     },
     {
         "name": "Makise Kurisu",
         "origin": "Steins;Gate",
-        "variants": [],
         "imageUrl": "https://vignette.wikia.nocookie.net/steins-gate/images/8/83/Kurisu_profile.png/revision/latest/scale-to-width-down/310?cb=20141222010103",
         "partners": [{
             "name": "Okabe Rintarou",
@@ -71,7 +59,6 @@
     {
         "name": "C.C.",
         "origin": "Code Geass",
-        "variants": [],
         "imageUrl": "https://vignette.wikia.nocookie.net/codegeass/images/f/f8/C.C.20.jpg/revision/latest/scale-to-width-down/250?cb=20120108105947",
         "partners": [{
             "name": "Lelouch vi Brittania",
@@ -81,14 +68,11 @@
     {
         "name": "Stella Vermillion",
         "origin": "Rakudai Kishi no Cavalry",
-        "partners": [],
-        "variants": [],
         "imageUrl": "https://vignette.wikia.nocookie.net/rakudai-kishi-no-eiyuutan/images/2/27/Rakudai_anime_teaser.png/revision/latest/scale-to-width-down/200?cb=20150411122013"
     },
     {
         "name": "Holo",
         "origin": "Ookami to Koushinryou",
-        "variants": [],
         "imageUrl": "https://vignette.wikia.nocookie.net/spiceandwolf/images/5/51/Holo_Infobox.jpg/revision/latest/scale-to-width-down/250?cb=20120213085409",
         "partners": [{
             "name": "Kraft Lawrence",
@@ -98,36 +82,27 @@
     {
         "name": "Jibril",
         "origin": "No Game No Life",
-        "partners": [],
-        "variants": [],
         "imageUrl": "https://vignette.wikia.nocookie.net/no-game-no-life/images/6/61/Jibril.png/revision/latest/scale-to-width-down/350?cb=20170323163112"
     },
     {
         "name": "Erza Scarlet",
         "origin": "Fairy Tail",
-        "partners": [],
-        "variants": [],
         "imageUrl": "https://vignette.wikia.nocookie.net/fairytail/images/c/cf/Erza_listens_to_Irene%27s_story.png/revision/latest/scale-to-width-down/300?cb=20190616090208"
     },
     {
         "name": "Juvia Lockser",
         "origin": "Fairy Tail",
-        "partners": [],
-        "variants": [],
         "imageUrl": "https://vignette.wikia.nocookie.net/fairytail/images/f/ff/Juvia_Lockser_profile.png/revision/latest/scale-to-width-down/300?cb=20140426102005"
 
     },
     {
         "name": "Edelgard von Hresvelg",
         "origin": "Fire Emblem",
-        "partners": [],
-        "variants": [],
         "imageUrl": "https://vignette.wikia.nocookie.net/fireemblem/images/7/7b/Artwork_Edelgard.png/revision/latest/scale-to-width-down/260?cb=20190510100605"
     },
     {
         "name": "Byleth Eisner",
         "origin": "Fire Emblem",
-        "partners": [],
         "imageUrl": "https://vignette.wikia.nocookie.net/fireemblem/images/d/dc/Artwork_Byleth_F.png/revision/latest/scale-to-width-down/280?cb=20190426054518",
         "variants": [{
             "name": "Byleth Sothis",
@@ -137,15 +112,11 @@
     {
         "name": "Tharja",
         "origin": "Fire Emblem",
-        "variants": [],
-        "partners": [],
         "imageUrl": "https://vignette.wikia.nocookie.net/fireemblem/images/8/85/Tharja_%28FE13_Artwork%29.png/revision/latest/scale-to-width-down/250?cb=20190810134754"
     },
     {
         "name": "Lucina",
         "origin": "Fire Emblem",
-        "partners": [],
-        "variants": [],
         "imageUrl": "https://vignette.wikia.nocookie.net/fireemblem/images/d/d0/Lucina_official_art.png/revision/latest/scale-to-width-down/285?cb=20160427125411"
     }
 ]
