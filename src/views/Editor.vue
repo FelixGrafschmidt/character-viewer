@@ -1,10 +1,22 @@
 <template>
 	<form class="narrow-center container">
+		<div class="navbar-item">
+			<button
+				class="button is-primary save-button"
+				:class="{
+					'is-disabled': currentCharacter.name === ''
+				}"
+				v-show="this.$router.currentRoute.path === '/edit'"
+				@click.prevent="saveCharacter"
+			>
+				Save this character
+			</button>
+		</div>
 		<div class="container has-text-centered title is-2 padding-top-80">
 			Add a new character
 		</div>
 		<moe-edit-character-element
-			:currentCharacter="this.$store.getters.currentCharacter"
+			:currentCharacter="currentCharacter"
 			:isSubCharacter="false"
 		/>
 	</form>
@@ -20,7 +32,17 @@
 			MoeEditCharacterElement
 		}
 	})
-	export default class Editor extends Vue {}
+	export default class Editor extends Vue {
+		currentCharacter!: Character;
+		created(): void {
+			this.currentCharacter = this.$store.getters.currentCharacter;
+		}
+		saveCharacter(): void {
+			const jsonToSave: string = JSON.stringify(this.currentCharacter);
+
+			console.log(jsonToSave);
+		}
+	}
 </script>
 <style lang="scss" scoped>
 	.narrow-center {
@@ -30,5 +52,15 @@
 
 	.padding-top-80 {
 		padding-top: 80px;
+	}
+	.save-button {
+		z-index: 100;
+		position: fixed;
+		top: 10px;
+		right: 10px;
+	}
+	.is-disabled {
+		pointer-events: none;
+		background: #ff000020;
 	}
 </style>

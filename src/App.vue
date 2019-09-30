@@ -52,13 +52,6 @@
 					>
 						Edit this character
 					</button>
-					<button
-						class="button is-primary"
-						v-show="this.$router.currentRoute.path === '/edit'"
-						@click="saveCharacter"
-					>
-						Save this character
-					</button>
 				</div>
 			</div>
 		</nav>
@@ -79,11 +72,13 @@
 			this.$router.push("/edit");
 		}
 		removeCurrentCharacter(): void {
-			this.$store.commit("SET_CURRENTCHARACTER", "");
+			this.$store.commit("SET_CURRENTCHARACTER", {
+				name: "",
+				imageUrl: "",
+				origin: ""
+			});
 			this.$router.push("/edit");
 		}
-
-		saveCharacter(): void {}
 	}
 </script>
 <style lang="scss">

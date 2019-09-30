@@ -14,7 +14,7 @@
 					class="input name-input"
 					type="text"
 					placeholder="Text input"
-					:value="currentCharacter.name"
+					v-model="currentCharacter.name"
 				/>
 			</div>
 		</div>
@@ -25,7 +25,7 @@
 					class="input name-input"
 					type="text"
 					placeholder="Text input"
-					:value="currentCharacter.origin"
+					v-model="currentCharacter.origin"
 				/>
 			</div>
 		</div>
@@ -37,39 +37,19 @@
 					class="input"
 					type="text"
 					placeholder="Text input"
-					:value="currentCharacter.imageUrl"
-					ref="mainCharacterImageInput"
+					v-model="currentCharacter.imageUrl"
 				/>
-			</div>
-			<div class="control">
-				<a
-					class="image-submit-button button is-primary"
-					@click="loadMainCharacterImage"
-				>
-					Submit
-				</a>
 			</div>
 		</div>
 		<div>
-			<div
-				v-show="mainImageUrl || currentCharacter.imageUrl"
-				class="label"
-			>
+			<div v-show="currentCharacter.imageUrl" class="label">
 				Image Preview
-			</div>
-			<div v-show="mainImageErrorMessage" class="has-text-danger">
-				Error! Could not load image!
-				<div>{{ mainImageErrorMessage }}</div>
 			</div>
 			<img
 				class="image container"
 				alt="mainCharacter"
-				:src="
-					currentCharacter.imageUrl
-						? currentCharacter.imageUrl
-						: mainImageUrl
-				"
-				v-show="mainImageUrl || currentCharacter.imageUrl"
+				:src="currentCharacter.imageUrl"
+				v-show="currentCharacter.imageUrl"
 			/>
 		</div>
 		<section class="columns section" v-if="!isSubCharacter">
@@ -164,71 +144,12 @@
 		@Prop()
 		isSubCharacter!: boolean;
 
-		mainImageUrl: string = "";
-		variantImageUrl: Array<string> = new Array<string>();
-		partnerImageUrl: Array<string> = new Array<string>();
-		mainImageErrorMessage: string = "";
-		variantImageErrorMessage: Array<string> = new Array<string>();
-		partnerImageErrorMessage: Array<string> = new Array<string>();
 		variantsVisible: boolean = false;
 		partnersVisible: boolean = false;
 
 		private created(): void {
 			this.variantsVisible = this.currentCharacter.variants !== undefined;
 			this.partnersVisible = this.currentCharacter.partners !== undefined;
-		}
-		loadMainCharacterImage(): void {
-			const element: HTMLFormElement = this.$refs
-				.mainCharacterImageInput as HTMLFormElement;
-			const url: string = element.value;
-			axios
-				.get(url)
-				.then(response => {
-					if (response.status === 200) {
-						this.mainImageErrorMessage = "";
-						this.mainImageUrl = url;
-					}
-				})
-				.catch(error => {
-					this.mainImageErrorMessage = error.message;
-				});
-		}
-		loadVariantImage(index: number): void {
-			const elements: Array<HTMLFormElement> = this.$refs
-				.variantImageInput as Array<HTMLFormElement>;
-			const url: string = elements[index].value;
-
-			axios
-				.get(url)
-				.then(response => {
-					if (response.status === 200) {
-						this.variantImageErrorMessage[index] = "";
-						this.variantImageUrl[index] = url;
-						this.$forceUpdate();
-					}
-				})
-				.catch(error => {
-					this.variantImageErrorMessage[index] = error.message;
-					this.$forceUpdate();
-				});
-		}
-		loadPartnerImage(index: number): void {
-			const elements: Array<HTMLFormElement> = this.$refs
-				.partnerImageInput as Array<HTMLFormElement>;
-			const url: string = elements[index].value;
-			axios
-				.get(url)
-				.then(response => {
-					if (response.status === 200) {
-						this.variantImageErrorMessage[index] = "";
-						this.variantImageUrl[index] = url;
-						this.$forceUpdate();
-					}
-				})
-				.catch(error => {
-					this.variantImageErrorMessage[index] = error.message;
-					this.$forceUpdate();
-				});
 		}
 		showVariants(event: MouseEvent): void {
 			const target = event.target as HTMLInputElement;
