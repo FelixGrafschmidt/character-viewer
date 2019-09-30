@@ -24,9 +24,16 @@
 					<router-link class="navbar-item" to="/">
 						Viewer
 					</router-link>
-					<router-link class="navbar-item" to="/edit">
+					<a
+						@click="removeCurrentCharacter"
+						class="navbar-item"
+						:class="{
+							'router-link-exact-active':
+								this.$router.currentRoute.path === '/edit'
+						}"
+					>
 						Editor
-					</router-link>
+					</a>
 					<router-link class="navbar-item" to="/json">
 						View raw json
 					</router-link>
@@ -69,12 +76,13 @@
 	})
 	export default class MoeNavigation extends Vue {
 		editCharacter(): void {
-			this.$store.commit(
-				"SET_CHARACTERTOEDIT",
-				this.$store.getters.currentCharacter
-			);
 			this.$router.push("/edit");
 		}
+		removeCurrentCharacter(): void {
+			this.$store.commit("SET_CURRENTCHARACTER", "");
+			this.$router.push("/edit");
+		}
+
 		saveCharacter(): void {}
 	}
 </script>

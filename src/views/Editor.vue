@@ -4,7 +4,7 @@
 			Add a new character
 		</div>
 		<moe-edit-character-element
-			:currentCharacter="this.$store.getters.characterToEdit"
+			:currentCharacter="this.$store.getters.currentCharacter"
 			:isSubCharacter="false"
 		/>
 	</form>

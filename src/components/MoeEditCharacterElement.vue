@@ -3,7 +3,7 @@
 		<button
 			class="button is-danger delete-sub-character"
 			v-if="isSubCharacter"
-			@click="$emit('delete')"
+			@click.prevent="$emit('delete')"
 		>
 			X
 		</button>
@@ -92,7 +92,7 @@
 					v-show="variantsVisible"
 				>
 					<button
-						@click="addNewVariant"
+						@click.prevent="addNewVariant"
 						class="button is-primary is-inverted is-outlined"
 					>
 						Add new Variant
@@ -103,7 +103,7 @@
 						@delete="deleteVariant(index)"
 						class="solid-primary-border"
 						v-for="(variant, index) in currentCharacter.variants"
-						:key="variant.name"
+						:key="index"
 						:currentCharacter="variant"
 						:isSubCharacter="true"
 					/>
@@ -128,7 +128,7 @@
 					v-show="partnersVisible"
 				>
 					<button
-						@click="addNewPartner"
+						@click.prevent="addNewPartner"
 						class="button is-primary is-inverted is-outlined"
 					>
 						Add new partner
@@ -140,7 +140,7 @@
 						@delete="deletePartner(index)"
 						class="solid-primary-border"
 						v-for="(partner, index) in currentCharacter.partners"
-						:key="partner.name"
+						:key="index"
 						:currentCharacter="partner"
 						:isSubCharacter="true"
 					/>
@@ -242,23 +242,27 @@
 			if (this.currentCharacter.variants) {
 				this.currentCharacter.variants.splice(index, 1);
 			}
+			this.$forceUpdate();
 		}
 		deletePartner(index: number): void {
 			if (this.currentCharacter.partners) {
 				this.currentCharacter.partners.splice(index, 1);
 			}
+			this.$forceUpdate();
 		}
 		addNewVariant(): void {
 			if (!this.currentCharacter.variants) {
 				this.currentCharacter.variants = new Array<Variant>();
 			}
 			this.currentCharacter.variants.unshift({ name: "", imageUrl: "" });
+			this.$forceUpdate();
 		}
 		addNewPartner(): void {
 			if (!this.currentCharacter.partners) {
 				this.currentCharacter.partners = new Array<Partner>();
 			}
 			this.currentCharacter.partners.unshift({ name: "", imageUrl: "" });
+			this.$forceUpdate();
 		}
 	}
 </script>
