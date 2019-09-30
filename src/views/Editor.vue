@@ -26,20 +26,35 @@
 	import { Character } from "../models/Character";
 	import MoeEditCharacterElement from "../components/MoeEditCharacterElement.vue";
 	import axios from "axios";
-	import { Component, Vue } from "vue-property-decorator";
+	import { Component, Vue, Prop } from "vue-property-decorator";
 	@Component({
 		components: {
 			MoeEditCharacterElement
 		}
 	})
 	export default class Editor extends Vue {
-		currentCharacter!: Character;
-		created(): void {
-			this.currentCharacter = this.$store.getters.currentCharacter;
-		}
-		saveCharacter(): void {
-			const jsonToSave: string = JSON.stringify(this.currentCharacter);
+		@Prop()
+		characters!: Array<Character>;
+		@Prop()
+		index!: number;
 
+		currentCharacter!: Character;
+
+		created(): void {
+			if (this.index >= 0) {
+				this.currentCharacter = this.characters[this.index];
+			} else {
+				this.currentCharacter = { name: "", imageUrl: "", origin: "" };
+			}
+		}
+
+		saveCharacter(): void {
+			if (this.index >= 0) {
+				this.characters[this.index] = this.currentCharacter;
+			} else {
+				this.characters.push(this.currentCharacter);
+			}
+			const jsonToSave: string = JSON.stringify(this.characters);
 			console.log(jsonToSave);
 		}
 	}

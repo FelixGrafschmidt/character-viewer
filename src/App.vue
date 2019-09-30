@@ -25,7 +25,7 @@
 						Viewer
 					</router-link>
 					<a
-						@click="removeCurrentCharacter"
+						@click="emptyCurrentCharacter"
 						class="navbar-item"
 						:class="{
 							'router-link-exact-active':
@@ -43,11 +43,7 @@
 				<div class="navbar-item">
 					<button
 						class="button is-primary"
-						v-show="
-							this.$router.currentRoute.path === '/' &&
-								this.$store.getters.currentCharacter !==
-									undefined
-						"
+						v-show="this.$router.currentRoute.path === '/'"
 						@click="editCharacter"
 					>
 						Edit this character
@@ -55,7 +51,11 @@
 				</div>
 			</div>
 		</nav>
-		<router-view></router-view>
+		<router-view
+			@index-change="index = $event"
+			:characters="characters"
+			:index="index"
+		></router-view>
 	</div>
 </template>
 <script lang="ts">
@@ -63,20 +63,59 @@
 	import { Component, Vue } from "vue-property-decorator";
 	import RouterLink from "vue-router";
 
+	import {
+		Decoder,
+		string,
+		optional,
+		array,
+		number,
+		object
+	} from "@mojotech/json-type-validation";
+	// TS models
+	import { Character, Variant, Partner } from "./models/Character";
+	// static resources
+	import CharactersJson from "@/resources/characters.json";
+
+	const variantDecoder: Decoder<Variant> = object({
+		name: string(),
+		imageUrl: optional(string())
+	});
+	const partnerDecoder: Decoder<Partner> = object({
+		name: string(),
+		imageUrl: optional(string())
+	});
+	const characterDecoder: Decoder<Character> = object({
+		name: string(),
+		imageUrl: optional(string()),
+		partners: optional(array<Variant>(variantDecoder)),
+		variants: optional(array<Partner>(partnerDecoder)),
+		origin: optional(string())
+	});
+	const characterListDecoder: Decoder<Array<Character>> = array<Character>(
+		characterDecoder
+	);
+
 	@Component({
-		components: {},
-		created() {}
+		components: {}
 	})
 	export default class MoeNavigation extends Vue {
+		characters: Array<Character> = new Array<Character>();
+		index: number = -1;
+		private created(): void {
+			characterListDecoder
+				.runPromise(CharactersJson)
+				.then(result => {
+					this.characters = result;
+				})
+				.catch(error => {
+					this.characters = new Array<Character>();
+				});
+		}
 		editCharacter(): void {
 			this.$router.push("/edit");
 		}
-		removeCurrentCharacter(): void {
-			this.$store.commit("SET_CURRENTCHARACTER", {
-				name: "",
-				imageUrl: "",
-				origin: ""
-			});
+		emptyCurrentCharacter(): void {
+			this.index = -1;
 			this.$router.push("/edit");
 		}
 	}
