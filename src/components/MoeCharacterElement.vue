@@ -74,7 +74,7 @@
 
 <script lang="ts">
 	import { Component, Prop, Vue } from "vue-property-decorator";
-	import Character from "@/models/Character";
+	import { Character } from "../models/Character";
 
 	@Component
 	export default class MoeCharacterElement extends Vue {

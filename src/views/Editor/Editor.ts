@@ -1,5 +1,5 @@
 // Vue basics
-import Character from "@/models/Character";
+import { Character } from "@/models/Character";
 import axios from "axios";
 import { Component, Vue } from "vue-property-decorator";
 
@@ -9,7 +9,7 @@ import { Component, Vue } from "vue-property-decorator";
 	components: {}
 })
 export default class Editor extends Vue {
-	currentCharacter: Character = this.$store.state.characterToEdit;
+	currentCharacter: Character = this.$store.getters.characterToEdit;
 	mainImageUrl: string = "";
 	variantImageUrl: Array<string> = new Array<string>();
 	partnerImageUrl: Array<string> = new Array<string>();

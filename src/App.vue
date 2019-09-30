@@ -38,7 +38,8 @@
 						class="button is-primary"
 						v-show="
 							this.$router.currentRoute.path === '/' &&
-								this.$store.state.currentCharacter !== undefined
+								this.$store.getters.currentCharacter !==
+									undefined
 						"
 						@click="editCharacter"
 					>
@@ -68,7 +69,10 @@
 	})
 	export default class MoeNavigation extends Vue {
 		editCharacter(): void {
-			this.$store.state.characterToEdit = this.$store.state.currentCharacter;
+			this.$store.commit(
+				"SET_CHARACTERTOEDIT",
+				this.$store.getters.currentCharacter
+			);
 			this.$router.push("/edit");
 		}
 		saveCharacter(): void {}
