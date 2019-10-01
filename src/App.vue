@@ -1,63 +1,10 @@
 <template>
 	<div id="app">
-		<nav
-			class="navbar moe-navbar"
-			role="navigation"
-			aria-label="main navigation"
-		>
-			<div class="navbar-brand">
-				<a
-					role="button"
-					class="navbar-burger burger"
-					aria-label="menu"
-					aria-expanded="false"
-					data-target="navbarBasicExample"
-				>
-					<span aria-hidden="true"></span>
-					<span aria-hidden="true"></span>
-					<span aria-hidden="true"></span>
-				</a>
-			</div>
-
-			<div class="navbar-menu">
-				<div class="navbar-start">
-					<a
-						@click="goToViewer"
-						class="navbar-item"
-						:class="{
-							'router-link-exact-active':
-								this.$router.currentRoute.path === '/'
-						}"
-					>
-						Viewer
-					</a>
-					<a
-						@click="goToEditor"
-						class="navbar-item"
-						:class="{
-							'router-link-exact-active':
-								this.$router.currentRoute.path === '/edit'
-						}"
-					>
-						Editor
-					</a>
-					<router-link class="navbar-item" to="/json">
-						View raw json
-					</router-link>
-				</div>
-			</div>
-			<div class="navbar-end">
-				<div class="navbar-item">
-					<button
-						class="button is-primary"
-						v-show="this.$router.currentRoute.path === '/'"
-						@click="editCharacter"
-					>
-						Edit this character
-					</button>
-				</div>
-			</div>
-		</nav>
+		<moe-navigation
+			@index-change="index = $event"
+			:characters="characters"
+			:index="index"
+		/>
 		<router-view
 			@index-change="index = $event"
 			:characters="characters"
@@ -70,6 +17,10 @@
 	import { Component, Vue } from "vue-property-decorator";
 	import RouterLink from "vue-router";
 
+	// Vue components
+	import MoeNavigation from "./components/MoeNavigation.vue";
+
+	// 3rdParty
 	import {
 		Decoder,
 		string,
@@ -80,8 +31,6 @@
 	} from "@mojotech/json-type-validation";
 	// TS models
 	import { Character, Variant, Partner } from "./models/Character";
-	// static resources
-	import CharactersJson from "@/resources/characters.json";
 
 	const variantDecoder: Decoder<Variant> = object({
 		name: string(),
@@ -103,7 +52,9 @@
 	);
 
 	@Component({
-		components: {}
+		components: {
+			MoeNavigation
+		}
 	})
 	export default class App extends Vue {
 		characters: Array<Character> = new Array<Character>();
@@ -115,37 +66,13 @@
 			characterListDecoder
 				.runPromise(incomingCharacters)
 				.then(result => {
-					console.log(result);
-
 					this.characters = result;
 				})
 				.catch(error => {
-					console.log(error);
-
 					this.characters = new Array<Character>();
 				});
-		}
-		editCharacter(): void {
-			if (this.index === -1) {
-				this.index = 0;
-			}
-			this.$router.push("/edit");
-		}
-		goToEditor(): void {
-			this.index = -1;
-			this.$router.push("/edit");
-		}
-		goToViewer(): void {
-			this.$router.push("/");
 		}
 	}
 </script>
 <style lang="scss">
-	.moe-navbar {
-		position: fixed;
-		width: 100%;
-	}
-	.router-link-exact-active {
-		background-color: #00aa91c0;
-	}
 </style>

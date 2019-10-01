@@ -1,18 +1,15 @@
 <template>
 	<form class="narrow-center container">
-		<div class="navbar-item">
-			<button
-				class="button is-primary save-button"
-				:class="{
-					'is-disabled': currentCharacter.name === ''
-				}"
-				v-show="this.$router.currentRoute.path === '/edit'"
-				@click.prevent="saveCharacter"
-			>
-				Save this character
-			</button>
+		<div
+			v-if="index >= 0"
+			class="container has-text-centered title is-2 padding-top-80"
+		>
+			Edit character
 		</div>
-		<div class="container has-text-centered title is-2 padding-top-80">
+		<div
+			v-else
+			class="container has-text-centered title is-2 padding-top-80"
+		>
 			Add a new character
 		</div>
 		<moe-edit-character-element
@@ -45,19 +42,8 @@
 				this.currentCharacter = this.characters[this.index];
 			} else {
 				this.currentCharacter = { name: "", imageUrl: "", origin: "" };
-			}
-		}
-
-		saveCharacter(): void {
-			if (this.index >= 0) {
-				this.characters[this.index] = this.currentCharacter;
-			} else {
 				this.characters.push(this.currentCharacter);
 			}
-
-			const jsonToSave: string = JSON.stringify(this.characters);
-
-			localStorage.setItem("characters", jsonToSave);
 		}
 	}
 </script>
