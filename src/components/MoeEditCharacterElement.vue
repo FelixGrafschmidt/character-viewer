@@ -73,7 +73,7 @@
 				>
 					<button
 						@click.prevent="addNewVariant"
-						class="button is-primary is-inverted is-outlined"
+						class="button is-primary is-outlined"
 					>
 						Add new Variant
 					</button>
@@ -109,7 +109,7 @@
 				>
 					<button
 						@click.prevent="addNewPartner"
-						class="button is-primary is-inverted is-outlined"
+						class="button is-primary  is-outlined"
 					>
 						Add new partner
 					</button>

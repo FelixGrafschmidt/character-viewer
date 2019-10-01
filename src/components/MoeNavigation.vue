@@ -70,12 +70,18 @@
 				</button>
 			</div>
 			<div class="navbar-item">
-				<button class="button is-primary">
+				<button
+					class="button is-primary"
+					@click="$emit('toggle-modal', 'import')"
+				>
 					Import characters
 				</button>
 			</div>
 			<div class="navbar-item">
-				<button class="button is-primary">
+				<button
+					class="button is-primary"
+					@click="$emit('toggle-modal', 'export')"
+				>
 					Export Characters
 				</button>
 			</div>

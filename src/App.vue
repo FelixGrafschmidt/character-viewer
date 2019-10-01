@@ -2,8 +2,18 @@
 	<div id="app">
 		<moe-navigation
 			@index-change="index = $event"
+			@toggle-modal="toggleModal($event)"
 			:characters="characters"
 			:index="index"
+		/>
+		<moe-import
+			:class="{ 'is-active': importIsActive }"
+			@toggle-modal="toggleModal($event)"
+			@import="readCharactersFromJson(JSON.parse($event))"
+		/>
+		<moe-export
+			:class="{ 'is-active': exportIsActive }"
+			@toggle-modal="toggleModal($event)"
 		/>
 		<router-view
 			@index-change="index = $event"
@@ -19,6 +29,8 @@
 
 	// Vue components
 	import MoeNavigation from "./components/MoeNavigation.vue";
+	import MoeImport from "./components/MoeImport.vue";
+	import MoeExport from "./components/MoeExport.vue";
 
 	// 3rdParty
 	import {
@@ -53,24 +65,49 @@
 
 	@Component({
 		components: {
-			MoeNavigation
+			MoeNavigation,
+			MoeImport,
+			MoeExport
 		}
 	})
 	export default class App extends Vue {
 		characters: Array<Character> = new Array<Character>();
 		index: number = -1;
+
+		importIsActive: boolean = false;
+		exportIsActive: boolean = false;
+
 		private created(): void {
 			const incomingCharacters = JSON.parse(
 				localStorage.getItem("characters") || "[]"
 			);
+			this.readCharactersFromJson(incomingCharacters);
+		}
+
+		readCharactersFromJson(json: string): void {
 			characterListDecoder
-				.runPromise(incomingCharacters)
+				.runPromise(json)
 				.then(result => {
 					this.characters = result;
+					this.importIsActive = false;
 				})
 				.catch(error => {
 					this.characters = new Array<Character>();
+					this.importIsActive = false;
 				});
+		}
+
+		toggleModal(name: string): void {
+			switch (name) {
+				case "import":
+					this.importIsActive = !this.importIsActive;
+					break;
+				case "export":
+					this.exportIsActive = !this.exportIsActive;
+					break;
+				default:
+					break;
+			}
 		}
 	}
 </script>
