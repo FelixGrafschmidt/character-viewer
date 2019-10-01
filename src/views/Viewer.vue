@@ -4,6 +4,8 @@
 		:navigationEnabled="true"
 		:navigateTo="index"
 		:navigationClickTargetSize="20"
+		:paginationActiveColor="'#00d1b2'"
+		:paginationColor="'#ffffff50'"
 		@page-change="updateCurrentCharacter"
 	>
 		<slide v-for="character in characters" :key="character.name">
@@ -21,6 +23,7 @@
 	import MoeCharacterElement from "@/components/MoeCharacterElement.vue";
 	// 3rd Party
 	import { Carousel, Slide } from "vue-carousel";
+	// TS-models
 	import { Character } from "../models/Character";
 
 	@Component({
@@ -36,8 +39,6 @@
 		@Prop()
 		index!: number;
 
-		created(): void {}
-
 		updateCurrentCharacter(page: number): void {
 			this.$emit("index-change", page);
 		}
@@ -47,6 +48,7 @@
 <style lang="scss" scoped>
 </style>
 <style lang="scss">
+	/* Used to provide proper styling to carousel navigation */
 	@media screen and (min-width: 769px) {
 		.VueCarousel-navigation-button {
 			transform: unset !important;

@@ -54,8 +54,10 @@
 			} else {
 				this.characters.push(this.currentCharacter);
 			}
+
 			const jsonToSave: string = JSON.stringify(this.characters);
-			console.log(jsonToSave);
+
+			localStorage.setItem("characters", jsonToSave);
 		}
 	}
 </script>

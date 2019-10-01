@@ -109,12 +109,19 @@
 		characters: Array<Character> = new Array<Character>();
 		index: number = -1;
 		private created(): void {
+			const incomingCharacters = JSON.parse(
+				localStorage.getItem("characters") || "[]"
+			);
 			characterListDecoder
-				.runPromise(CharactersJson)
+				.runPromise(incomingCharacters)
 				.then(result => {
+					console.log(result);
+
 					this.characters = result;
 				})
 				.catch(error => {
+					console.log(error);
+
 					this.characters = new Array<Character>();
 				});
 		}
