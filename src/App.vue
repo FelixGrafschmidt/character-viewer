@@ -7,13 +7,16 @@
 			:index="index"
 		/>
 		<moe-import
+			v-if="importIsActive"
 			:class="{ 'is-active': importIsActive }"
 			@toggle-modal="toggleModal($event)"
 			@import="readCharactersFromJson(JSON.parse($event))"
 		/>
 		<moe-export
+			v-if="exportIsActive"
 			:class="{ 'is-active': exportIsActive }"
 			@toggle-modal="toggleModal($event)"
+			:characters="JSON.stringify(characters)"
 		/>
 		<router-view
 			@index-change="index = $event"
@@ -90,6 +93,7 @@
 				.then(result => {
 					this.characters = result;
 					this.importIsActive = false;
+					this.index = 0;
 				})
 				.catch(error => {
 					this.characters = new Array<Character>();

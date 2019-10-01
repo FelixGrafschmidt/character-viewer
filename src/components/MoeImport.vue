@@ -24,10 +24,7 @@
 					<div>
 						Or paste the content here:
 					</div>
-					<textarea
-						v-text="importContent"
-						class="import-text-area"
-					></textarea>
+					<textarea v-text="importContent" class="import-text-area" />
 				</div>
 				<button
 					@click="$emit('import', importContent)"
