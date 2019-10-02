@@ -1,4 +1,4 @@
-# anime-character-list
+# Character Viewer
 
 ## Project setup
 ```
