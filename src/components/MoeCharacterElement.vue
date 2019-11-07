@@ -102,4 +102,8 @@
 	.moe-origin {
 		padding-top: 80px;
 	}
+	.character-image {
+		max-width: 1000px;
+		max-height: 800px;
+	}
 </style>

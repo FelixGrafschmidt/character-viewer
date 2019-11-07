@@ -46,7 +46,7 @@
 				Image Preview
 			</div>
 			<img
-				class="image container"
+				class="image container character-image"
 				alt="mainCharacter"
 				:src="currentCharacter.imageUrl"
 				v-show="currentCharacter.imageUrl"
@@ -199,5 +199,9 @@
 		position: absolute;
 		top: 10px;
 		right: 10px;
+	}
+	.character-image {
+		max-width: 800px;
+		max-height: 800px;
 	}
 </style>

@@ -6,6 +6,7 @@
 		:navigationClickTargetSize="20"
 		:paginationActiveColor="'#00d1b2'"
 		:paginationColor="'#ffffff50'"
+		:touchDrag="true"
 		@page-change="updateCurrentCharacter"
 	>
 		<slide v-for="character in characters" :key="character.name">
