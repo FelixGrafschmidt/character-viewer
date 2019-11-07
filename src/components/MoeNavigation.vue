@@ -11,6 +11,8 @@
 				aria-label="menu"
 				aria-expanded="false"
 				data-target="navbarBasicExample"
+				@click="toggleMenu"
+				:class="{ 'is-active': menuVisible }"
 			>
 				<span aria-hidden="true"></span>
 				<span aria-hidden="true"></span>
@@ -18,72 +20,76 @@
 			</a>
 		</div>
 
-		<div class="navbar-menu">
-			<div
-				v-if="this.$router.currentRoute.path === '/'"
-				class="navbar-item"
-			>
-				<button
-					class="button is-primary"
+		<div class="navbar-menu" :class="{ 'is-active': menuVisible }">
+			<div class="navbar-start">
+				<div
 					v-if="this.$router.currentRoute.path === '/'"
-					@click="addCharacter"
+					class="navbar-item"
 				>
-					Add new character
-				</button>
-			</div>
-			<div
-				v-if="this.$router.currentRoute.path === '/'"
-				class="navbar-item"
-			>
-				<button class="button is-primary" @click="editCharacter">
-					Edit this character
-				</button>
-			</div>
-			<div
-				v-if="this.$router.currentRoute.path === '/edit'"
-				class="navbar-item"
-			>
-				<button
-					class="button is-primary"
-					@click.prevent="deleteCharacter"
+					<button
+						class="button is-primary"
+						v-if="this.$router.currentRoute.path === '/'"
+						@click="addCharacter"
+					>
+						Add new character
+					</button>
+				</div>
+				<div
+					v-if="this.$router.currentRoute.path === '/'"
+					class="navbar-item"
 				>
-					Delete this character
-				</button>
-			</div>
-			<div
-				v-if="this.$router.currentRoute.path === '/edit'"
-				class="navbar-item"
-			>
-				<button class="button is-primary" @click.prevent="backToList">
-					Back to Character List
-				</button>
-			</div>
-		</div>
-
-		<div class="navbar-end">
-			<div class="navbar-item">
-				<button
-					class="button is-primary"
-					@click.prevent="saveCharacters"
+					<button class="button is-primary" @click="editCharacter">
+						Edit this character
+					</button>
+				</div>
+				<div
+					v-if="this.$router.currentRoute.path === '/edit'"
+					class="navbar-item"
 				>
-					Save characters
-				</button>
-			</div>
-			<div class="navbar-item">
-				<button
-					class="button is-primary"
-					@click="$emit('toggle-modal', 'import')"
+					<button
+						class="button is-primary"
+						@click.prevent="deleteCharacter"
+					>
+						Delete this character
+					</button>
+				</div>
+				<div
+					v-if="this.$router.currentRoute.path === '/edit'"
+					class="navbar-item"
 				>
-					Import characters
-				</button>
+					<button
+						class="button is-primary"
+						@click.prevent="backToList"
+					>
+						Back to Character List
+					</button>
+				</div>
 			</div>
-			<div class="navbar-item">
-				<button
-					class="button is-primary"
-					@click="$emit('toggle-modal', 'export')"
-				>
-					Export Characters
-				</button>
+			<div class="navbar-end">
+				<div class="navbar-item">
+					<button
+						class="button is-primary"
+						@click.prevent="saveCharacters"
+					>
+						Save characters
+					</button>
+				</div>
+				<div class="navbar-item">
+					<button
+						class="button is-primary"
+						@click="$emit('toggle-modal', 'import')"
+					>
+						Import characters
+					</button>
+				</div>
+				<div class="navbar-item">
+					<button
+						class="button is-primary"
+						@click="$emit('toggle-modal', 'export')"
+					>
+						Export Characters
+					</button>
+				</div>
 			</div>
 		</div>
 	</nav>
@@ -128,6 +134,10 @@
 		saveCharacters(): void {
 			const jsonToSave: string = JSON.stringify(this.characters);
 			localStorage.setItem("characters", jsonToSave);
+		}
+		menuVisible: boolean = false;
+		toggleMenu(): void {
+			this.menuVisible = !this.menuVisible;
 		}
 	}
 </script>
