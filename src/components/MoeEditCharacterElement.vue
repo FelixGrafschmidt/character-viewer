@@ -46,7 +46,10 @@
 				Image Preview
 			</div>
 			<img
-				class="image container character-image"
+				class="image container"
+				:class="
+					isSubCharacter ? 'sub-character-image' : 'character-iamge'
+				"
 				alt="mainCharacter"
 				:src="currentCharacter.imageUrl"
 				v-show="currentCharacter.imageUrl"
@@ -201,7 +204,17 @@
 		right: 10px;
 	}
 	.character-image {
-		max-width: 800px;
-		max-height: 800px;
+		max-width: 70vw;
+		max-height: 60vh;
+	}
+	@media screen and (max-width: 768px) {
+		.character-image {
+			max-width: 100vw;
+		}
+	}
+	@media screen and (max-width: 768px) {
+		.sub-character-image {
+			max-width: 100%;
+		}
 	}
 </style>

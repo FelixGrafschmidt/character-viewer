@@ -15,6 +15,7 @@
 		<moe-edit-character-element
 			:currentCharacter="currentCharacter"
 			:isSubCharacter="false"
+			style="width:100vw;"
 		/>
 	</form>
 </template>
@@ -51,6 +52,13 @@
 	.narrow-center {
 		padding-left: 10%;
 		padding-right: 10%;
+	}
+
+	@media screen and (max-width: 768px) {
+		.narrow-center {
+			padding-left: 0px;
+			padding-right: 0px;
+		}
 	}
 
 	.padding-top-80 {

@@ -75,18 +75,12 @@
 					</button>
 				</div>
 				<div class="navbar-item">
-					<button
-						class="button is-primary"
-						@click="$emit('toggle-modal', 'import')"
-					>
+					<button class="button is-primary" @click="openImport">
 						Import characters
 					</button>
 				</div>
 				<div class="navbar-item">
-					<button
-						class="button is-primary"
-						@click="$emit('toggle-modal', 'export')"
-					>
+					<button class="button is-primary" @click="openExport">
 						Export Characters
 					</button>
 				</div>
@@ -106,17 +100,21 @@
 		characters!: Array<Character>;
 		@Prop()
 		index!: number;
+
+		menuVisible: boolean = false;
 		// Viewer options
 		editCharacter(): void {
 			if (this.index === -1) {
 				this.$emit("index-change", 0);
 			}
 			this.$router.push("/edit");
+			this.toggleMenu();
 			this.$forceUpdate();
 		}
 		addCharacter(): void {
 			this.$emit("index-change", -1);
 			this.$router.push("/edit");
+			this.toggleMenu();
 			this.$forceUpdate();
 		}
 		// Editor options
@@ -124,10 +122,12 @@
 			this.characters.splice(this.index, 1);
 			this.$emit("index-change", 0);
 			this.$router.push("/");
+			this.toggleMenu();
 			this.$forceUpdate();
 		}
 		backToList(): void {
 			this.$router.push("/");
+			this.toggleMenu();
 			this.$forceUpdate();
 		}
 		// Common options
@@ -135,7 +135,14 @@
 			const jsonToSave: string = JSON.stringify(this.characters);
 			localStorage.setItem("characters", jsonToSave);
 		}
-		menuVisible: boolean = false;
+		openImport(): void {
+			this.menuVisible = !this.menuVisible;
+			this.$emit("toggle-modal", "import");
+		}
+		openExport(): void {
+			this.menuVisible = !this.menuVisible;
+			this.$emit("toggle-modal", "export");
+		}
 		toggleMenu(): void {
 			this.menuVisible = !this.menuVisible;
 		}
