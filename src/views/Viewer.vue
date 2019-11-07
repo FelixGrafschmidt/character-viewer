@@ -50,19 +50,26 @@
 </style>
 <style lang="scss">
 	/* Used to provide proper styling to carousel navigation */
+	.VueCarousel-navigation-button {
+		transform: unset !important;
+		border-radius: 4px !important;
+		border-color: transparent !important;
+		color: #fff !important;
+		transition: box-shadow 0.1s linear !important;
+		background: #00d1b2 !important;
+		box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.3) inset !important,
+			0 1px 15px 0 rgba(0, 0, 0, 0.6) inset !important;
+		border-width: 0 !important;
+	}
 	@media screen and (min-width: 769px) {
 		.VueCarousel-navigation-button {
-			transform: unset !important;
 			margin-left: 200px !important;
 			margin-right: 200px !important;
-			border-radius: 4px !important;
-			border-color: transparent !important;
-			color: #fff !important;
-			transition: box-shadow 0.1s linear !important;
-			background: #00d1b2 !important;
-			box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.3) inset !important,
-				0 1px 15px 0 rgba(0, 0, 0, 0.6) inset !important;
-			border-width: 0 !important;
+		}
+	}
+	@media screen and (max-width: 768px) {
+		.VueCarousel-navigation-button {
+			display: none;
 		}
 	}
 </style>

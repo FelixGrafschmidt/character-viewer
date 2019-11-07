@@ -103,7 +103,12 @@
 		padding-top: 80px;
 	}
 	.character-image {
-		max-width: 1000px;
-		max-height: 800px;
+		max-width: 70vw;
+		max-height: 60vh;
+	}
+	@media screen and (max-width: 768px) {
+		.character-image {
+			max-width: 100vw;
+		}
 	}
 </style>
