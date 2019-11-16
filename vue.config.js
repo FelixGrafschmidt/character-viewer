@@ -7,11 +7,11 @@ module.exports = {
 	devServer: {
 		proxy: {
 			"/saveList": {
-				target: "http://localhost:8081",
+				target: "http://92.60.39.47:8081/",
 				secure: false,
 			},
 			"/getList": {
-				target: "http://localhost:8081",
+				target: "http://92.60.39.47:8081/",
 				secure: false,
 			},
 		},

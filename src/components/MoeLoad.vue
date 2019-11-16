@@ -28,7 +28,7 @@
 		components: {}
 	})
 	export default class MoeLoad extends Vue {
-		key: number;
+		key: number = 0;
 
 		loadList(): void {}
 	}
