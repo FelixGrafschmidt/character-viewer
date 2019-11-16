@@ -139,7 +139,7 @@
 			const jsonToSave: string = JSON.stringify(objectToSave);
 
 			axios
-				.post("/saveList", jsonToSave, {
+				.post("http://92.60.39.47:8081/saveList", jsonToSave, {
 					headers: { "Content-Type": "application/json" }
 				})
 				.then(result => {

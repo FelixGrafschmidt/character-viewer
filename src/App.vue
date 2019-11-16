@@ -115,7 +115,7 @@
 		}
 
 		getRawList(key: number): AxiosPromise {
-			return axios.get("/getList", {
+			return axios.get("http://92.60.39.47:8081/getList", {
 				params: {
 					id: key
 				}
