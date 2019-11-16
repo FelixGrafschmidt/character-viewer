@@ -6,17 +6,11 @@
 			:characters="characters"
 			:index="index"
 		/>
-		<moe-import
-			v-if="importIsActive"
-			:class="{ 'is-active': importIsActive }"
+		<moe-load
+			v-if="loadIsActive"
+			:class="{ 'is-active': loadIsActive }"
 			@toggle-modal="toggleModal($event)"
-			@import="readCharactersFromJson(JSON.parse($event))"
-		/>
-		<moe-export
-			v-if="exportIsActive"
-			:class="{ 'is-active': exportIsActive }"
-			@toggle-modal="toggleModal($event)"
-			:characters="JSON.stringify(characters)"
+			@load="loadCharacters(JSON.parse($event))"
 		/>
 		<router-view
 			@index-change="index = $event"
@@ -32,7 +26,7 @@
 
 	// Vue components
 	import MoeNavigation from "./components/MoeNavigation.vue";
-	import MoeImport from "./components/MoeImport.vue";
+	import MoeLoad from "./components/MoeLoad.vue";
 	import MoeExport from "./components/MoeExport.vue";
 
 	// 3rdParty
@@ -44,8 +38,11 @@
 		number,
 		object
 	} from "@mojotech/json-type-validation";
+	import axios, { AxiosPromise } from "axios";
 	// TS models
 	import { Character, Variant, Partner } from "./models/Character";
+	import CharacterList from "./models/CharacterList";
+	import Axios from "axios";
 
 	const variantDecoder: Decoder<Variant> = object({
 		name: string(),
@@ -62,56 +59,67 @@
 		variants: optional(array<Partner>(partnerDecoder)),
 		origin: optional(string())
 	});
-	const characterListDecoder: Decoder<Array<Character>> = array<Character>(
-		characterDecoder
-	);
+	const characterListDecoder: Decoder<CharacterList> = object({
+		_id: number(),
+		characters: array<Character>(characterDecoder)
+	});
 
 	@Component({
 		components: {
 			MoeNavigation,
-			MoeImport,
-			MoeExport
+			MoeLoad
 		}
 	})
 	export default class App extends Vue {
 		characters: Array<Character> = new Array<Character>();
 		index: number = -1;
 
-		importIsActive: boolean = false;
-		exportIsActive: boolean = false;
+		loadIsActive: boolean = false;
 
-		private created(): void {
-			const incomingCharacters = JSON.parse(
-				localStorage.getItem("characters") || "[]"
-			);
-			this.readCharactersFromJson(incomingCharacters);
-		}
-
-		readCharactersFromJson(json: string): void {
-			characterListDecoder
-				.runPromise(json)
+		loadCharacters(key: number): void {
+			let rawList = {
+				characters: new Array<Character>(),
+				_id: 0
+			};
+			this.getRawList(key)
 				.then(result => {
-					this.characters = result;
-					this.importIsActive = false;
-					this.index = 0;
+					rawList = result.data;
+					console.log(rawList);
+					console.log("success");
+					characterListDecoder
+						.runPromise(rawList)
+						.then(result => {
+							this.characters = result.characters;
+							this.loadIsActive = false;
+							this.index = 0;
+						})
+						.catch(error => {
+							this.characters = new Array<Character>();
+							this.loadIsActive = false;
+							console.log(error);
+						});
 				})
 				.catch(error => {
-					this.characters = new Array<Character>();
-					this.importIsActive = false;
+					console.log(error);
 				});
 		}
 
 		toggleModal(name: string): void {
 			switch (name) {
-				case "import":
-					this.importIsActive = !this.importIsActive;
-					break;
-				case "export":
-					this.exportIsActive = !this.exportIsActive;
+				case "load":
+					this.loadIsActive = !this.loadIsActive;
 					break;
 				default:
 					break;
 			}
+		}
+
+		getRawList(key: number): AxiosPromise {
+			return axios.get("/getList", {
+				params: {
+					id: key
+				}
+			});
 		}
 	}
 </script>

@@ -75,13 +75,8 @@
 					</button>
 				</div>
 				<div class="navbar-item">
-					<button class="button is-primary" @click="openImport">
-						Import characters
-					</button>
-				</div>
-				<div class="navbar-item">
-					<button class="button is-primary" @click="openExport">
-						Export Characters
+					<button class="button is-primary" @click="openLoad">
+						Load characters
 					</button>
 				</div>
 			</div>
@@ -92,6 +87,9 @@
 	import { Component, Vue, Prop } from "vue-property-decorator";
 	// TS models
 	import { Character, Variant, Partner } from "../models/Character";
+	import CharacterList from "../models/CharacterList";
+
+	import axios from "axios";
 	@Component({
 		components: {}
 	})
@@ -102,6 +100,7 @@
 		index!: number;
 
 		menuVisible: boolean = false;
+		key: number = 0;
 		// Viewer options
 		editCharacter(): void {
 			if (this.index === -1) {
@@ -132,16 +131,27 @@
 		}
 		// Common options
 		saveCharacters(): void {
-			const jsonToSave: string = JSON.stringify(this.characters);
-			localStorage.setItem("characters", jsonToSave);
+			const objectToSave = {
+				characters: this.characters,
+				_id: this.key
+			};
+
+			const jsonToSave: string = JSON.stringify(objectToSave);
+
+			axios
+				.post("/saveList", jsonToSave, {
+					headers: { "Content-Type": "application/json" }
+				})
+				.then(result => {
+					console.log("success");
+				})
+				.catch(error => {
+					console.log("error");
+				});
 		}
-		openImport(): void {
+		openLoad(): void {
 			this.menuVisible = !this.menuVisible;
-			this.$emit("toggle-modal", "import");
-		}
-		openExport(): void {
-			this.menuVisible = !this.menuVisible;
-			this.$emit("toggle-modal", "export");
+			this.$emit("toggle-modal", "load");
 		}
 		toggleMenu(): void {
 			this.menuVisible = !this.menuVisible;

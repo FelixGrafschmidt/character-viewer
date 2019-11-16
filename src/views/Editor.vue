@@ -15,7 +15,7 @@
 		<moe-edit-character-element
 			:currentCharacter="currentCharacter"
 			:isSubCharacter="false"
-			style="width:100vw;"
+			class="fullViewportWidth"
 		/>
 	</form>
 </template>
@@ -73,5 +73,10 @@
 	.is-disabled {
 		pointer-events: none;
 		background: #ff000020;
+	}
+	@media screen and (max-width: 768px) {
+		.fullViewportWidth {
+			width: 100vw;
+		}
 	}
 </style>
