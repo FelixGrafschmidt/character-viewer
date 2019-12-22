@@ -42,10 +42,7 @@
 	// TS models
 	import { Character, Variant, Partner } from "./models/Character";
 	import CharacterList from "./models/CharacterList";
-	import CharacterClass from "./models/CharacterClass";
 	import Axios from "axios";
-
-	import CharactersJson from "@/resources/characters.json";
 
 	const variantDecoder: Decoder<Variant> = object({
 		name: string(),
@@ -77,43 +74,34 @@
 		characters: Array<Character> = new Array<Character>();
 		index: number = -1;
 
-		testData: Array<Character> = new Array<Character>();
-
 		loadIsActive: boolean = false;
 
 		loadCharacters(key: number): void {
-			if (key === 777) {
-				characterListDecoder
-					.runPromise(CharactersJson)
-					.then(result => {
-						this.characters = result.characters;
-						this.loadIsActive = false;
-						this.index = 0;
-					})
-					.catch(error => {
-						this.characters = new Array<Character>();
-						this.loadIsActive = false;
-						console.log(error);
-					});
-			} else {
-				let rawList = {
-					characters: new Array<Character>(),
-					_id: 0
-				};
-				const result = this.getRawList(key);
-				characterListDecoder
-					.runPromise(rawList)
-					.then(result => {
-						this.characters = result.characters;
-						this.loadIsActive = false;
-						this.index = 0;
-					})
-					.catch(error => {
-						this.characters = new Array<Character>();
-						this.loadIsActive = false;
-						console.log(error);
-					});
-			}
+			let rawList = {
+				characters: new Array<Character>(),
+				_id: 0
+			};
+			this.getRawList(key)
+				.then(result => {
+					rawList = result.data;
+					console.log(rawList);
+					console.log("success");
+					characterListDecoder
+						.runPromise(rawList)
+						.then(result => {
+							this.characters = result.characters;
+							this.loadIsActive = false;
+							this.index = 0;
+						})
+						.catch(error => {
+							this.characters = new Array<Character>();
+							this.loadIsActive = false;
+							console.log(error);
+						});
+				})
+				.catch(error => {
+					console.log(error);
+				});
 		}
 
 		toggleModal(name: string): void {
