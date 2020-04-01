@@ -23,7 +23,8 @@ const router = new VueRouter({
 			name: 'edit',
 			component: Editor
 		}
-	]
+	],
+	mode: "history"
 })
 
 

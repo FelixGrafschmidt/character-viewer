@@ -98,10 +98,7 @@
 						console.log(error);
 					});
 			}
-		}
-
-		private beforeDestroy(): void {
-			localStorage.setItem("characters", JSON.stringify(this.characters));
+			this.saveCharactersLocally();
 		}
 
 		loadCharacters(key: number): void {
@@ -148,6 +145,12 @@
 					id: key
 				}
 			});
+		}
+
+		saveCharactersLocally(): void {
+			setInterval(() => {
+				localStorage.setItem("characters", JSON.stringify(this.characters));
+			}, 3000);
 		}
 	}
 </script>
