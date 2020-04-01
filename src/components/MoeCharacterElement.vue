@@ -104,7 +104,7 @@
 	}
 	.character-image {
 		max-width: 70vw;
-		max-height: 60vh;
+		height: 60vh;
 	}
 	@media screen and (max-width: 768px) {
 		.character-image {

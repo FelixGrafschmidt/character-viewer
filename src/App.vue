@@ -21,7 +21,7 @@
 </template>
 <script lang="ts">
 	// Vue basics
-	import { Component, Vue } from "vue-property-decorator";
+	import { Component, Vue, Watch } from "vue-property-decorator";
 	import RouterLink from "vue-router";
 
 	// Vue components
@@ -43,6 +43,7 @@
 	import { Character, Variant, Partner } from "./models/Character";
 	import CharacterList from "./models/CharacterList";
 	import Axios from "axios";
+	import Json from "./views/Json.vue";
 
 	const variantDecoder: Decoder<Variant> = object({
 		name: string(),
@@ -72,9 +73,36 @@
 	})
 	export default class App extends Vue {
 		characters: Array<Character> = new Array<Character>();
-		index: number = -1;
+		index: number = 0;
 
 		loadIsActive: boolean = false;
+
+		private created(): void {
+			let rawList = {
+				characters: new Array<Character>(),
+				_id: 0
+			};
+			const storageContent = localStorage.getItem("characters");
+			if (storageContent !== null) {
+				rawList.characters = JSON.parse(storageContent);
+				characterListDecoder
+					.runPromise(rawList)
+					.then(result => {
+						this.characters = result.characters;
+						this.loadIsActive = false;
+						this.index = 0;
+					})
+					.catch(error => {
+						this.characters = new Array<Character>();
+						this.loadIsActive = false;
+						console.log(error);
+					});
+			}
+		}
+
+		private beforeDestroy(): void {
+			localStorage.setItem("characters", JSON.stringify(this.characters));
+		}
 
 		loadCharacters(key: number): void {
 			let rawList = {
@@ -115,7 +143,7 @@
 		}
 
 		getRawList(key: number): AxiosPromise {
-			return axios.get("http://92.60.39.47:8081/getList", {
+			return axios.get("http://localhost:8081/getList", {
 				params: {
 					id: key
 				}
@@ -124,4 +152,5 @@
 	}
 </script>
 <style lang="scss">
+	@import "@/styles/styles.scss";
 </style>

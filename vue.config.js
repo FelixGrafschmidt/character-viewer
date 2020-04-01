@@ -4,16 +4,16 @@ module.exports = {
 	// publicPath: process.env.NODE_ENV === 'production'
 	// 	? '/character-viewer/'
 	// 	: '/',
-	devServer: {
-		proxy: {
-			"/saveList": {
-				target: "http://92.60.39.47:8081/",
-				secure: false,
-			},
-			"/getList": {
-				target: "http://92.60.39.47:8081/",
-				secure: false,
-			},
-		},
-	}
+	// devServer: {
+	// 	proxy: {
+	// 		"/saveList": {
+	// 			target: "localhost:8081/",
+	// 			secure: false,
+	// 		},
+	// 		"/getList": {
+	// 			target: "localhost:8081/",
+	// 			secure: false,
+	// 		},
+	// 	},
+	// }
 }

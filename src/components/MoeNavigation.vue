@@ -1,87 +1,30 @@
 <template>
-	<nav
-		class="navbar moe-navbar"
-		role="navigation"
-		aria-label="main navigation"
-	>
-		<div class="navbar-brand">
-			<a
-				role="button"
-				class="navbar-burger burger"
-				aria-label="menu"
-				aria-expanded="false"
-				data-target="navbarBasicExample"
-				@click="toggleMenu"
-				:class="{ 'is-active': menuVisible }"
+	<b-navbar>
+		<template slot="start">
+			<b-navbar-item @click="addCharacter" v-if="$route.name === 'view'">
+				Add new Character
+			</b-navbar-item>
+			<b-navbar-item @click="editCharacter" v-if="$route.name === 'view'">
+				Edit this Character
+			</b-navbar-item>
+			<b-navbar-item
+				@click="deleteCharacter"
+				v-if="$route.name === 'edit'"
 			>
-				<span aria-hidden="true"></span>
-				<span aria-hidden="true"></span>
-				<span aria-hidden="true"></span>
-			</a>
-		</div>
+				Delete this Character
+			</b-navbar-item>
+			<b-navbar-item @click="backToList" v-if="$route.name === 'edit'">
+				Back to List
+			</b-navbar-item>
+		</template>
 
-		<div class="navbar-menu" :class="{ 'is-active': menuVisible }">
-			<div class="navbar-start">
-				<div
-					v-if="this.$router.currentRoute.path === '/'"
-					class="navbar-item"
-				>
-					<button
-						class="button is-primary"
-						v-if="this.$router.currentRoute.path === '/'"
-						@click="addCharacter"
-					>
-						Add new character
-					</button>
-				</div>
-				<div
-					v-if="this.$router.currentRoute.path === '/'"
-					class="navbar-item"
-				>
-					<button class="button is-primary" @click="editCharacter">
-						Edit this character
-					</button>
-				</div>
-				<div
-					v-if="this.$router.currentRoute.path === '/edit'"
-					class="navbar-item"
-				>
-					<button
-						class="button is-primary"
-						@click.prevent="deleteCharacter"
-					>
-						Delete this character
-					</button>
-				</div>
-				<div
-					v-if="this.$router.currentRoute.path === '/edit'"
-					class="navbar-item"
-				>
-					<button
-						class="button is-primary"
-						@click.prevent="backToList"
-					>
-						Back to Character List
-					</button>
-				</div>
-			</div>
-			<div class="navbar-end">
-				<div class="navbar-item">
-					<button
-						class="button is-primary"
-						@click.prevent="saveCharacters"
-					>
-						Save characters
-					</button>
-				</div>
-				<div class="navbar-item">
-					<button class="button is-primary" @click="openLoad">
-						Load characters
-					</button>
-				</div>
-			</div>
-		</div>
-	</nav>
+		<template slot="end">
+			<b-navbar-item @click="saveCharacters">
+				Save Characters
+			</b-navbar-item>
+			<b-navbar-item @click="openLoad">Load Characters</b-navbar-item>
+		</template>
+	</b-navbar>
 </template>
 <script lang="ts">
 	import { Component, Vue, Prop } from "vue-property-decorator";
@@ -139,7 +82,7 @@
 			const jsonToSave: string = JSON.stringify(objectToSave);
 
 			axios
-				.post("http://92.60.39.47:8081/saveList", jsonToSave, {
+				.post("http://localhost:8081/saveList", jsonToSave, {
 					headers: { "Content-Type": "application/json" }
 				})
 				.then(result => {

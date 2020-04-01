@@ -2,11 +2,11 @@ import Editor from "@/views/Editor.vue";
 import Json from "@/views/Json.vue";
 import Viewer from "@/views/Viewer.vue";
 import Vue from "vue";
-import Router from "vue-router";
+import VueRouter from "vue-router";
 
-Vue.use(Router)
+Vue.use(VueRouter)
 
-export default new Router({
+const router = new VueRouter({
 	routes: [
 		{
 			path: '/',
@@ -25,3 +25,6 @@ export default new Router({
 		}
 	]
 })
+
+
+export default router;

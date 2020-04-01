@@ -85,7 +85,9 @@
 					<moe-edit-character-element
 						@delete="deleteVariant(index)"
 						class="solid-primary-border"
-						v-for="(variant, index) in currentCharacter.variants"
+						v-for="(variant, index) in currentCharacter.variants
+							? currentCharacter.variants
+							: []"
 						:key="index"
 						:currentCharacter="variant"
 						:isSubCharacter="true"
@@ -122,7 +124,9 @@
 					<moe-edit-character-element
 						@delete="deletePartner(index)"
 						class="solid-primary-border"
-						v-for="(partner, index) in currentCharacter.partners"
+						v-for="(partner, index) in currentCharacter.partners
+							? currentCharacter.partners
+							: []"
 						:key="index"
 						:currentCharacter="partner"
 						:isSubCharacter="true"
