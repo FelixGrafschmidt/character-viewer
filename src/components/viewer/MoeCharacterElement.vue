@@ -17,18 +17,20 @@
 				{{ partnersVisible ? "Hide partners" : "Show partners" }}
 			</button>
 			<div v-if="!partnersVisible && !variantsVisible" class="column">
-				<h3 class="title is-3">{{ character.name }}</h3>
+				<h3 class="title is-3 moe-character-name">{{ character.name }}</h3>
 				<img :alt="character.name" class="character-image" :src="character.imageUrl" />
 			</div>
 			<div v-if="variantsVisible" class="columns">
 				<div v-for="variant in character.variants ? character.variants : []" :key="variant.name" class="column">
-					<h3 class="title is-3">{{ variant.name }}</h3>
+					<h3 class="title is-3 moe-character-name">{{ character.name }}</h3>
+					<h3 class="title is-3 ">{{ variant.name }}</h3>
 					<img :alt="variant.name" class="character-image" :src="variant.imageUrl" />
 				</div>
 			</div>
 			<div v-if="partnersVisible" class="columns">
 				<div v-for="variant in character.variants ? character.variants : []" :key="variant.name" class="column">
-					<h3 class="title is-3">{{ variant.name }}</h3>
+					<h3 class="title is-3 moe-character-name">{{ character.name }}</h3>
+					<h3 class="title is-3 ">{{ variant.name }}</h3>
 					<img :alt="variant.name" class="character-image" :src="variant.imageUrl" />
 				</div>
 			</div>
@@ -64,16 +66,24 @@
 		pointer-events: none;
 		background: #ff000020;
 	}
-	.moe-origin {
-		padding-top: 80px;
-	}
 	.character-image {
 		max-width: 70vw;
 		height: 60vh;
 	}
+	@media screen and (min-width: 769px) {
+		.moe-origin {
+			padding-top: 30px;
+		}
+	}
 	@media screen and (max-width: 768px) {
 		.character-image {
 			max-width: 100vw;
+		}
+		.moe-origin {
+			font-size: 6vw !important;
+		}
+		.moe-character-name {
+			font-size: 5vw !important;
 		}
 	}
 </style>

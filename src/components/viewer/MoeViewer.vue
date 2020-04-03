@@ -4,8 +4,12 @@
 			@change="updateCurrentCharacter($event)"
 			v-model="carouselPosition"
 			:autoplay="false"
-			:arrow-both="false"
-			icon-size="is-medium"
+			:arrow="true"
+			:arrow-hover="false"
+			icon-size="is-large"
+			:progress="true"
+			progress-type="is-link"
+			:indicator="false"
 		>
 			<b-carousel-item v-for="character in characters" :key="character.name">
 				<section :class="`hero is-medium is-blue`">
@@ -47,4 +51,12 @@
 </script>
 
 <style lang="scss" scoped>
+	.hero-body {
+		padding: unset !important;
+	}
+	@media screen and (max-width: 768px) {
+		/deep/ .carousel-arrow {
+			display: none;
+		}
+	}
 </style>

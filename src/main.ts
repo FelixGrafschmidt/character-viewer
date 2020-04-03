@@ -1,9 +1,8 @@
-import "@/legacy/registerServiceWorker";
+import "@/registerServiceWorker";
 
 import App from "@/App.vue";
 import Buefy from "buefy";
 import Vue from "vue";
-
 
 Vue.config.productionTip = false;
 
