@@ -8,15 +8,10 @@
 			icon-size="is-medium"
 			@change="updateCurrentCharacter"
 		>
-			<b-carousel-item
-				v-for="character in characters"
-				:key="character.name"
-			>
+			<b-carousel-item v-for="character in characters" :key="character.name">
 				<section :class="`hero is-medium is-blue`">
 					<div class="hero-body has-text-centered">
-						<moe-character-element
-							:character="character"
-						></moe-character-element>
+						<moe-character-element :character="character"></moe-character-element>
 					</div>
 				</section>
 			</b-carousel-item>
@@ -39,7 +34,7 @@
 			MoeCharacterElement
 		}
 	})
-	export default class Viewer extends Vue {
+	export default class MoeViewer extends Vue {
 		@Prop()
 		characters!: Array<Character>;
 		@Prop()

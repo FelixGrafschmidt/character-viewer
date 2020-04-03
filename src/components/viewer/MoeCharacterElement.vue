@@ -1,75 +1,35 @@
 <template>
-	<div class="columns is-centered">
-		<div class="column has-text-centered">
-			<h2 class="moe-origin title is-2">{{ character.origin }}</h2>
-			<div class="character-card">
-				<button
-					class="button"
-					@click="toggleVariants"
-					:class="
-						!(
-							character.variants === undefined ||
-							character.variants.length === 0
-						)
-							? 'is-success'
-							: 'is-disabled'
-					"
-				>
-					{{ variantsVisible ? "Hide variants" : "Show variants" }}
-				</button>
-				<button
-					@click="togglePartners"
-					:class="
-						!(
-							character.partners === undefined ||
-							character.partners.length === 0
-						)
-							? 'is-success'
-							: 'is-disabled'
-					"
-					class="button"
-				>
-					{{ partnersVisible ? "Hide partners" : "Show partners" }}
-				</button>
-				<div v-if="!variantsVisible && !partnersVisible">
-					<h3 class="title is-3">{{ character.name }}</h3>
-					<img
-						:alt="character.name"
-						class="character-image"
-						:src="character.imageUrl"
-					/>
+	<div class="is-centered has-text-centered">
+		<h2 class="moe-origin title is-2">{{ character.origin }}</h2>
+		<div class="character-card">
+			<button
+				class="button"
+				@click="toggleVariants"
+				:class="!(character.variants === undefined) ? 'is-success' : 'is-disabled'"
+			>
+				{{ variantsVisible ? "Hide variants" : "Show variants" }}
+			</button>
+			<button
+				@click="togglePartners"
+				:class="!(character.partners === undefined) ? 'is-success' : 'is-disabled'"
+				class="button"
+			>
+				{{ partnersVisible ? "Hide partners" : "Show partners" }}
+			</button>
+			<div v-if="!partnersVisible && !variantsVisible" class="column">
+				<h3 class="title is-3">{{ character.name }}</h3>
+				<img :alt="character.name" class="character-image" :src="character.imageUrl" />
+			</div>
+			<div v-if="variantsVisible" class="columns">
+				<div v-for="variant in character.variants ? character.variants : []" :key="variant.name" class="column">
+					<h3 class="title is-3">{{ variant.name }}</h3>
+					<img :alt="variant.name" class="character-image" :src="variant.imageUrl" />
 				</div>
-				<div v-else-if="variantsVisible" class="columns">
-					<div
-						v-for="variant in character.variants
-							? character.variants
-							: []"
-						:key="variant.name"
-						class="column"
-					>
-						<h3 class="title is-3">{{ variant.name }}</h3>
-						<img
-							:alt="variant.name"
-							class="character-image"
-							:src="variant.imageUrl"
-						/>
-					</div>
-				</div>
-				<div v-else class="columns">
-					<div
-						v-for="partner in character.partners
-							? character.partners
-							: []"
-						:key="partner.name"
-						class="column"
-					>
-						<h3 class="title is-3">{{ partner.name }}</h3>
-						<img
-							:alt="partner.name"
-							class="character-image"
-							:src="partner.imageUrl"
-						/>
-					</div>
+			</div>
+			<div v-if="partnersVisible" class="columns">
+				<div v-for="variant in character.variants ? character.variants : []" :key="variant.name" class="column">
+					<h3 class="title is-3">{{ variant.name }}</h3>
+					<img :alt="variant.name" class="character-image" :src="variant.imageUrl" />
 				</div>
 			</div>
 		</div>
@@ -82,7 +42,8 @@
 
 	@Component
 	export default class MoeCharacterElement extends Vue {
-		@Prop() private character!: Character;
+		@Prop({ required: true, type: Object })
+		private character!: Character;
 
 		variantsVisible: boolean = false;
 		partnersVisible: boolean = false;

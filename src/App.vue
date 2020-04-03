@@ -1,156 +1,116 @@
 <template>
-	<div id="app">
-		<moe-navigation
-			@index-change="index = $event"
-			@toggle-modal="toggleModal($event)"
-			:characters="characters"
-			:index="index"
-		/>
-		<moe-load
-			v-if="loadIsActive"
-			:class="{ 'is-active': loadIsActive }"
-			@toggle-modal="toggleModal($event)"
-			@load="loadCharacters(JSON.parse($event))"
-		/>
-		<router-view
-			@index-change="index = $event"
-			:characters="characters"
-			:index="index"
-		></router-view>
+	<div>
+		<moe-navigation>
+			<moe-navigation-option
+				slot="start"
+				@click.native="addNewCharacter"
+				:text="'Add new character'"
+				v-if="mode === 'viewer'"
+			></moe-navigation-option>
+			<moe-navigation-option
+				slot="start"
+				@click.native="editThisCharacter"
+				:text="'Edit this character'"
+				v-if="mode === 'viewer' && characters.length > 0"
+			></moe-navigation-option>
+			<moe-navigation-option
+				slot="start"
+				@click.native="backToCharacterList"
+				:text="'Back to character list'"
+				v-if="mode === 'editor'"
+			></moe-navigation-option>
+			<moe-navigation-option
+				slot="start"
+				@click.native="saveNewCharacter"
+				:text="'Save new character'"
+				v-if="mode === 'editor'"
+			></moe-navigation-option>
+			<moe-navigation-option
+				slot="start"
+				@click.native="saveChangesToCharacter"
+				:text="'Save changes to this character'"
+				v-if="mode === 'editor'"
+			></moe-navigation-option>
+			<moe-navigation-option
+				slot="start"
+				@click.native="deleteThisCharacter"
+				:text="'Delete this character'"
+				v-if="mode === 'editor'"
+			></moe-navigation-option>
+			<moe-navigation-option slot="end" :text="'Save characters'"></moe-navigation-option>
+			<moe-navigation-option slot="end" :text="'Load characters'"></moe-navigation-option>
+		</moe-navigation>
+		<moe-viewer :characters="characters" v-if="mode === 'viewer'" />
+		<moe-editor v-if="mode === 'editor'" />
 	</div>
 </template>
 <script lang="ts">
 	// Vue basics
-	import { Component, Vue, Watch } from "vue-property-decorator";
-	import RouterLink from "vue-router";
-
+	import { Vue, Component } from "vue-property-decorator";
 	// Vue components
+	import MoeViewer from "@/components/viewer/MoeViewer.vue";
 	import MoeNavigation from "@/components/navigation/MoeNavigation.vue";
-	import MoeLoad from "@/components/navigation/MoeLoad.vue";
-	import MoeExport from "@/components/navigation/MoeExport.vue";
+	import MoeNavigationOption from "@/components/navigation/MoeNavigationOption.vue";
 
-	// 3rdParty
-	import {
-		Decoder,
-		string,
-		optional,
-		array,
-		number,
-		object
-	} from "@mojotech/json-type-validation";
-	import axios, { AxiosPromise } from "axios";
-	// TS models
-	import { Character, Variant, Partner } from "@/models/Character";
-	import CharacterList from "@/models/CharacterList";
-	import Axios from "axios";
-	import Json from "@/views/Json.vue";
+	// models
+	import NavigationOption from "@/models/NavigationOption";
+	import { Character } from "./legacy/models/Character";
 
-	const variantDecoder: Decoder<Variant> = object({
-		name: string(),
-		imageUrl: optional(string())
-	});
-	const partnerDecoder: Decoder<Partner> = object({
-		name: string(),
-		imageUrl: optional(string())
-	});
-	const characterDecoder: Decoder<Character> = object({
-		name: string(),
-		imageUrl: optional(string()),
-		partners: optional(array<Variant>(variantDecoder)),
-		variants: optional(array<Partner>(partnerDecoder)),
-		origin: optional(string())
-	});
-	const characterListDecoder: Decoder<CharacterList> = object({
-		_id: number(),
-		characters: array<Character>(characterDecoder)
-	});
+	// services
+	import { decodeLocalCharacterList } from "@/services/CharacterListDecoderService";
 
 	@Component({
 		components: {
 			MoeNavigation,
-			MoeLoad
+			MoeNavigationOption,
+			MoeViewer
 		}
 	})
 	export default class App extends Vue {
-		characters: Array<Character> = new Array<Character>();
-		index: number = 0;
-
-		loadIsActive: boolean = false;
-
 		private created(): void {
-			let rawList = {
-				characters: new Array<Character>(),
-				_id: 0
-			};
 			const storageContent = localStorage.getItem("characters");
 			if (storageContent !== null) {
-				rawList.characters = JSON.parse(storageContent);
-				characterListDecoder
-					.runPromise(rawList)
+				const rawList = JSON.parse(storageContent);
+				decodeLocalCharacterList(rawList)
 					.then(result => {
-						this.characters = result.characters;
-						this.loadIsActive = false;
-						this.index = 0;
+						this.characters = result;
 					})
 					.catch(error => {
 						this.characters = new Array<Character>();
-						this.loadIsActive = false;
 						console.log(error);
 					});
 			}
-			this.saveCharactersLocally();
 		}
 
-		loadCharacters(key: number): void {
-			let rawList = {
-				characters: new Array<Character>(),
-				_id: 0
-			};
-			this.getRawList(key)
-				.then(result => {
-					rawList = result.data;
-					console.log(rawList);
-					console.log("success");
-					characterListDecoder
-						.runPromise(rawList)
-						.then(result => {
-							this.characters = result.characters;
-							this.loadIsActive = false;
-							this.index = 0;
-						})
-						.catch(error => {
-							this.characters = new Array<Character>();
-							this.loadIsActive = false;
-							console.log(error);
-						});
-				})
-				.catch(error => {
-					console.log(error);
-				});
-		}
+		private mode: string = "viewer";
 
-		toggleModal(name: string): void {
-			switch (name) {
-				case "load":
-					this.loadIsActive = !this.loadIsActive;
-					break;
-				default:
-					break;
-			}
-		}
+		private newCharacter: boolean = false;
 
-		getRawList(key: number): AxiosPromise {
-			return axios.get("http://localhost:8081/getList", {
-				params: {
-					id: key
-				}
-			});
-		}
+		private characters: Array<Character> = new Array<Character>();
 
-		saveCharactersLocally(): void {
-			setInterval(() => {
-				localStorage.setItem("characters", JSON.stringify(this.characters));
-			}, 3000);
+		private currentCharacter!: Character;
+
+		private addNewCharacter() {
+			this.newCharacter = true;
+			this.mode = "editor";
+		}
+		private editThisCharacter() {
+			this.mode = "editor";
+		}
+		private backToCharacterList() {
+			this.newCharacter = false;
+			this.mode = "viewer";
+		}
+		private saveNewCharacter() {
+			this.characters.push({ name: "" });
+			this.newCharacter = false;
+			this.mode = "viewer";
+		}
+		private saveChangesToCharacter() {
+			this.mode = "viewer";
+		}
+		private deleteThisCharacter() {
+			this.mode = "viewer";
 		}
 	}
 </script>

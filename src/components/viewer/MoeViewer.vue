@@ -1,0 +1,37 @@
+<template>
+	<div>
+		<b-carousel v-model="carouselPosition" :autoplay="false" :arrow-both="false" icon-size="is-medium">
+			<b-carousel-item v-for="character in characters" :key="character.name">
+				<section :class="`hero is-medium is-blue`">
+					<div class="hero-body has-text-centered">
+						<moe-character-element :character="character"></moe-character-element>
+					</div>
+				</section>
+			</b-carousel-item>
+		</b-carousel>
+	</div>
+</template>
+
+<script lang="ts">
+	// Vue basics
+	import { Component, Vue, Prop } from "vue-property-decorator";
+	// components
+	import MoeCharacterElement from "@/components/viewer/MoeCharacterElement.vue";
+	// Tmodels
+	import { Character } from "@/models/Character";
+
+	import buefy from "buefy";
+
+	@Component({
+		components: { MoeCharacterElement }
+	})
+	export default class Viewer extends Vue {
+		@Prop({ required: true, default: [], type: Array })
+		characters!: Array<Character>;
+		@Prop({ required: false, default: 0, type: Number })
+		carouselPosition!: Number;
+	}
+</script>
+
+<style lang="scss" scoped>
+</style>

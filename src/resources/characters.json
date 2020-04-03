@@ -1,122 +1,94 @@
 [{
         "name": "Tohsaka Rin",
-        "origin": "Fate",
-        "imageUrl": "https://www.anime-planet.com/images/characters/rin-tohsaka-3799.jpg",
+        "imageUrl": "https://danbooru.donmai.us/data/sample/__toosaka_rin_fate_and_1_more_drawn_by_kameko227__sample-e03a4d980ed6951b7c80f3933312c9b9.jpg",
         "variants": [{
-            "name": "Ishtar",
-            "imageUrl": "https://vignette.wikia.nocookie.net/fategrandorder/images/b/b8/Ishtar_1stage.png/revision/latest/scale-to-width-down/350?cb=20180227180333"
-        }, {
-            "name": "Ereshkigal",
-            "imageUrl": "https://vignette.wikia.nocookie.net/fategrandorder/images/5/54/Portrait_Servant_196_1.png/revision/latest/scale-to-width-down/350?cb=20171215134259"
-        }]
-    }, {
+                "name": "Ereshkigal",
+                "imageUrl": "https://danbooru.donmai.us/data/sample/__ereshkigal_fate_and_1_more_drawn_by_harimoji__sample-f014a8962e34978495c5ae6fd544034f.jpg"
+            },
+            {
+                "name": "Ishtar",
+                "imageUrl": "https://danbooru.donmai.us/data/sample/__ishtar_and_ishtar_fate_and_1_more_drawn_by_motokonut__sample-c1a559f64a3bcd226ee60c7f962b1b3d.jpg"
+            }
+        ],
+        "origin": "Fate"
+    },
+    {
         "name": "Scathach",
-        "origin": "Fate",
-        "imageUrl": "https://vignette.wikia.nocookie.net/fategrandorder/images/e/e0/Scathach1.png/revision/latest/scale-to-width-down/350?cb=20151210053927",
+        "imageUrl": "https://danbooru.donmai.us/data/sample/__scathach_and_scathach_fate_and_1_more_drawn_by_motokonut__sample-01c56a931f4ae2b0e1f17357a03fa786.jpg",
         "variants": [{
             "name": "Skadi",
-            "imageUrl": "https://vignette.wikia.nocookie.net/fategrandorder/images/f/f6/ScathachSkadi1.png/revision/latest/scale-to-width-down/350?cb=20180729075400"
-        }]
+            "imageUrl": "https://danbooru.donmai.us/data/__scathach_and_scathach_skadi_fate_and_1_more_drawn_by_hangetsuban_sonshou__53f5edd24a01cc9f42b260b5847480dd.png"
+        }],
+        "origin": "Fate"
+    },
+    {
+        "name": "Mash Kyrielite",
+        "imageUrl": "https://danbooru.donmai.us/data/sample/__mash_kyrielight_fate_and_1_more_drawn_by_imizu_nitro_unknown__sample-7970f79bb439bdb999fbbbe8070c7ca0.jpg",
+        "variants": [{
+            "name": "Shielder",
+            "imageUrl": "https://danbooru.donmai.us/data/sample/__mash_kyrielight_fate_and_1_more_drawn_by_jmao__sample-b68e9eee8b4c794bcdee14e1f7d0c96c.jpg"
+        }],
+        "origin": "Fate"
     },
     {
         "name": "Jeanne d'Arc",
-        "origin": "Fate",
-        "imageUrl": "https://vignette.wikia.nocookie.net/fategrandorder/images/5/56/Jeanne1.png/revision/latest/scale-to-width-down/350?cb=20170208180646",
+        "imageUrl": "https://danbooru.donmai.us/data/sample/__jeanne_d_arc_and_jeanne_d_arc_fate_and_2_more_drawn_by_pillo__sample-8a54ee11295642734849972946b508a0.jpg",
         "variants": [{
-            "name": " Jeanne d'Arc (Alter)",
-            "imageUrl": "https://vignette.wikia.nocookie.net/fategrandorder/images/9/98/JeanneAlter1.png/revision/latest/scale-to-width-down/350?cb=20160411111159"
-        }]
+            "name": "Jeanne Alter",
+            "imageUrl": "https://danbooru.donmai.us/data/sample/__jeanne_d_arc_and_jeanne_d_arc_fate_and_1_more_drawn_by_rin_yuu__sample-fcf841b5acca53a9c79bb83adec2499e.jpg"
+        }],
+        "origin": "Fate"
     },
     {
-        "name": "Nitocris",
-        "origin": "Fate",
-        "imageUrl": "https://vignette.wikia.nocookie.net/fategrandorder/images/c/ce/NitocrisHD1.png/revision/latest/scale-to-width-down/350?cb=20171206155522"
+        "name": "Fujimaru RItsuka",
+        "imageUrl": "https://danbooru.donmai.us/data/__fujimaru_ritsuka_fate_and_1_more_drawn_by_rimo__7beab0eb71a3f24a645cdb20e8b47cc6.jpg",
+        "origin": "Fate"
     },
     {
         "name": "Tamamo no Mae",
-        "origin": "Fate",
-        "imageUrl": "https://vignette.wikia.nocookie.net/fategrandorder/images/7/72/Tamamocaster.png/revision/latest/scale-to-width-down/350?cb=20151021214450"
+        "imageUrl": "https://danbooru.donmai.us/data/sample/__tamamo_and_tamamo_no_mae_fate_and_2_more_drawn_by_kuro_futoshi__sample-23c7dad83a33a2e8397114ffbc7f1480.jpg",
+        "origin": "Fate"
     },
     {
-        "name": "Emilia",
-        "origin": "Re;Zero",
-        "imageUrl": "https://vignette.wikia.nocookie.net/rezero/images/c/c0/Emilia_Anime_2.png/revision/latest/scale-to-width-down/300?cb=20160408203829"
-    },
-    {
-        "name": "Kaga Koko",
-        "origin": "Golden Time",
-        "imageUrl": "https://vignette.wikia.nocookie.net/goldentime/images/2/27/K%C5%8Dko_Kaga_G_T.jpg/revision/latest?cb=20180530060649"
-    },
-    {
-        "name": "Makise Kurisu",
-        "origin": "Steins;Gate",
-        "imageUrl": "https://vignette.wikia.nocookie.net/steins-gate/images/8/83/Kurisu_profile.png/revision/latest/scale-to-width-down/310?cb=20141222010103",
-        "partners": [{
-            "name": "Okabe Rintarou",
-            "imageUrl": "https://vignette.wikia.nocookie.net/steins-gate/images/7/75/Rintaro_Profile-1.png/revision/latest/scale-to-width-down/310?cb=20180418234554"
-        }]
-    },
-    {
-        "name": "C.C.",
-        "origin": "Code Geass",
-        "imageUrl": "https://vignette.wikia.nocookie.net/codegeass/images/f/f8/C.C.20.jpg/revision/latest/scale-to-width-down/250?cb=20120108105947",
-        "partners": [{
-            "name": "Lelouch vi Brittania",
-            "imageUrl": "https://vignette.wikia.nocookie.net/codegeass/images/6/6a/LelouchviBritannia.jpg/revision/latest/scale-to-width-down/250?cb=20120107132514"
-        }]
-    },
-    {
-        "name": "Stella Vermillion",
-        "origin": "Rakudai Kishi no Cavalry",
-        "imageUrl": "https://vignette.wikia.nocookie.net/rakudai-kishi-no-eiyuutan/images/2/27/Rakudai_anime_teaser.png/revision/latest/scale-to-width-down/200?cb=20150411122013"
+        "name": "Nitocris",
+        "imageUrl": "https://danbooru.donmai.us/data/sample/__nitocris_fate_and_1_more_drawn_by_mashuu_neko_no_oyashiro__sample-eceb19f5c60c3ab04dc0e91865bfd828.jpg",
+        "origin": "Fate"
     },
     {
         "name": "Holo",
-        "origin": "Ookami to Koushinryou",
-        "imageUrl": "https://vignette.wikia.nocookie.net/spiceandwolf/images/5/51/Holo_Infobox.jpg/revision/latest/scale-to-width-down/250?cb=20120213085409",
+        "imageUrl": "https://cdn.donmai.us/sample/fc/72/__holo_spice_and_wolf_drawn_by_mushroom_artist__sample-fc7200c7899ee462fc6ac486246ed162.jpg",
         "partners": [{
             "name": "Kraft Lawrence",
-            "imageUrl": "https://vignette.wikia.nocookie.net/spiceandwolf/images/e/e4/Kraft_Lawrence.jpg/revision/latest?cb=20140222010713"
-        }]
+            "imageUrl": "https://cdn.myanimelist.net/images/characters/12/165537.jpg"
+        }],
+        "origin": "Spice and Wolf"
+    },
+    {
+        "name": "Makise Kurisu",
+        "imageUrl": "https://cdn.donmai.us/original/45/a4/__makise_kurisu_steins_gate_drawn_by_koyorin__45a4ff5ec6bfc06cc7d64e71f01b7d8e.jpg",
+        "partners": [{
+            "name": "Okabe Rintarou",
+            "imageUrl": ""
+        }],
+        "origin": "Steins;Gate"
+    },
+    {
+        "name": "C.C.",
+        "imageUrl": "https://danbooru.donmai.us/data/__c_c_code_geass_drawn_by_creayus__415218ddf8e29af824cb4dd1cbd28f47.png",
+        "partners": [{
+            "name": "Lelouch vi Brittania",
+            "imageUrl": ""
+        }],
+        "origin": "Code Geass"
     },
     {
         "name": "Jibril",
-        "origin": "No Game No Life",
-        "imageUrl": "https://vignette.wikia.nocookie.net/no-game-no-life/images/6/61/Jibril.png/revision/latest/scale-to-width-down/350?cb=20170323163112"
+        "imageUrl": "https://cdn.donmai.us/sample/58/b4/__jibril_no_game_no_life_drawn_by_ikasoke_likerm6au__sample-58b4a56f1fc5b51abf9dfb056714ecc3.jpg",
+        "origin": "No Game No Life"
     },
     {
-        "name": "Erza Scarlet",
-        "origin": "Fairy Tail",
-        "imageUrl": "https://vignette.wikia.nocookie.net/fairytail/images/c/cf/Erza_listens_to_Irene%27s_story.png/revision/latest/scale-to-width-down/300?cb=20190616090208"
-    },
-    {
-        "name": "Juvia Lockser",
-        "origin": "Fairy Tail",
-        "imageUrl": "https://vignette.wikia.nocookie.net/fairytail/images/f/ff/Juvia_Lockser_profile.png/revision/latest/scale-to-width-down/300?cb=20140426102005"
-
-    },
-    {
-        "name": "Edelgard von Hresvelg",
-        "origin": "Fire Emblem",
-        "imageUrl": "https://vignette.wikia.nocookie.net/fireemblem/images/7/7b/Artwork_Edelgard.png/revision/latest/scale-to-width-down/260?cb=20190510100605"
-    },
-    {
-        "name": "Byleth Eisner",
-        "origin": "Fire Emblem",
-        "imageUrl": "https://vignette.wikia.nocookie.net/fireemblem/images/d/dc/Artwork_Byleth_F.png/revision/latest/scale-to-width-down/280?cb=20190426054518",
-        "variants": [{
-            "name": "Byleth Sothis",
-            "imageUrl": "https://vignette.wikia.nocookie.net/fireemblem/images/a/a3/F_byleth_sothis.png/revision/latest/scale-to-width-down/185?cb=20190803065435"
-        }]
-    },
-    {
-        "name": "Tharja",
-        "origin": "Fire Emblem",
-        "imageUrl": "https://vignette.wikia.nocookie.net/fireemblem/images/8/85/Tharja_%28FE13_Artwork%29.png/revision/latest/scale-to-width-down/250?cb=20190810134754"
-    },
-    {
-        "name": "Lucina",
-        "origin": "Fire Emblem",
-        "imageUrl": "https://vignette.wikia.nocookie.net/fireemblem/images/d/d0/Lucina_official_art.png/revision/latest/scale-to-width-down/285?cb=20160427125411"
+        "name": "Stella Vermillion",
+        "imageUrl": "https://cdn.donmai.us/original/a0/de/__stella_vermillion_rakudai_kishi_no_cavalry_drawn_by_nitaka_fujikichi__a0def50f0a838b53f6a678cf52c08091.png",
+        "origin": "Rakudai Kishi no Cavalry"
     }
 ]
