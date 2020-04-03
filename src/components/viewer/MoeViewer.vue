@@ -1,6 +1,12 @@
 <template>
 	<div>
-		<b-carousel v-model="carouselPosition" :autoplay="false" :arrow-both="false" icon-size="is-medium">
+		<b-carousel
+			@change="updateCurrentCharacter($event)"
+			v-model="carouselPosition"
+			:autoplay="false"
+			:arrow-both="false"
+			icon-size="is-medium"
+		>
 			<b-carousel-item v-for="character in characters" :key="character.name">
 				<section :class="`hero is-medium is-blue`">
 					<div class="hero-body has-text-centered">
@@ -29,7 +35,14 @@
 		@Prop({ required: true, default: [], type: Array })
 		characters!: Array<Character>;
 		@Prop({ required: false, default: 0, type: Number })
-		carouselPosition!: Number;
+		startPosition!: number;
+
+		private carouselPosition: number = this.startPosition;
+
+		private updateCurrentCharacter(index: number): void {
+			this.carouselPosition = index;
+			this.$emit("change-character", index);
+		}
 	}
 </script>
 

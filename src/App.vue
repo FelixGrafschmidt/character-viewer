@@ -40,7 +40,7 @@
 			<moe-navigation-option slot="end" :text="'Save characters'"></moe-navigation-option>
 			<moe-navigation-option slot="end" :text="'Load characters'"></moe-navigation-option>
 		</moe-navigation>
-		<moe-viewer :characters="characters" v-if="mode === 'viewer'" />
+		<moe-viewer @change-character="updateCurrentCharacter" :characters="characters" v-if="mode === 'viewer'" />
 		<moe-editor v-if="mode === 'editor'" />
 	</div>
 </template>
@@ -53,7 +53,6 @@
 	import MoeNavigationOption from "@/components/navigation/MoeNavigationOption.vue";
 
 	// models
-	import NavigationOption from "@/models/NavigationOption";
 	import { Character } from "./legacy/models/Character";
 
 	// services
@@ -74,6 +73,7 @@
 				decodeLocalCharacterList(rawList)
 					.then(result => {
 						this.characters = result;
+						this.currentCharacter = this.characters[0];
 					})
 					.catch(error => {
 						this.characters = new Array<Character>();
@@ -88,29 +88,32 @@
 
 		private characters: Array<Character> = new Array<Character>();
 
-		private currentCharacter!: Character;
+		private currentCharacter: Character = { name: "" };
 
-		private addNewCharacter() {
+		private addNewCharacter(): void {
 			this.newCharacter = true;
 			this.mode = "editor";
 		}
-		private editThisCharacter() {
+		private editThisCharacter(): void {
 			this.mode = "editor";
 		}
-		private backToCharacterList() {
+		private backToCharacterList(): void {
 			this.newCharacter = false;
 			this.mode = "viewer";
 		}
-		private saveNewCharacter() {
+		private saveNewCharacter(): void {
 			this.characters.push({ name: "" });
 			this.newCharacter = false;
 			this.mode = "viewer";
 		}
-		private saveChangesToCharacter() {
+		private saveChangesToCharacter(): void {
 			this.mode = "viewer";
 		}
-		private deleteThisCharacter() {
+		private deleteThisCharacter(): void {
 			this.mode = "viewer";
+		}
+		private updateCurrentCharacter(index: number): void {
+			this.currentCharacter = this.characters[index];
 		}
 	}
 </script>
