@@ -1,7 +1,7 @@
 <template>
 	<div class="is-centered has-text-centered">
 		<h2 class="moe-origin title is-2">{{ character.origin }}</h2>
-		<div class="character-card">
+		<div class="moe-character-card">
 			<button
 				class="button"
 				@click="toggleVariants"
@@ -16,22 +16,22 @@
 			>
 				{{ partnersVisible ? "Hide partners" : "Show partners" }}
 			</button>
-			<div v-if="!partnersVisible && !variantsVisible" class="column">
-				<h3 class="title is-3 moe-character-name">{{ character.name }}</h3>
-				<img :alt="character.name" class="character-image" :src="character.imageUrl" />
+			<div v-if="!partnersVisible && !variantsVisible" class="columns">
+				<div class="column">
+					<h3 class="title is-3 moe-character-name">{{ character.name }}</h3>
+					<img :alt="character.name" class="character-image" :src="character.imageUrl" />
+				</div>
 			</div>
 			<div v-if="variantsVisible" class="columns">
 				<div v-for="variant in character.variants ? character.variants : []" :key="variant.name" class="column">
-					<h3 class="title is-3 moe-character-name">{{ character.name }}</h3>
-					<h3 class="title is-3 ">{{ variant.name }}</h3>
+					<h3 class="title is-3  moe-character-name">{{ variant.name }}</h3>
 					<img :alt="variant.name" class="character-image" :src="variant.imageUrl" />
 				</div>
 			</div>
 			<div v-if="partnersVisible" class="columns">
-				<div v-for="variant in character.variants ? character.variants : []" :key="variant.name" class="column">
-					<h3 class="title is-3 moe-character-name">{{ character.name }}</h3>
-					<h3 class="title is-3 ">{{ variant.name }}</h3>
-					<img :alt="variant.name" class="character-image" :src="variant.imageUrl" />
+				<div v-for="partner in character.partners ? character.partners : []" :key="partner.name" class="column">
+					<h3 class="title is-3  moe-character-name">{{ partner.name }}</h3>
+					<img :alt="partner.name" class="character-image" :src="partner.imageUrl" />
 				</div>
 			</div>
 		</div>
@@ -69,6 +69,12 @@
 	.character-image {
 		max-width: 70vw;
 		height: 60vh;
+	}
+	.moe-character-name {
+		padding-top: 5px;
+	}
+	.moe-character-card {
+		min-height: 80vh;
 	}
 	@media screen and (min-width: 769px) {
 		.moe-origin {

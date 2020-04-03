@@ -41,7 +41,7 @@
 			<moe-navigation-option slot="end" :text="'Load characters'"></moe-navigation-option>
 		</moe-navigation>
 		<moe-viewer @change-character="updateCurrentCharacter" :characters="characters" v-if="mode === 'viewer'" />
-		<moe-editor v-if="mode === 'editor'" />
+		<moe-editor :initial-character="currentCharacter" v-if="mode === 'editor'" />
 	</div>
 </template>
 <script lang="ts">
@@ -49,11 +49,12 @@
 	import { Vue, Component } from "vue-property-decorator";
 	// Vue components
 	import MoeViewer from "@/components/viewer/MoeViewer.vue";
+	import MoeEditor from "@/components/editor/MoeEditor.vue";
 	import MoeNavigation from "@/components/navigation/MoeNavigation.vue";
 	import MoeNavigationOption from "@/components/navigation/MoeNavigationOption.vue";
 
 	// models
-	import { Character } from "./legacy/models/Character";
+	import { Character } from "@/models/Character";
 
 	// services
 	import { decodeLocalCharacterList } from "@/services/CharacterListDecoderService";
@@ -62,7 +63,8 @@
 		components: {
 			MoeNavigation,
 			MoeNavigationOption,
-			MoeViewer
+			MoeViewer,
+			MoeEditor
 		}
 	})
 	export default class App extends Vue {
