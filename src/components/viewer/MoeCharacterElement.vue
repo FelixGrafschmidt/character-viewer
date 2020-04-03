@@ -41,7 +41,9 @@
 				</div>
 				<div v-else-if="variantsVisible" class="columns">
 					<div
-						v-for="variant in character.variants"
+						v-for="variant in character.variants
+							? character.variants
+							: []"
 						:key="variant.name"
 						class="column"
 					>
@@ -55,7 +57,9 @@
 				</div>
 				<div v-else class="columns">
 					<div
-						v-for="partner in character.partners"
+						v-for="partner in character.partners
+							? character.partners
+							: []"
 						:key="partner.name"
 						class="column"
 					>
@@ -74,7 +78,7 @@
 
 <script lang="ts">
 	import { Component, Prop, Vue } from "vue-property-decorator";
-	import { Character } from "../models/Character";
+	import { Character } from "@/models/Character";
 
 	@Component
 	export default class MoeCharacterElement extends Vue {

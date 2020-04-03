@@ -28,7 +28,7 @@
 	// Vue basics
 	import { Component, Vue, Prop } from "vue-property-decorator";
 	// Vue components
-	import MoeCharacterElement from "@/components/MoeCharacterElement.vue";
+	import MoeCharacterElement from "@/components/viewer/MoeCharacterElement.vue";
 	// TS-models
 	import { Character } from "../models/Character";
 
@@ -53,7 +53,7 @@
 
 <style lang="scss" scoped>
 	.hero-body {
-		padding-top: 5vh !important;
+		padding-top: unset !important;
 		padding-bottom: 5vh !important;
 	}
 </style>

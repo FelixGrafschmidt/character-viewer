@@ -25,9 +25,9 @@
 	import RouterLink from "vue-router";
 
 	// Vue components
-	import MoeNavigation from "./components/MoeNavigation.vue";
-	import MoeLoad from "./components/MoeLoad.vue";
-	import MoeExport from "./components/MoeExport.vue";
+	import MoeNavigation from "@/components/navigation/MoeNavigation.vue";
+	import MoeLoad from "@/components/navigation/MoeLoad.vue";
+	import MoeExport from "@/components/navigation/MoeExport.vue";
 
 	// 3rdParty
 	import {
@@ -40,10 +40,10 @@
 	} from "@mojotech/json-type-validation";
 	import axios, { AxiosPromise } from "axios";
 	// TS models
-	import { Character, Variant, Partner } from "./models/Character";
-	import CharacterList from "./models/CharacterList";
+	import { Character, Variant, Partner } from "@/models/Character";
+	import CharacterList from "@/models/CharacterList";
 	import Axios from "axios";
-	import Json from "./views/Json.vue";
+	import Json from "@/views/Json.vue";
 
 	const variantDecoder: Decoder<Variant> = object({
 		name: string(),

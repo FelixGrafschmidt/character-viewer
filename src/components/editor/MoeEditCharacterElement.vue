@@ -139,7 +139,7 @@
 <script lang="ts">
 	// Vue basics
 	import { Component, Vue, Prop } from "vue-property-decorator";
-	import { Character, Variant, Partner } from "../models/Character";
+	import { Character, Variant, Partner } from "@/models/Character";
 	import axios from "axios";
 
 	@Component({

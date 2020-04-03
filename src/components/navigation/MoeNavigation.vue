@@ -29,8 +29,8 @@
 <script lang="ts">
 	import { Component, Vue, Prop } from "vue-property-decorator";
 	// TS models
-	import { Character, Variant, Partner } from "../models/Character";
-	import CharacterList from "../models/CharacterList";
+	import { Character, Variant, Partner } from "@/models/Character";
+	import CharacterList from "@/models/CharacterList";
 
 	import axios from "axios";
 	@Component({
@@ -54,7 +54,7 @@
 			this.$forceUpdate();
 		}
 		addCharacter(): void {
-			this.$emit("index-change", -1);
+			this.$emit("index-change", 0);
 			this.$router.push("/edit");
 			this.toggleMenu();
 			this.$forceUpdate();
@@ -71,6 +71,11 @@
 			this.$router.push("/");
 			this.toggleMenu();
 			this.$forceUpdate();
+			this.characters.forEach(character => {
+				if (!character.name) {
+					this.characters.splice(this.characters.indexOf(character), 1);
+				}
+			});
 		}
 		// Common options
 		saveCharacters(): void {

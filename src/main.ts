@@ -2,7 +2,7 @@ import "@/registerServiceWorker";
 import "buefy/dist/buefy.css";
 
 import App from "@/App.vue";
-import router from "@/router";
+import router from "@/routing/router";
 import Buefy from "buefy";
 import Vue from "vue";
 

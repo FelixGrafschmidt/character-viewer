@@ -1,7 +1,7 @@
 <template>
 	<form class="narrow-center container">
 		<div
-			v-if="index >= 0"
+			v-if="index > 0"
 			class="container has-text-centered title is-2 padding-top-80"
 		>
 			Edit character
@@ -21,8 +21,8 @@
 </template>
 <script lang="ts">
 	// Vue basics
-	import { Character } from "../models/Character";
-	import MoeEditCharacterElement from "../components/MoeEditCharacterElement.vue";
+	import { Character } from "@/models/Character";
+	import MoeEditCharacterElement from "@/components/viewer/MoeCharacterElement.vue";
 	import axios from "axios";
 	import { Component, Vue, Prop } from "vue-property-decorator";
 	@Component({
@@ -39,7 +39,7 @@
 		currentCharacter!: Character;
 
 		created(): void {
-			if (this.index >= 0) {
+			if (this.index > 0) {
 				this.currentCharacter = this.characters[this.index];
 			} else {
 				this.currentCharacter = { name: "", imageUrl: "", origin: "" };
