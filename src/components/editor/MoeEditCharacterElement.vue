@@ -55,24 +55,17 @@
 					<div class="columns is-centered" v-if="hasVariants">
 						<div class="column">
 							<div class="column card">
-								<button
-									@click="character.variants ? character.variants.unshift({ name: '' }) : undefined"
-									class="button"
-								>
+								<button @click="character.variants.unshift({ name: '' })" class="button">
 									Add new Variant
 								</button>
 							</div>
 							<moe-edit-sub-character-element
 								class="is-centered"
-								v-for="variant in character.variants ? character.variants : []"
+								v-for="variant in character.variants"
 								:key="variant.name"
 								:initial-character="variant"
 								:is-sub-character="true"
-								@delete-character="
-									character.variants
-										? character.variants.splice(character.variants.indexOf($event), 1)
-										: undefined
-								"
+								@delete-character="character.variants.splice(character.variants.indexOf($event), 1)"
 							>
 							</moe-edit-sub-character-element>
 						</div>
@@ -82,23 +75,23 @@
 					<div class="field">
 						<b-checkbox v-model="hasPartners" type="is-link">Partners</b-checkbox>
 					</div>
-					<div v-if="hasPartners">
-						<div class="column card">
-							<button class="button">Add new Partner</button>
+					<div class="columns is-centered" v-if="hasPartners">
+						<div class="column">
+							<div class="column card">
+								<button @click="character.partners.unshift({ name: '' })" class="button">
+									Add new Partner
+								</button>
+							</div>
+							<moe-edit-sub-character-element
+								@delete-character="character.partners.splice(character.partners.indexOf($event), 1)"
+								class="is-centered"
+								v-for="partner in character.partners"
+								:key="partner.name"
+								:initial-character="partner"
+								:is-sub-character="true"
+							>
+							</moe-edit-sub-character-element>
 						</div>
-						<moe-edit-sub-character-element
-							@delete-character="
-								character.partners
-									? character.partners.splice(character.partners.indexOf($event), 1)
-									: undefined
-							"
-							class="card columns is-centered"
-							v-for="partner in character.partners ? character.partners : []"
-							:key="partner.name"
-							:initial-character="partner"
-							:is-sub-character="true"
-						>
-						</moe-edit-sub-character-element>
 					</div>
 				</div>
 			</section>
@@ -118,8 +111,8 @@
 		private initialCharacter!: Character;
 
 		private character: Character = this.initialCharacter;
-		private hasVariants: boolean = this.character.variants !== undefined;
-		private hasPartners: boolean = this.character.partners !== undefined;
+		private hasVariants: boolean = this.character.variants.length > 0;
+		private hasPartners: boolean = this.character.partners.length > 0;
 		private imageVisible: boolean = true;
 		private imageHovered: boolean = false;
 

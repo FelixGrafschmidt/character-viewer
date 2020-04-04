@@ -1,8 +1,8 @@
 export interface Character {
 	name: string;
 	imageUrl?: string;
-	variants?: Array<Variant>;
-	partners?: Array<Partner>;
+	variants: Array<Variant>;
+	partners: Array<Partner>;
 	origin?: string;
 }
 

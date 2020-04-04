@@ -21,13 +21,13 @@ const characterDecoder = JsonDecoder.object<Character>({
 	name: JsonDecoder.string,
 	origin: JsonDecoder.optional(JsonDecoder.string),
 	imageUrl: JsonDecoder.optional(JsonDecoder.string),
-	partners: JsonDecoder.optional(JsonDecoder.array<Partner>(
+	partners: JsonDecoder.array<Partner>(
 		partnerDecoder, "PartnerListDecoder"
-	)),
-	variants: JsonDecoder.optional(JsonDecoder.array<Variant>(
+	),
+	variants: JsonDecoder.array<Variant>(
 		variantDecoder, "VariantListDecoder"
-	)),
-}, "CharcaterDecoder");
+	),
+}, "CharacterDecoder");
 
 const localCharacterListDecoder = JsonDecoder.array<Character>(
 	characterDecoder, "LocalCharacterListDecoder"

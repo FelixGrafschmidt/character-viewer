@@ -35,13 +35,13 @@
 	@Component({
 		components: { MoeCharacterElement }
 	})
-	export default class Viewer extends Vue {
+	export default class MoeViewer extends Vue {
 		@Prop({ required: true, default: [], type: Array })
 		characters!: Array<Character>;
 		@Prop({ required: false, default: 0, type: Number })
 		startPosition!: number;
 
-		private carouselPosition: number = this.startPosition;
+		private carouselPosition: number = this.startPosition != -1 ? this.startPosition : 0;
 
 		private updateCurrentCharacter(index: number): void {
 			this.carouselPosition = index;

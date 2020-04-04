@@ -21,18 +21,6 @@
 			></moe-navigation-option>
 			<moe-navigation-option
 				slot="start"
-				@click.native="saveNewCharacter"
-				:text="'Save new character'"
-				v-if="mode === 'editor'"
-			></moe-navigation-option>
-			<moe-navigation-option
-				slot="start"
-				@click.native="saveChangesToCharacter"
-				:text="'Save changes to this character'"
-				v-if="mode === 'editor'"
-			></moe-navigation-option>
-			<moe-navigation-option
-				slot="start"
 				@click.native="deleteThisCharacter"
 				:text="'Delete this character'"
 				v-if="mode === 'editor'"
@@ -40,7 +28,12 @@
 			<moe-navigation-option slot="end" :text="'Save characters'"></moe-navigation-option>
 			<moe-navigation-option slot="end" :text="'Load characters'"></moe-navigation-option>
 		</moe-navigation>
-		<moe-viewer @change-character="updateCurrentCharacter" :characters="characters" v-if="mode === 'viewer'" />
+		<moe-viewer
+			:start-position="characters.indexOf(currentCharacter)"
+			@change-character="updateCurrentCharacter"
+			:characters="characters"
+			v-if="mode === 'viewer'"
+		/>
 		<moe-editor :initial-character="currentCharacter" v-if="mode === 'editor'" />
 	</div>
 </template>
@@ -54,7 +47,7 @@
 	import MoeNavigationOption from "@/components/navigation/MoeNavigationOption.vue";
 
 	// models
-	import { Character } from "@/models/Character";
+	import { Character, Variant, Partner } from "@/models/Character";
 
 	// services
 	import { decodeLocalCharacterList } from "@/services/CharacterListDecoderService";
@@ -90,9 +83,11 @@
 
 		private characters: Array<Character> = new Array<Character>();
 
-		private currentCharacter: Character = { name: "" };
+		private currentCharacter: Character = { name: "", variants: [], partners: [] };
 
 		private addNewCharacter(): void {
+			this.characters.push({ name: "", variants: [], partners: [] });
+			this.currentCharacter = this.characters[this.characters.length - 1];
 			this.newCharacter = true;
 			this.mode = "editor";
 		}
@@ -100,18 +95,10 @@
 			this.mode = "editor";
 		}
 		private backToCharacterList(): void {
-			this.newCharacter = false;
-			this.mode = "viewer";
-		}
-		private saveNewCharacter(): void {
-			this.characters.push({ name: "" });
-			this.newCharacter = false;
-			this.mode = "viewer";
-		}
-		private saveChangesToCharacter(): void {
 			this.mode = "viewer";
 		}
 		private deleteThisCharacter(): void {
+			this.characters.splice(this.characters.indexOf(this.currentCharacter), 1);
 			this.mode = "viewer";
 		}
 		private updateCurrentCharacter(index: number): void {
