@@ -1,5 +1,5 @@
 <template>
-	<b-navbar-item>
+	<b-navbar-item :tag="tag">
 		{{ text }}
 	</b-navbar-item>
 </template>
@@ -13,6 +13,8 @@
 	export default class App extends Vue {
 		@Prop({ required: true, default: "", type: String })
 		text!: String;
+		@Prop({ required: false, default: "a", type: String })
+		tag!: String;
 	}
 </script>
 

@@ -55,7 +55,7 @@
 					<div class="columns is-centered" v-if="hasVariants">
 						<div class="column">
 							<div class="column card">
-								<button @click="character.variants.unshift({ name: '' })" class="button">
+								<button @click="character.variants.unshift({ name: '' })" class="button is-link">
 									Add new Variant
 								</button>
 							</div>
@@ -78,7 +78,7 @@
 					<div class="columns is-centered" v-if="hasPartners">
 						<div class="column">
 							<div class="column card">
-								<button @click="character.partners.unshift({ name: '' })" class="button">
+								<button @click="character.partners.unshift({ name: '' })" class="button is-link">
 									Add new Partner
 								</button>
 							</div>
@@ -168,5 +168,8 @@
 		width: 59%;
 		flex: none;
 		height: 100%;
+	}
+	/deep/ .card {
+		border-color: #00ffff;
 	}
 </style>

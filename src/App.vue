@@ -25,6 +25,11 @@
 				:text="'Delete this character'"
 				v-if="mode === 'editor'"
 			></moe-navigation-option>
+			<moe-navigation-option
+				slot="end"
+				:text="'Change display mode'"
+				@click.native="changeDisplayMode"
+			></moe-navigation-option>
 			<moe-navigation-option slot="end" :text="'Save characters'"></moe-navigation-option>
 			<moe-navigation-option slot="end" :text="'Load characters'"></moe-navigation-option>
 		</moe-navigation>
@@ -32,8 +37,9 @@
 			:start-position="characters.indexOf(currentCharacter)"
 			@change-character="updateCurrentCharacter"
 			:characters="characters"
-			v-if="mode === 'viewer'"
+			v-if="mode === 'viewer' && displayMode === 'carousel'"
 		/>
+		<moe-table :characters="characters" v-if="mode === 'viewer' && displayMode === 'table'" />
 		<moe-editor :initial-character="currentCharacter" v-if="mode === 'editor'" />
 	</div>
 </template>
@@ -42,6 +48,7 @@
 	import { Vue, Component } from "vue-property-decorator";
 	// Vue components
 	import MoeViewer from "@/components/viewer/MoeViewer.vue";
+	import MoeTable from "@/components/viewer/MoeTable.vue";
 	import MoeEditor from "@/components/editor/MoeEditor.vue";
 	import MoeNavigation from "@/components/navigation/MoeNavigation.vue";
 	import MoeNavigationOption from "@/components/navigation/MoeNavigationOption.vue";
@@ -57,6 +64,7 @@
 			MoeNavigation,
 			MoeNavigationOption,
 			MoeViewer,
+			MoeTable,
 			MoeEditor
 		}
 	})
@@ -85,6 +93,8 @@
 
 		private currentCharacter: Character = { name: "", variants: [], partners: [] };
 
+		private displayMode: String = "carousel";
+
 		private addNewCharacter(): void {
 			this.characters.push({ name: "", variants: [], partners: [] });
 			this.currentCharacter = this.characters[this.characters.length - 1];
@@ -103,6 +113,13 @@
 		}
 		private updateCurrentCharacter(index: number): void {
 			this.currentCharacter = this.characters[index];
+		}
+		private changeDisplayMode(): void {
+			if (this.displayMode === "carousel") {
+				this.displayMode = "table";
+			} else {
+				this.displayMode = "carousel";
+			}
 		}
 	}
 </script>
