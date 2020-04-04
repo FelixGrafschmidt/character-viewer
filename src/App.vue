@@ -30,6 +30,16 @@
 				:text="'Change display mode'"
 				@click.native="changeDisplayMode"
 			></moe-navigation-option>
+			<moe-navigation-option
+				@click.native="openExport = true"
+				slot="end"
+				:text="'Export characters'"
+			></moe-navigation-option>
+			<moe-navigation-option
+				@click.native="openImport = true"
+				slot="end"
+				:text="'Import characters'"
+			></moe-navigation-option>
 			<moe-navigation-option slot="end" :text="'Save characters'"></moe-navigation-option>
 			<moe-navigation-option slot="end" :text="'Load characters'"></moe-navigation-option>
 		</moe-navigation>
@@ -47,6 +57,8 @@
 			:characters="characters"
 			v-if="mode === 'viewer' && displayMode === 'table'"
 		/>
+		<moe-exporter @close="openExport = false" :active="openExport" :characters="characters"></moe-exporter>
+		<moe-importer @import="characters = $event" @close="openImport = false" :active="openImport"></moe-importer>
 		<moe-editor :initial-character="currentCharacter" v-if="mode === 'editor'" />
 	</div>
 </template>
@@ -56,9 +68,12 @@
 	// Vue components
 	import MoeViewer from "@/components/viewer/MoeViewer.vue";
 	import MoeTable from "@/components/viewer/MoeTable.vue";
+	import MoeExporter from "@/components/import_export/MoeExporter.vue";
+	import MoeImporter from "@/components/import_export/MoeImporter.vue";
 	import MoeEditor from "@/components/editor/MoeEditor.vue";
 	import MoeNavigation from "@/components/navigation/MoeNavigation.vue";
 	import MoeNavigationOption from "@/components/navigation/MoeNavigationOption.vue";
+	import { isMobile } from "mobile-device-detect";
 
 	// models
 	import { Character, Variant, Partner } from "@/models/Character";
@@ -72,6 +87,8 @@
 			MoeNavigationOption,
 			MoeViewer,
 			MoeTable,
+			MoeExporter,
+			MoeImporter,
 			MoeEditor
 		}
 	})
@@ -100,7 +117,10 @@
 
 		private currentCharacter: Character = { name: "", variants: [], partners: [] };
 
-		private displayMode: String = "carousel";
+		private displayMode: String = isMobile ? "carousel" : "table";
+
+		private openExport: boolean = false;
+		private openImport: boolean = false;
 
 		private addNewCharacter(): void {
 			this.characters.push({ name: "", variants: [], partners: [] });

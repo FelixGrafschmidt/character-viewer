@@ -15,6 +15,7 @@
         "bulmaswatch": "^0.8.0",
         "core-js": "^2.6.5",
         "jsoneditor": "^7.0.4",
+        "mobile-device-detect": "^0.3.3",
         "register-service-worker": "^1.6.2",
         "ts.data.json": "^1.1.0",
         "vue": "^2.6.10",
