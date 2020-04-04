@@ -11,7 +11,7 @@
 				slot="start"
 				@click.native="editThisCharacter"
 				:text="'Edit this character'"
-				v-if="mode === 'viewer' && characters.length > 0"
+				v-if="mode === 'viewer' && displayMode === 'carousel' && characters.length > 0"
 			></moe-navigation-option>
 			<moe-navigation-option
 				slot="start"
@@ -39,7 +39,14 @@
 			:characters="characters"
 			v-if="mode === 'viewer' && displayMode === 'carousel'"
 		/>
-		<moe-table :characters="characters" v-if="mode === 'viewer' && displayMode === 'table'" />
+		<moe-table
+			@edit-character="
+				currentCharacter = $event;
+				mode = 'editor';
+			"
+			:characters="characters"
+			v-if="mode === 'viewer' && displayMode === 'table'"
+		/>
 		<moe-editor :initial-character="currentCharacter" v-if="mode === 'editor'" />
 	</div>
 </template>
