@@ -7,14 +7,26 @@
 				@click="toggleVariants"
 				:class="character.variants.length > 0 ? 'is-success' : 'is-disabled'"
 			>
-				{{ variantsVisible ? "Hide variants" : "Show variants" }}
+				{{
+					character.variants.length > 0
+						? variantsVisible
+							? "Hide variants"
+							: "Show variants"
+						: "No variants"
+				}}
 			</button>
 			<button
 				@click="togglePartners"
 				:class="character.partners.length > 0 ? 'is-success' : 'is-disabled'"
 				class="button"
 			>
-				{{ partnersVisible ? "Hide partners" : "Show partners" }}
+				{{
+					character.partners.length > 0
+						? partnersVisible
+							? "Hide partners"
+							: "Show partners"
+						: "No partners"
+				}}
 			</button>
 			<div v-if="!partnersVisible && !variantsVisible" class="columns">
 				<div class="column">

@@ -52,7 +52,7 @@
 	import { Character } from "@/models/Character";
 
 	@Component
-	export default class MoeEditCharacterElement extends Vue {
+	export default class MoeEditSubCharacterElement extends Vue {
 		@Prop({ required: true, type: Object })
 		private initialCharacter!: Character;
 

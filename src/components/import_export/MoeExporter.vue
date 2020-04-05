@@ -2,8 +2,8 @@
 	<b-modal custom-class="modal" @close="$emit('close')" :active.sync="isActive" scroll="keep">
 		<section class="section modal-section has-text-centered">
 			<pre> {{ JSON.stringify(characters) }}</pre>
-			<div class="section">
-				<button @click="copyJson" class="button is-link is-outlined">Copy to clipboard</button>&nbsp;
+			<div class="section modal-button-container">
+				<!-- <button @click="copyJson" class="button is-link is-outlined">Copy to clipboard</button>&nbsp; -->
 				<button @click="downloadJson" class="button is-link is-outlined">Export to file</button>
 			</div>
 		</section>
@@ -35,6 +35,7 @@
 
 		private copyJson(): void {
 			navigator.clipboard.writeText(JSON.stringify(this.characters));
+			this.isActive = false;
 		}
 		private downloadJson(): void {
 			const blob = new Blob([JSON.stringify(this.characters, undefined, 4)], { type: "application/json" });
@@ -43,6 +44,7 @@
 			link.download = "characters.json";
 			link.click();
 			URL.revokeObjectURL(link.href);
+			this.isActive = false;
 		}
 	}
 </script>
@@ -56,5 +58,14 @@
 		height: 100%;
 		background-color: rgb(0, 0, 0) !important;
 		color: #bebebe;
+	}
+	.modal-section {
+		padding: unset;
+	}
+
+	.modal-button-container {
+		padding-left: unset;
+		padding-right: unset;
+		padding-bottom: unset;
 	}
 </style>

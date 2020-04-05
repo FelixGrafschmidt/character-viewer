@@ -1,14 +1,21 @@
 <template>
 	<b-modal custom-class="modal" @close="$emit('close')" :active.sync="isActive" scroll="keep">
-		<section class="section modal-section has-text-centered">
+		<section
+			@click="
+				isActive = false;
+				$emit('close');
+			"
+			class="section modal-section has-text-centered"
+		>
 			<textarea
+				@click.stop
 				v-model="rawCharacters"
 				placeholder="Paste your exported characters here"
 				cols="30"
 				rows="10"
 			></textarea>
-			<div class="section">
-				<button @click="importCharacters" class="button is-link is-outlined">Import</button>
+			<div class="section modal-button-container has-text-centered">
+				<button @click.stop="importCharacters" class="button is-link is-outlined">Import</button>
 			</div>
 		</section>
 	</b-modal>
@@ -40,12 +47,14 @@
 		private rawCharacters: string = "";
 
 		private importCharacters(): void {
-			decodeLocalCharacterList(this.rawCharacters)
+			decodeLocalCharacterList(JSON.parse(this.rawCharacters))
 				.then(result => {
 					this.$emit("import", result);
+					this.isActive = false;
 				})
 				.catch(error => {
 					console.log(error);
+					this.isActive = false;
 				});
 		}
 	}
@@ -60,5 +69,13 @@
 		height: 100%;
 		background-color: rgb(0, 0, 0) !important;
 		color: #bebebe;
+	}
+	.modal-section {
+		padding: unset;
+	}
+	.modal-button-container {
+		padding-left: unset;
+		padding-right: unset;
+		padding-bottom: unset;
 	}
 </style>

@@ -58,8 +58,20 @@
 			v-if="mode === 'viewer' && displayMode === 'table'"
 		/>
 		<moe-exporter @close="openExport = false" :active="openExport" :characters="characters"></moe-exporter>
-		<moe-importer @import="characters = $event" @close="openImport = false" :active="openImport"></moe-importer>
-		<moe-editor :initial-character="currentCharacter" v-if="mode === 'editor'" />
+		<moe-importer
+			@import="refreshCharacters($event)"
+			@close="openImport = false"
+			:active="openImport"
+		></moe-importer>
+		<moe-editor
+			:initial-character="charactersForEdit[characters.indexOf(currentCharacter)]"
+			:characters="characters"
+			:charactersForEdit="charactersForEdit"
+			v-if="mode === 'editor'"
+			@back-to-list="mode = 'viewer'"
+			@save="saveCharacterChanges($event)"
+			@discard="discardCharacterChanges($event)"
+		/>
 	</div>
 </template>
 <script lang="ts">
@@ -78,6 +90,7 @@
 	// models
 	import { Character, Variant, Partner } from "@/models/Character";
 	import { CharacterForTable } from "@/models/CharacterForTable";
+	import { CharacterForEdit } from "@/models/CharacterForEdit";
 
 	// services
 	import { decodeLocalCharacterList } from "@/services/CharacterListDecoderService";
@@ -100,19 +113,7 @@
 				const rawList = JSON.parse(storageContent);
 				decodeLocalCharacterList(rawList)
 					.then(result => {
-						this.characters = result;
-						result.forEach(character => {
-							this.charactersForTable.push({
-								name: character.name,
-								origin: character.origin,
-								imageUrl: character.imageUrl,
-								variants: character.variants,
-								partners: character.partners,
-								detailsOpened: false,
-								editing: false
-							});
-						});
-						this.currentCharacter = this.characters[0];
+						this.refreshCharacters(result);
 					})
 					.catch(error => {
 						this.characters = new Array<Character>();
@@ -127,6 +128,7 @@
 
 		private characters: Array<Character> = new Array<Character>();
 		private charactersForTable: Array<CharacterForTable> = new Array<CharacterForTable>();
+		private charactersForEdit: Array<CharacterForEdit> = new Array<CharacterForEdit>();
 
 		private currentCharacter: Character = { name: "", variants: [], partners: [] };
 
@@ -160,6 +162,62 @@
 			} else {
 				this.displayMode = "carousel";
 			}
+		}
+		private saveCharacterChanges(character: CharacterForEdit): void {
+			this.mode = "viewer";
+			this.characters.length = 0;
+			this.charactersForEdit.forEach(character => {
+				this.characters.push({
+					name: character.name,
+					origin: character.origin,
+					imageUrl: character.imageUrl,
+					variants: character.variants,
+					partners: character.partners
+				});
+			});
+			this.currentCharacter = this.characters[0];
+			localStorage.setItem("characters", JSON.stringify(this.characters));
+		}
+
+		private discardCharacterChanges(character: CharacterForEdit): void {
+			this.mode = "viewer";
+			this.charactersForEdit.length = 0;
+			this.characters.forEach(character => {
+				this.charactersForEdit.push({
+					name: character.name,
+					origin: character.origin,
+					imageUrl: character.imageUrl,
+					variants: character.variants,
+					partners: character.partners,
+					newVariants: [],
+					newPartners: []
+				});
+			});
+		}
+
+		private refreshCharacters(characters: Array<Character>): void {
+			this.characters = characters;
+			characters.forEach(character => {
+				this.charactersForTable.push({
+					name: character.name,
+					origin: character.origin,
+					imageUrl: character.imageUrl,
+					variants: character.variants,
+					partners: character.partners,
+					detailsOpened: false,
+					editing: false
+				});
+				this.charactersForEdit.push({
+					name: character.name,
+					origin: character.origin,
+					imageUrl: character.imageUrl,
+					variants: character.variants,
+					partners: character.partners,
+					newVariants: [],
+					newPartners: []
+				});
+			});
+			this.currentCharacter = this.characters[0];
 		}
 	}
 </script>
