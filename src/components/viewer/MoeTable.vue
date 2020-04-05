@@ -67,16 +67,10 @@
 					<td><input class="text-input input" type="text" v-model="props.row.newVariant.name" /></td>
 					<td>{{ props.row.origin }}</td>
 					<td>
-						<input
-							@input="updateNewVariantImage(props.row.newVariant, $event)"
-							@click.stop
-							class="input"
-							type="text"
-							v-model="props.row.newVariant.imageUrl"
-						/>
+						<input @click.stop class="input" type="text" v-model="props.row.newVariant.imageUrl" />
 						<img
 							@click="enlargeImage(props.row.newVariant.imageUrl)"
-							:src="getImageUrlForNewVariant(props.row.newVariant)"
+							:src="props.row.newVariant.imageUrl"
 							alt=""
 						/>
 					</td>
@@ -99,7 +93,7 @@
 						<input @click.stop class="input" type="text" v-model="props.row.newPartner.imageUrl" />
 						<img
 							@click="enlargeImage(props.row.newPartner.imageUrl)"
-							:src.sync="props.row.newPartner.imageUrl"
+							:src="props.row.newPartner.imageUrl"
 							alt=""
 						/>
 					</td>
@@ -194,17 +188,6 @@
 				partner.newName = undefined;
 				partner.newImageUrl = undefined;
 			});
-		}
-		private updateNewVariantImage(variant: Variant, event: InputEvent): void {
-			variant.imageUrl = (event.target as HTMLFormElement).value;
-			this.$forceUpdate;
-		}
-		private getImageUrlForNewVariant(variant: Variant): string {
-			if (variant.newImageUrl !== undefined) {
-				return variant.newImageUrl;
-			} else {
-				return "";
-			}
 		}
 		private getTextForCharacter(character: CharacterForTable): string {
 			if (character.detailsOpened) {
