@@ -54,7 +54,7 @@
 				currentCharacter = $event;
 				mode = 'editor';
 			"
-			:characters="characters"
+			:characters="charactersForTable"
 			v-if="mode === 'viewer' && displayMode === 'table'"
 		/>
 		<moe-exporter @close="openExport = false" :active="openExport" :characters="characters"></moe-exporter>
@@ -77,6 +77,7 @@
 
 	// models
 	import { Character, Variant, Partner } from "@/models/Character";
+	import { CharacterForTable } from "@/models/CharacterForTable";
 
 	// services
 	import { decodeLocalCharacterList } from "@/services/CharacterListDecoderService";
@@ -100,6 +101,17 @@
 				decodeLocalCharacterList(rawList)
 					.then(result => {
 						this.characters = result;
+						result.forEach(character => {
+							this.charactersForTable.push({
+								name: character.name,
+								origin: character.origin,
+								imageUrl: character.imageUrl,
+								variants: character.variants,
+								partners: character.partners,
+								detailsOpened: false,
+								editing: false
+							});
+						});
 						this.currentCharacter = this.characters[0];
 					})
 					.catch(error => {
@@ -114,6 +126,7 @@
 		private newCharacter: boolean = false;
 
 		private characters: Array<Character> = new Array<Character>();
+		private charactersForTable: Array<CharacterForTable> = new Array<CharacterForTable>();
 
 		private currentCharacter: Character = { name: "", variants: [], partners: [] };
 

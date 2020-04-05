@@ -23,8 +23,6 @@
 	// services
 	import { decodeLocalCharacterList } from "@/services/CharacterListDecoderService";
 
-	import buefy from "buefy";
-
 	@Component({
 		components: {}
 	})

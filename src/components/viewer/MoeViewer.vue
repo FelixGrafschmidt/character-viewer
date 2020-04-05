@@ -30,8 +30,6 @@
 	// Tmodels
 	import { Character } from "@/models/Character";
 
-	import buefy from "buefy";
-
 	@Component({
 		components: { MoeCharacterElement }
 	})

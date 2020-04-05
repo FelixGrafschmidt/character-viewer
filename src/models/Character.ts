@@ -9,8 +9,12 @@ export interface Character {
 export interface Variant {
 	name: string;
 	imageUrl?: string;
+	newName?: string;
+	newImageUrl?: string;
 }
 export interface Partner {
 	name: string;
 	imageUrl?: string;
+	newName?: string;
+	newImageUrl?: string;
 }
