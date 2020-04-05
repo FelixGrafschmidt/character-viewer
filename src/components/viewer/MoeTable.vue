@@ -67,11 +67,18 @@
 					<td><input class="text-input input" type="text" v-model="props.row.newVariant.name" /></td>
 					<td>{{ props.row.origin }}</td>
 					<td>
-						<input @click.stop class="input" type="text" v-model="props.row.newVariant.imageUrl" />
+						<input
+							@input="updateNewVariantImage(props.row, $event)"
+							@click.stop
+							class="input"
+							type="text"
+							v-model="props.row.newVariant.imageUrl"
+						/>
 						<img
 							@click="enlargeImage(props.row.newVariant.imageUrl)"
-							:src="props.row.newVariant.imageUrl"
+							src=""
 							alt=""
+							:ref="props.row.name + '_new_variant'"
 						/>
 					</td>
 					<td></td>
@@ -90,11 +97,18 @@
 					<td><input class="text-input input" type="text" v-model="props.row.newPartner.name" /></td>
 					<td>{{ props.row.origin }}</td>
 					<td>
-						<input @click.stop class="input" type="text" v-model="props.row.newPartner.imageUrl" />
+						<input
+							@input="updateNewPartnerImage(props.row, $event)"
+							@click.stop
+							class="input"
+							type="text"
+							v-model="props.row.newPartner.imageUrl"
+						/>
 						<img
 							@click="enlargeImage(props.row.newPartner.imageUrl)"
-							:src="props.row.newPartner.imageUrl"
+							src=""
 							alt=""
+							:ref="props.row.name + '_new_Partner'"
 						/>
 					</td>
 					<td></td>
@@ -188,6 +202,18 @@
 				partner.newName = undefined;
 				partner.newImageUrl = undefined;
 			});
+		}
+		private updateNewVariantImage(character: CharacterForTable, event: InputEvent): void {
+			if (character.newVariant) {
+				character.newVariant.imageUrl = (event.target as HTMLFormElement).value;
+			}
+			(this.$refs[character.name + "_new_variant"] as HTMLImageElement).src = (event.target as HTMLFormElement).value;
+		}
+		private updateNewPartnerImage(character: CharacterForTable, event: InputEvent): void {
+			if (character.newPartner) {
+				character.newPartner.imageUrl = (event.target as HTMLFormElement).value;
+			}
+			(this.$refs[character.name + "_new_partner"] as HTMLImageElement).src = (event.target as HTMLFormElement).value;
 		}
 		private getTextForCharacter(character: CharacterForTable): string {
 			if (character.detailsOpened) {
