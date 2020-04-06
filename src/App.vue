@@ -64,12 +64,12 @@
 			:active="openImport"
 		></moe-importer>
 		<moe-editor
-			:initial-character="charactersForEdit[characters.indexOf(currentCharacter)]"
-			:characters="characters"
-			:charactersForEdit="charactersForEdit"
+			:initial-character="characterToEdit"
+			:is-new-character="newCharacter"
 			v-if="mode === 'editor'"
 			@back-to-list="mode = 'viewer'"
 			@save="saveCharacterChanges($event)"
+			@save-new="saveNewCharacter($event)"
 			@discard="discardCharacterChanges($event)"
 		/>
 	</div>
@@ -124,26 +124,32 @@
 
 		private mode: string = "viewer";
 
-		private newCharacter: boolean = false;
-
 		private characters: Array<Character> = new Array<Character>();
 		private charactersForTable: Array<CharacterForTable> = new Array<CharacterForTable>();
-		private charactersForEdit: Array<CharacterForEdit> = new Array<CharacterForEdit>();
 
 		private currentCharacter: Character = { name: "", variants: [], partners: [] };
+		private characterToEdit: Character = { name: "", variants: [], partners: [] };
 
 		private displayMode: String = isMobile ? "carousel" : "table";
+
+		private newCharacter: boolean = false;
 
 		private openExport: boolean = false;
 		private openImport: boolean = false;
 
 		private addNewCharacter(): void {
-			this.characters.push({ name: "", variants: [], partners: [] });
-			this.currentCharacter = this.characters[this.characters.length - 1];
 			this.newCharacter = true;
 			this.mode = "editor";
 		}
 		private editThisCharacter(): void {
+			this.newCharacter = false;
+			this.characterToEdit = {
+				name: this.currentCharacter.name,
+				origin: this.currentCharacter.origin,
+				imageUrl: this.currentCharacter.imageUrl,
+				variants: this.currentCharacter.variants,
+				partners: this.currentCharacter.partners
+			};
 			this.mode = "editor";
 		}
 		private backToCharacterList(): void {
@@ -151,53 +157,55 @@
 		}
 		private deleteThisCharacter(): void {
 			this.characters.splice(this.characters.indexOf(this.currentCharacter), 1);
+			this.characterToEdit = { name: "", variants: [], partners: [] };
+			localStorage.setItem("characters", JSON.stringify(this.characters));
 			this.mode = "viewer";
 		}
 		private updateCurrentCharacter(index: number): void {
 			this.currentCharacter = this.characters[index];
 		}
 		private changeDisplayMode(): void {
+			this.charactersForTable = [];
 			if (this.displayMode === "carousel") {
+				this.characters.forEach(character => {
+					this.charactersForTable.push({
+						name: character.name,
+						origin: character.origin,
+						imageUrl: character.imageUrl,
+						variants: character.variants,
+						partners: character.partners,
+						detailsOpened: false,
+						editing: false
+					});
+				});
 				this.displayMode = "table";
 			} else {
 				this.displayMode = "carousel";
 			}
 		}
-		private saveCharacterChanges(character: CharacterForEdit): void {
+		private saveCharacterChanges(character: Character): void {
 			this.mode = "viewer";
-			this.characters.length = 0;
-			this.charactersForEdit.forEach(character => {
-				this.characters.push({
-					name: character.name,
-					origin: character.origin,
-					imageUrl: character.imageUrl,
-					variants: character.variants,
-					partners: character.partners
-				});
-			});
-			this.currentCharacter = this.characters[0];
+			this.characters[this.characters.indexOf(this.currentCharacter)] = character;
+			this.currentCharacter = character;
+			this.characterToEdit = { name: "", variants: [], partners: [] };
+			localStorage.setItem("characters", JSON.stringify(this.characters));
+		}
+		private saveNewCharacter(character: Character): void {
+			this.mode = "viewer";
+			this.characters.push(character);
+			this.characterToEdit = { name: "", variants: [], partners: [] };
+			this.currentCharacter = character;
 			localStorage.setItem("characters", JSON.stringify(this.characters));
 		}
 
 		private discardCharacterChanges(character: CharacterForEdit): void {
 			this.mode = "viewer";
-			this.charactersForEdit.length = 0;
-			this.characters.forEach(character => {
-				this.charactersForEdit.push({
-					name: character.name,
-					origin: character.origin,
-					imageUrl: character.imageUrl,
-					variants: character.variants,
-					partners: character.partners,
-					newVariants: [],
-					newPartners: []
-				});
-			});
+			this.characterToEdit = { name: "", variants: [], partners: [] };
 		}
 
 		private refreshCharacters(characters: Array<Character>): void {
 			this.characters = characters;
-			characters.forEach(character => {
+			this.characters.forEach(character => {
 				this.charactersForTable.push({
 					name: character.name,
 					origin: character.origin,
@@ -206,15 +214,6 @@
 					partners: character.partners,
 					detailsOpened: false,
 					editing: false
-				});
-				this.charactersForEdit.push({
-					name: character.name,
-					origin: character.origin,
-					imageUrl: character.imageUrl,
-					variants: character.variants,
-					partners: character.partners,
-					newVariants: [],
-					newPartners: []
 				});
 			});
 			this.currentCharacter = this.characters[0];
