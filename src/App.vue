@@ -134,6 +134,7 @@
 
 		private addNewCharacter(): void {
 			this.newCharacter = true;
+			this.characterToEdit = { name: "", variants: [], partners: [] };
 			this.mode = "editor";
 		}
 		private editThisCharacter(): void {
