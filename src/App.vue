@@ -20,12 +20,6 @@
 				v-if="mode === 'editor'"
 			></moe-navigation-option>
 			<moe-navigation-option
-				slot="start"
-				@click.native="deleteThisCharacter"
-				:text="'Delete this character'"
-				v-if="mode === 'editor'"
-			></moe-navigation-option>
-			<moe-navigation-option
 				slot="end"
 				:text="'Change display mode'"
 				@click.native="changeDisplayMode"
@@ -70,6 +64,7 @@
 			@back-to-list="mode = 'viewer'"
 			@save="saveCharacterChanges($event)"
 			@save-new="saveNewCharacter($event)"
+			@delete="deleteCharacter($event)"
 			@discard="discardCharacterChanges($event)"
 		/>
 	</div>
@@ -155,10 +150,11 @@
 		private backToCharacterList(): void {
 			this.mode = "viewer";
 		}
-		private deleteThisCharacter(): void {
-			this.characters.splice(this.characters.indexOf(this.currentCharacter), 1);
+		private deleteCharacter(character: Character): void {
+			this.characters.splice(this.characters.indexOf(character), 1);
 			this.characterToEdit = { name: "", variants: [], partners: [] };
 			localStorage.setItem("characters", JSON.stringify(this.characters));
+			this.currentCharacter = this.characters[0];
 			this.mode = "viewer";
 		}
 		private updateCurrentCharacter(index: number): void {
@@ -198,7 +194,7 @@
 			localStorage.setItem("characters", JSON.stringify(this.characters));
 		}
 
-		private discardCharacterChanges(character: CharacterForEdit): void {
+		private discardCharacterChanges(character: Character): void {
 			this.mode = "viewer";
 			this.characterToEdit = { name: "", variants: [], partners: [] };
 		}

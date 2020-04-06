@@ -4,6 +4,7 @@
 			<button v-if="isNewCharacter" @click="$emit('save-new', character)" class="button is-success">Save</button>
 			<button v-else @click="$emit('save', character)" class="button is-success">Save</button>
 			<button @click="$emit('discard', character)" class="button is-danger">Discard</button>
+			<button v-if="!isNewCharacter" @click="$emit('delete', character)" class="button is-danger">Delete</button>
 		</section>
 		<section class="columns is-centered">
 			<div class="column is-half">
