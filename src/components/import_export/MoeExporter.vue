@@ -50,9 +50,6 @@
 </script>
 
 <style lang="scss" scoped>
-	/deep/ .modal-background {
-		background-color: rgba(8, 8, 8, 0.86) !important;
-	}
 	.modal-textarea {
 		width: 100%;
 		height: 100%;

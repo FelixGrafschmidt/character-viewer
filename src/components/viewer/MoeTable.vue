@@ -217,9 +217,9 @@
 		}
 		private getTextForCharacter(character: CharacterForTable): string {
 			if (character.detailsOpened) {
-				return "Close sub characters";
+				return "Hide sub characters";
 			} else {
-				return "Open sub characters";
+				return "Show sub characters";
 			}
 		}
 	}
@@ -228,9 +228,6 @@
 <style lang="scss" scoped>
 	.sub-character-row {
 		background-color: #202020;
-	}
-	/deep/ .modal-background {
-		background-color: rgba(8, 8, 8, 0.86) !important;
 	}
 	.enlarged-image {
 		max-height: 85vh;

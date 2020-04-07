@@ -34,8 +34,16 @@
 				slot="end"
 				:text="'Import characters'"
 			></moe-navigation-option>
-			<moe-navigation-option slot="end" :text="'Save characters'"></moe-navigation-option>
-			<moe-navigation-option slot="end" :text="'Load characters'"></moe-navigation-option>
+			<moe-navigation-option
+				@click.native="saveCharacters"
+				slot="end"
+				:text="'Save characters'"
+			></moe-navigation-option>
+			<moe-navigation-option
+				@click.native="alertLoadStart"
+				slot="end"
+				:text="'Load characters'"
+			></moe-navigation-option>
 		</moe-navigation>
 		<moe-viewer
 			:start-position="characters.indexOf(currentCharacter)"
@@ -89,6 +97,7 @@
 
 	// services
 	import { decodeLocalCharacterList } from "@/services/CharacterListDecoderService";
+	import { saveCharacters, loadCharacters } from "@/services/AjaxService";
 
 	@Component({
 		components: {
@@ -214,6 +223,58 @@
 				});
 			});
 			this.currentCharacter = this.characters[0];
+		}
+		private saveCharacters(): void {
+			const contentStorage = localStorage.getItem("characterListId");
+			let savePromise;
+			if (contentStorage !== null) {
+				savePromise = saveCharacters(this.characters, contentStorage);
+			} else {
+				savePromise = saveCharacters(this.characters);
+			}
+			savePromise
+				.then(response => {
+					localStorage.setItem("characterListId", response.data);
+					this.alertSaveSuccess(response.data);
+				})
+				.catch(error => {
+					console.log(error);
+				});
+		}
+		private loadCharacters(id: string): void {
+			loadCharacters(id)
+				.then(response => {
+					this.refreshCharacters(response.data);
+				})
+				.catch(error => {
+					console.log(error);
+				});
+		}
+		private alertSaveSuccess(id: string): void {
+			this.$buefy.dialog.alert({
+				title: "Success",
+				message:
+					"<p>Your characters have been saved.</p><p> Please make sure to hold on to this id, you will need it to load your characters in the future: </p><p><strong> " +
+					id +
+					"</strong></p>",
+				type: "is-link",
+				ariaRole: "alertdialog",
+				ariaModal: true
+			});
+		}
+		private alertLoadStart(): void {
+			this.$buefy.dialog.prompt({
+				title: "Load characters",
+				message: "Please enter your list's id.",
+				inputAttrs: {
+					placeholder: "your id"
+				},
+				type: "is-link",
+				ariaRole: "alertdialog",
+				ariaModal: true,
+				trapFocus: true,
+				onConfirm: value => this.loadCharacters(value)
+			});
 		}
 	}
 </script>
