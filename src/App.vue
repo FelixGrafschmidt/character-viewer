@@ -269,6 +269,7 @@
 				inputAttrs: {
 					placeholder: "your id"
 				},
+				confirmText: "Load",
 				type: "is-link",
 				ariaRole: "alertdialog",
 				ariaModal: true,
