@@ -9,7 +9,7 @@
 					<input v-if="props.row.editing" class="text-input input" type="text" v-model="props.row.newName" />
 					<div v-else>{{ props.row.name }}</div>
 				</b-table-column>
-				<b-table-column field="origin" label="Origin" width="700" sortable searchable>
+				<b-table-column field="origin" label="Origin" width="690" sortable searchable>
 					<input
 						v-if="props.row.editing"
 						class="text-input input"
@@ -42,6 +42,7 @@
 					<div v-else>
 						<div><a @click="saveChanges(props.row)">Save changes</a></div>
 						<div><a @click="discardChanges(props.row)">Discard changes</a></div>
+						<div><a @click="deleteCharacter(props.row)">Delete character</a></div>
 					</div>
 				</b-table-column>
 			</template>
@@ -186,6 +187,7 @@
 			}
 			character.newVariant = undefined;
 			character.newPartner = undefined;
+			localStorage.setItem("characters", JSON.stringify(this.characters));
 		}
 		private discardChanges(character: CharacterForTable): void {
 			character.editing = false;
@@ -221,6 +223,17 @@
 			} else {
 				return "Show sub characters";
 			}
+		}
+		private deleteCharacter(character: CharacterForTable): void {
+			this.$buefy.dialog.confirm({
+				message: `Are you sure you wish to delete ${character.name}?`,
+				trapFocus: true,
+				type: "is-link",
+				onConfirm: value => {
+					this.characters.splice(this.characters.indexOf(character), 1);
+					localStorage.setItem("characters", JSON.stringify(this.characters));
+				}
+			});
 		}
 	}
 </script>
