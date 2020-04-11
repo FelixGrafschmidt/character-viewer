@@ -27,9 +27,6 @@
 	// Tmodels
 	import { Character } from "@/models/Character";
 
-	// services
-	import { decodeLocalCharacterList } from "@/services/CharacterListDecoderService";
-
 	@Component({
 		components: {}
 	})
@@ -47,15 +44,8 @@
 		private rawCharacters: string = "";
 
 		private importCharacters(): void {
-			decodeLocalCharacterList(JSON.parse(this.rawCharacters))
-				.then(result => {
-					this.$emit("import", result);
-					this.isActive = false;
-				})
-				.catch(error => {
-					console.log(error);
-					this.isActive = false;
-				});
+			this.$emit("import", JSON.parse(this.rawCharacters) as Array<Character>);
+			this.isActive = false;
 		}
 	}
 </script>

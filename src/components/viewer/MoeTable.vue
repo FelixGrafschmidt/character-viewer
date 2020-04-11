@@ -128,7 +128,7 @@
 	// Vue basics
 	import { Component, Vue, Prop } from "vue-property-decorator";
 	// models
-	import { Character, Variant } from "@/models/Character";
+	import { Character } from "@/models/Character";
 	import { CharacterForTable } from "../../models/CharacterForTable";
 
 	@Component({
@@ -187,7 +187,13 @@
 			}
 			character.newVariant = undefined;
 			character.newPartner = undefined;
-			localStorage.setItem("characters", JSON.stringify(this.characters));
+			this.$emit("save-changes", {
+				name: character.name,
+				origin: character.origin,
+				imageUrl: character.imageUrl,
+				variants: character.variants,
+				partners: character.partners
+			});
 		}
 		private discardChanges(character: CharacterForTable): void {
 			character.editing = false;
@@ -231,7 +237,13 @@
 				type: "is-link",
 				onConfirm: value => {
 					this.characters.splice(this.characters.indexOf(character), 1);
-					localStorage.setItem("characters", JSON.stringify(this.characters));
+					this.$emit("delete-character", {
+						name: character.name,
+						origin: character.origin,
+						imageUrl: character.imageUrl,
+						variants: character.variants,
+						partners: character.partners
+					});
 				}
 			});
 		}

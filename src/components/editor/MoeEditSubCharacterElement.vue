@@ -49,16 +49,14 @@
 
 <script lang="ts">
 	import { Component, Prop, Vue } from "vue-property-decorator";
-	import { Character } from "@/models/Character";
+	import { SubCharacter } from "@/models/Character";
 
 	@Component
 	export default class MoeEditSubCharacterElement extends Vue {
 		@Prop({ required: true, type: Object })
-		private initialCharacter!: Character;
+		private initialCharacter!: SubCharacter;
 
-		private character: Character = this.initialCharacter;
-		private hasVariants: boolean = this.character.variants !== undefined;
-		private hasPartners: boolean = this.character.partners !== undefined;
+		private character: SubCharacter = this.initialCharacter;
 		private imageVisible: boolean = true;
 		private imageHovered: boolean = false;
 

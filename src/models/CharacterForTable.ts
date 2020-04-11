@@ -1,11 +1,11 @@
-import { Character, Partner, Variant } from "./Character";
+import { Character, SubCharacter } from "./Character";
 
 export interface CharacterForTable extends Character {
 	detailsOpened: boolean;
 	editing: boolean;
 
-	newVariant?: Variant;
-	newPartner?: Partner;
+	newVariant?: SubCharacter;
+	newPartner?: SubCharacter;
 	newName?: string;
 	newOrigin?: string;
 	newImageUrl?: string;

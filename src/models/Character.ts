@@ -1,18 +1,12 @@
 export interface Character {
 	name: string;
 	imageUrl?: string;
-	variants: Array<Variant>;
-	partners: Array<Partner>;
+	variants: Array<SubCharacter>;
+	partners: Array<SubCharacter>;
 	origin?: string;
 }
 
-export interface Variant {
-	name: string;
-	imageUrl?: string;
-	newName?: string;
-	newImageUrl?: string;
-}
-export interface Partner {
+export interface SubCharacter {
 	name: string;
 	imageUrl?: string;
 	newName?: string;

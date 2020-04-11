@@ -22,3 +22,4 @@ yarn-error.log*
 
 target
 /src/resources
+/src/resources/characters.json

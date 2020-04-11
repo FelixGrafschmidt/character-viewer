@@ -1,9 +1,9 @@
 <template>
 	<b-modal custom-class="modal" @close="$emit('close')" :active.sync="isActive" scroll="keep">
 		<section class="section modal-section has-text-centered">
-			<pre> {{ JSON.stringify(characters) }}</pre>
+			<pre ref="json-export"> {{ JSON.stringify(characters) }}</pre>
 			<div class="section modal-button-container">
-				<!-- <button @click="copyJson" class="button is-link is-outlined">Copy to clipboard</button>&nbsp; -->
+				<button @click="copyJson" class="button is-link is-outlined">Copy to clipboard</button>&nbsp;
 				<button @click="downloadJson" class="button is-link is-outlined">Export to file</button>
 			</div>
 		</section>
@@ -13,7 +13,7 @@
 <script lang="ts">
 	// Vue basics
 	import { Component, Vue, Prop, Watch } from "vue-property-decorator";
-	// Tmodels
+	// models
 	import { Character } from "@/models/Character";
 
 	@Component({
@@ -34,6 +34,15 @@
 		}
 
 		private copyJson(): void {
+			const ref = this.$refs["json-export"] as Node;
+			const range = document.createRange();
+			range.selectNodeContents(ref);
+			const sel = window.getSelection();
+			if (sel !== null) {
+				sel.removeAllRanges();
+				sel.addRange(range);
+			}
+			document.execCommand("copy");
 			navigator.clipboard.writeText(JSON.stringify(this.characters));
 			this.isActive = false;
 		}

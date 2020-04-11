@@ -3,7 +3,6 @@
 		<template slot="start">
 			<slot name="start"></slot>
 		</template>
-
 		<template slot="end">
 			<slot name="end"></slot>
 		</template>

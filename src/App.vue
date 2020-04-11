@@ -1,6 +1,18 @@
 <template>
 	<div>
 		<moe-navigation>
+			<b-navbar-dropdown slot="start" :label="currentList !== undefined ? currentList.name : 'Your lists'">
+				<template v-if="collection.length > 0">
+					<b-navbar-item @click.native="loadList(list)" v-for="list in collection" :key="list.id">
+						{{ list.name }}
+					</b-navbar-item>
+					<hr class="navbar-divider" />
+				</template>
+
+				<b-navbar-item @click.native="newList()">
+					Add new
+				</b-navbar-item>
+			</b-navbar-dropdown>
 			<moe-navigation-option
 				slot="start"
 				@click.native="addNewCharacter"
@@ -14,10 +26,22 @@
 				v-if="mode === 'viewer' && displayMode === 'carousel' && characters.length > 0"
 			></moe-navigation-option>
 			<moe-navigation-option
+				v-if="collection.length > 0"
 				slot="start"
-				@click.native="backToCharacterList"
-				:text="'Back to character list'"
-				v-if="mode === 'editor'"
+				:text="'Rename list'"
+				@click.native="changeListName"
+			></moe-navigation-option>
+			<moe-navigation-option
+				v-if="collection.length > 0"
+				slot="start"
+				:text="'Delete list'"
+				@click.native="deleteList"
+			></moe-navigation-option>
+			<moe-navigation-option
+				v-if="collection.length > 0"
+				slot="start"
+				:text="'collection id: ' + collectionId"
+				tag="div"
 			></moe-navigation-option>
 			<moe-navigation-option
 				slot="end"
@@ -30,19 +54,19 @@
 				:text="'Export characters'"
 			></moe-navigation-option>
 			<moe-navigation-option
-				@click.native="openImport = true"
+				@click.native="importList"
 				slot="end"
 				:text="'Import characters'"
 			></moe-navigation-option>
 			<moe-navigation-option
-				@click.native="saveCharacters"
-				slot="end"
-				:text="'Save characters'"
-			></moe-navigation-option>
-			<moe-navigation-option
 				@click.native="alertLoadStart"
 				slot="end"
-				:text="'Load characters'"
+				:text="'Load list'"
+			></moe-navigation-option>
+			<moe-navigation-option
+				@click.native="loadCollection"
+				slot="end"
+				:text="'Load collection'"
 			></moe-navigation-option>
 		</moe-navigation>
 		<moe-viewer
@@ -52,19 +76,12 @@
 			v-if="mode === 'viewer' && displayMode === 'carousel'"
 		/>
 		<moe-table
-			@edit-character="
-				currentCharacter = $event;
-				mode = 'editor';
-			"
+			@save-changes="saveCharacterChanges"
+			@delete-character="deleteCharacter"
 			:characters="charactersForTable"
 			v-if="mode === 'viewer' && displayMode === 'table'"
 		/>
 		<moe-exporter @close="openExport = false" :active="openExport" :characters="characters"></moe-exporter>
-		<moe-importer
-			@import="refreshCharacters($event)"
-			@close="openImport = false"
-			:active="openImport"
-		></moe-importer>
 		<moe-editor
 			:initial-character="characterToEdit"
 			:is-new-character="newCharacter"
@@ -90,14 +107,15 @@
 	import MoeNavigationOption from "@/components/navigation/MoeNavigationOption.vue";
 	import { isMobile } from "mobile-device-detect";
 
+	import { v4 as uuidv4 } from "uuid";
+
 	// models
-	import { Character, Variant, Partner } from "@/models/Character";
+	import { Character, SubCharacter } from "@/models/Character";
 	import { CharacterForTable } from "@/models/CharacterForTable";
-	import { CharacterForEdit } from "@/models/CharacterForEdit";
+	import { List } from "@/models/List";
 
 	// services
-	import { decodeLocalCharacterList } from "@/services/CharacterListDecoderService";
-	import { saveCharacters, loadCharacters } from "@/services/AjaxService";
+	import { saveCharacters, loadCharacters, saveCollection, loadCollection } from "@/services/AjaxService";
 
 	@Component({
 		components: {
@@ -112,17 +130,69 @@
 	})
 	export default class App extends Vue {
 		private created(): void {
-			const storageContent = localStorage.getItem("characters");
-			if (storageContent !== null) {
-				const rawList = JSON.parse(storageContent);
-				decodeLocalCharacterList(rawList)
-					.then(result => {
-						this.refreshCharacters(result);
+			const collectionFromLocalStorage = localStorage.getItem("collection");
+			const collectionIdFromLocalStorage = localStorage.getItem("collectionId");
+			if (collectionIdFromLocalStorage !== null) {
+				this.collectionId = collectionIdFromLocalStorage;
+			}
+			if (collectionFromLocalStorage !== null) {
+				this.collection = JSON.parse(collectionFromLocalStorage) as Array<List>;
+			} else {
+				loadCollection(this.collectionId)
+					.then(response => {
+						this.collection = response.data;
+					})
+					.catch(() => {
+						this.collection = new Array<List>();
+					});
+			}
+			this.currentList = this.collection[0];
+			if (this.currentList !== undefined) {
+				loadCharacters(this.currentList.id)
+					.then(response => {
+						this.characters = response.data;
+						this.charactersForTable = [];
+						this.characters.forEach(character => {
+							this.charactersForTable.push({
+								name: character.name,
+								origin: character.origin,
+								imageUrl: character.imageUrl,
+								variants: character.variants,
+								partners: character.partners,
+								detailsOpened: false,
+								editing: false
+							});
+						});
+						this.currentCharacter = this.characters[0];
 					})
 					.catch(error => {
-						this.characters = new Array<Character>();
-						console.log(error);
+						console.error(error);
+						this.$buefy.dialog.confirm({
+							message: "The list could not be found. What do you want to do?",
+							title: "List not found",
+							confirmText: "Create new list",
+							cancelText: "Try a different id",
+							onConfirm: () => {
+								this.newList();
+							},
+							onCancel: () => {
+								this.alertLoadStart();
+							}
+						});
 					});
+			} else {
+				this.$buefy.dialog.confirm({
+					message: "What do you want to do?",
+					confirmText: "Load a collection",
+					cancelText: "Create new collection",
+					title: "",
+					onConfirm: () => {
+						this.loadCollection();
+					},
+					onCancel: () => {
+						this.newList();
+					}
+				});
 			}
 		}
 
@@ -130,6 +200,7 @@
 
 		private characters: Array<Character> = new Array<Character>();
 		private charactersForTable: Array<CharacterForTable> = new Array<CharacterForTable>();
+		private collection: Array<List> = new Array<List>();
 
 		private currentCharacter: Character = { name: "", variants: [], partners: [] };
 		private characterToEdit: Character = { name: "", variants: [], partners: [] };
@@ -140,6 +211,10 @@
 
 		private openExport: boolean = false;
 		private openImport: boolean = false;
+
+		private currentList: List = { name: "My list", id: uuidv4() };
+
+		private collectionId: string = "";
 
 		private addNewCharacter(): void {
 			this.newCharacter = true;
@@ -157,15 +232,12 @@
 			};
 			this.mode = "editor";
 		}
-		private backToCharacterList(): void {
-			this.mode = "viewer";
-		}
 		private deleteCharacter(character: Character): void {
 			this.characters.splice(this.characters.indexOf(character), 1);
 			this.characterToEdit = { name: "", variants: [], partners: [] };
-			localStorage.setItem("characters", JSON.stringify(this.characters));
 			this.currentCharacter = this.characters[0];
 			this.mode = "viewer";
+			this.saveCharacters();
 		}
 		private updateCurrentCharacter(index: number): void {
 			this.currentCharacter = this.characters[index];
@@ -194,23 +266,14 @@
 			this.characters[this.characters.indexOf(this.currentCharacter)] = character;
 			this.currentCharacter = character;
 			this.characterToEdit = { name: "", variants: [], partners: [] };
-			localStorage.setItem("characters", JSON.stringify(this.characters));
+			this.saveCharacters();
 		}
 		private saveNewCharacter(character: Character): void {
 			this.mode = "viewer";
 			this.characters.push(character);
 			this.characterToEdit = { name: "", variants: [], partners: [] };
 			this.currentCharacter = character;
-			localStorage.setItem("characters", JSON.stringify(this.characters));
-		}
-
-		private discardCharacterChanges(character: Character): void {
-			this.mode = "viewer";
-			this.characterToEdit = { name: "", variants: [], partners: [] };
-		}
-
-		private refreshCharacters(characters: Array<Character>): void {
-			this.characters = characters;
+			this.charactersForTable = [];
 			this.characters.forEach(character => {
 				this.charactersForTable.push({
 					name: character.name,
@@ -222,52 +285,30 @@
 					editing: false
 				});
 			});
-			this.currentCharacter = this.characters[0];
+			this.saveCharacters();
 		}
-		private saveCharacters(): void {
-			const contentStorage = localStorage.getItem("characterListId");
-			let savePromise;
-			if (contentStorage !== null) {
-				savePromise = saveCharacters(this.characters, contentStorage);
-			} else {
-				savePromise = saveCharacters(this.characters);
-			}
-			savePromise
-				.then(response => {
-					localStorage.setItem("characterListId", response.data);
-					this.alertSaveSuccess(response.data);
-				})
-				.catch(error => {
-					console.log(error);
-				});
+
+		private discardCharacterChanges(character: Character): void {
+			this.mode = "viewer";
+			this.characterToEdit = { name: "", variants: [], partners: [] };
 		}
-		private loadCharacters(id: string): void {
-			loadCharacters(id)
-				.then(response => {
-					this.refreshCharacters(response.data);
-				})
-				.catch(error => {
-					console.log(error);
-				});
-		}
-		private alertSaveSuccess(id: string): void {
-			this.$buefy.dialog.alert({
-				title: "Success",
-				message:
-					"<p>Your characters have been saved.</p><p> Please make sure to hold on to this id, you will need it to load your characters in the future: </p><p><strong> " +
-					id +
-					"</strong></p>",
-				type: "is-link",
-				ariaRole: "alertdialog",
-				ariaModal: true
+
+		private importList(): void {
+			this.$buefy.dialog.prompt({
+				message: "This will overwrite the characters in the current list with the characters you provide.",
+				title: "Import list",
+				inputAttrs: { placeholder: "list" },
+				onConfirm: value => {
+					this.refreshCharacters(JSON.parse(value) as Array<Character>);
+				}
 			});
 		}
 		private alertLoadStart(): void {
 			this.$buefy.dialog.prompt({
 				title: "Load characters",
-				message: "Please enter your list's id.",
+				message: "This will add a new list to your collection.",
 				inputAttrs: {
-					placeholder: "your id"
+					placeholder: "id"
 				},
 				confirmText: "Load",
 				type: "is-link",
@@ -275,6 +316,158 @@
 				ariaModal: true,
 				trapFocus: true,
 				onConfirm: value => this.loadCharacters(value)
+			});
+		}
+		private loadCharacters(id: string) {
+			loadCharacters(id)
+				.then(response => {
+					this.refreshCharacters(response.data);
+					const newList = { id: id, name: "Imported list" };
+					this.collection.push(newList);
+					this.currentList = newList;
+					this.saveCollection();
+				})
+				.catch(error => {
+					console.error(error);
+					this.refreshCharacters(new Array<Character>());
+				});
+		}
+		private loadList(list: List) {
+			this.currentList = list;
+			loadCharacters(list.id)
+				.then(response => {
+					this.refreshCharacters(response.data);
+				})
+				.catch(error => {
+					console.error(error);
+					this.refreshCharacters(new Array<Character>());
+				});
+		}
+		private refreshCharacters(characters: Array<Character>) {
+			try {
+				const currentCharacter = characters[0];
+				this.characters = characters;
+				this.currentCharacter = currentCharacter;
+				this.charactersForTable = [];
+				this.characters.forEach(character => {
+					this.charactersForTable.push({
+						name: character.name,
+						origin: character.origin,
+						imageUrl: character.imageUrl,
+						variants: character.variants,
+						partners: character.partners,
+						editing: false,
+						detailsOpened: false
+					});
+				});
+				this.saveCharacters();
+			} catch (error) {}
+		}
+		private newList() {
+			this.$buefy.dialog.prompt({
+				title: "New list",
+				message: "Please enter a name.",
+				inputAttrs: {
+					placeholder: "name"
+				},
+				confirmText: "Save",
+				type: "is-link",
+				ariaRole: "alertdialog",
+				ariaModal: true,
+				trapFocus: true,
+				onConfirm: value => {
+					this.currentList = { name: value, id: uuidv4() };
+					this.refreshCharacters(new Array<Character>());
+					this.collection.push(this.currentList);
+					this.saveCollection();
+				}
+			});
+		}
+		private changeListName() {
+			this.$buefy.dialog.prompt({
+				title: "Change list name",
+				message: "Please enter a new name.",
+				inputAttrs: {
+					placeholder: "name",
+					value: this.currentList.name
+				},
+				confirmText: "Save",
+				type: "is-link",
+				ariaRole: "alertdialog",
+				ariaModal: true,
+				trapFocus: true,
+				onConfirm: value => {
+					this.currentList.name = value;
+					this.saveCollection();
+				}
+			});
+		}
+		private deleteList() {
+			this.$buefy.dialog.confirm({
+				title: "Delete list",
+				message: "This will permanently delete your list. Are you sure?",
+				type: "is-link",
+				ariaRole: "alertdialog",
+				ariaModal: true,
+				confirmText: "Delete",
+				onConfirm: () => {
+					this.collection.splice(this.collection.indexOf(this.currentList), 1);
+					localStorage.removeItem(this.currentList.id);
+					this.currentList = this.collection[0];
+					loadCharacters(this.currentList.id)
+						.then(response => {
+							this.refreshCharacters(response.data);
+						})
+						.catch(error => {
+							this.refreshCharacters(new Array<Character>());
+						});
+					this.saveCollection();
+				}
+			});
+		}
+		private saveCharacters() {
+			saveCharacters(this.characters, this.currentList.id)
+				.then(response => {
+					console.log(response);
+					this.saveCollection();
+				})
+				.catch(error => {
+					console.error(error);
+				});
+		}
+		private saveCollection() {
+			if (this.collectionId === "") {
+				this.collectionId = uuidv4();
+			}
+			localStorage.setItem("collection", JSON.stringify(this.collection));
+			localStorage.setItem("collectionId", this.collectionId);
+			saveCollection(this.collection, this.collectionId)
+				.then(response => {
+					console.log(response);
+				})
+				.catch(error => {
+					console.error(error);
+				});
+		}
+		private loadCollection() {
+			this.$buefy.dialog.prompt({
+				message:
+					"This will replace your collection, i.e. your lists with all characters with a new collection. Make sure you have written down you collection's id if you wish to use it in the future.",
+				title: "load collection",
+				inputAttrs: {
+					placeholder: "new list id"
+				},
+				confirmText: "Load",
+				onConfirm: value => {
+					this.collectionId = value;
+					loadCollection(this.collectionId)
+						.then(response => {
+							this.collection = response.data;
+							this.currentList = this.collection[0];
+							loadCharacters(this.currentList.id);
+						})
+						.catch();
+				}
 			});
 		}
 	}
