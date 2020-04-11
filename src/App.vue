@@ -44,6 +44,7 @@
 				tag="div"
 			></moe-navigation-option>
 			<moe-navigation-option
+				v-if="mode === 'viewer'"
 				slot="end"
 				:text="'Change display mode'"
 				@click.native="changeDisplayMode"
