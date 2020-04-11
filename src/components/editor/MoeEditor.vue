@@ -58,10 +58,10 @@
 					<div class="field">
 						<b-checkbox v-model="hasVariants" type="is-link">Variants</b-checkbox>
 					</div>
-					<div class="columns is-centered" v-if="hasVariants">
+					<div ref="variants" class="columns is-centered" v-if="hasVariants">
 						<div class="column">
 							<div class="column card">
-								<button @click="character.variants.unshift({ name: '' })" class="button is-link">
+								<button @click="addVariant" class="button is-link">
 									Add new Variant
 								</button>
 							</div>
@@ -81,10 +81,10 @@
 					<div class="field">
 						<b-checkbox v-model="hasPartners" type="is-link">Partners</b-checkbox>
 					</div>
-					<div class="columns is-centered" v-if="hasPartners">
+					<div ref="partners" class="columns is-centered" v-if="hasPartners">
 						<div class="column">
 							<div class="column card">
-								<button @click="character.partners.unshift({ name: '' })" class="button is-link">
+								<button @click="addPartner" class="button is-link">
 									Add new Partner
 								</button>
 							</div>
@@ -112,6 +112,8 @@
 	import { CharacterForEdit } from "../../models/CharacterForEdit";
 	import { Character } from "../../models/Character";
 
+	import scrollTo from "vue-scrollto";
+
 	@Component({ components: { MoeEditSubCharacterElement } })
 	export default class MoeEditor extends Vue {
 		@Prop({ required: true, type: Object })
@@ -127,6 +129,17 @@
 
 		private toggleImage(): void {
 			this.imageVisible = !this.imageVisible;
+		}
+
+		private addVariant(): void {
+			this.character.variants.push({ name: "" });
+			const ref = this.$refs.variants as Element;
+			scrollTo.scrollTo(ref, { offset: ref.clientHeight - 20 });
+		}
+		private addPartner(): void {
+			this.character.partners.push({ name: "" });
+			const ref = this.$refs.partners as Element;
+			scrollTo.scrollTo(ref, { offset: ref.clientHeight - 20 });
 		}
 	}
 </script>
