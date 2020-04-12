@@ -4,11 +4,10 @@
 			<b-navbar-dropdown slot="start" :label="currentList !== undefined ? currentList.name : 'Your lists'">
 				<template v-if="collection.length > 0">
 					<b-navbar-item @click.native="loadList(list)" v-for="list in collection" :key="list.id">
-						{{ list.name }}
+						{{ (currentList.id === list.id ? "> " : "") + list.name }}
 					</b-navbar-item>
 					<hr class="navbar-divider" />
 				</template>
-
 				<b-navbar-item @click.native="newList()">
 					Add new
 				</b-navbar-item>
@@ -40,25 +39,23 @@
 			<moe-navigation-option
 				v-if="collection.length > 0"
 				slot="start"
-				:text="'collection id: ' + collectionId"
+				:text="'Collection id: ' + collectionId"
 				tag="div"
 			></moe-navigation-option>
-			<moe-navigation-option
-				v-if="mode === 'viewer'"
-				slot="end"
-				:text="'Change display mode'"
-				@click.native="changeDisplayMode"
-			></moe-navigation-option>
+			<b-navbar-dropdown slot="end" label="Display mode">
+				<b-navbar-item @click.native="changeDisplayMode">
+					{{ (displayMode === "carousel" ? "> " : "") + "Carousel" }}
+				</b-navbar-item>
+				<b-navbar-item @click.native="changeDisplayMode">
+					{{ (displayMode === "table" ? "> " : "") + "Table" }}
+				</b-navbar-item>
+			</b-navbar-dropdown>
 			<moe-navigation-option
 				@click.native="openExport = true"
 				slot="end"
 				:text="'Export characters'"
 			></moe-navigation-option>
-			<moe-navigation-option
-				@click.native="importList"
-				slot="end"
-				:text="'Import characters'"
-			></moe-navigation-option>
+			<moe-navigation-option @click.native="importList" slot="end" :text="'Import list'"></moe-navigation-option>
 			<moe-navigation-option
 				@click.native="alertLoadStart"
 				slot="end"
@@ -155,6 +152,7 @@
 							title: "List not found",
 							confirmText: "Create new list",
 							cancelText: "Try a different id",
+							canCancel: ["button"],
 							onConfirm: () => {
 								this.newList();
 							},
@@ -166,9 +164,10 @@
 			} else {
 				this.$buefy.dialog.confirm({
 					message: "What do you want to do?",
-					confirmText: "Load a collection",
-					cancelText: "Create new collection",
+					confirmText: "Load collection",
+					cancelText: "New collection",
 					title: "",
+					canCancel: ["button"],
 					onConfirm: () => {
 						this.loadCollection();
 					},
@@ -226,12 +225,6 @@
 			this.isNewCharacter = false;
 			this.mode = "editor";
 		}
-		// private deleteCharacter(character: Character): void {
-		// 	this.characters.splice(this.characters.indexOf(character), 1);
-		// 	this.currentCharacter = this.characters[0];
-		// 	this.mode = "viewer";
-		// 	this.saveCharacters();
-		// }
 		private updateCurrentCharacter(index: number): void {
 			this.currentCharacter = this.characters[index];
 		}
@@ -242,23 +235,6 @@
 				this.displayMode = "carousel";
 			}
 		}
-		// private saveCharacterChanges(character: Character): void {
-		// 	this.mode = "viewer";
-		// 	this.characters[this.characters.indexOf(this.currentCharacter)] = character;
-		// 	this.currentCharacter = character;
-		// 	this.saveCharacters();
-		// }
-		// private saveNewCharacter(character: Character): void {
-		// 	this.mode = "viewer";
-		// 	this.characters.push(character);
-		// 	this.currentCharacter = character;
-		// 	this.saveCharacters();
-		// }
-
-		// private discardCharacterChanges(character: Character): void {
-		// 	this.mode = "viewer";
-		// }
-
 		private importList(): void {
 			this.$buefy.dialog.prompt({
 				message: "This will overwrite the characters in the current list with the characters you provide.",
@@ -366,15 +342,19 @@
 				confirmText: "Delete",
 				onConfirm: () => {
 					this.collection.splice(this.collection.indexOf(this.currentList), 1);
-					localStorage.removeItem(this.currentList.id);
 					this.currentList = this.collection[0];
-					loadCharacters(this.currentList.id)
-						.then(response => {
-							this.refreshCharacters(response.data);
-						})
-						.catch(error => {
-							this.refreshCharacters(new Array<Character>());
-						});
+					if (this.currentList) {
+						loadCharacters(this.currentList.id)
+							.then(response => {
+								this.refreshCharacters(response.data);
+							})
+							.catch(error => {
+								this.refreshCharacters(new Array<Character>());
+							});
+					} else {
+						this.characters = [];
+					}
+
 					this.saveCollection();
 				}
 			});
@@ -407,9 +387,9 @@
 			this.$buefy.dialog.prompt({
 				message:
 					"This will replace your collection, i.e. your lists with all characters with a new collection. Make sure you have written down you collection's id if you wish to use it in the future.",
-				title: "load collection",
+				title: "Load collection",
 				inputAttrs: {
-					placeholder: "new list id"
+					placeholder: "Collection id"
 				},
 				confirmText: "Load",
 				onConfirm: value => {
@@ -428,4 +408,7 @@
 </script>
 <style lang="scss">
 	@import "@/styles/styles.scss";
+	/deep/ .modal-card-foot > .button {
+		font-size: smaller !important;
+	}
 </style>
