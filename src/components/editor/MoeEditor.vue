@@ -1,36 +1,36 @@
 <template>
 	<div class="section">
 		<section class="columns is-centered">
-			<button v-if="isNewCharacter" @click="$emit('save-new', character)" class="button is-success">Save</button>
-			<button v-else @click="$emit('save', character)" class="button is-success">Save</button>
-			<button @click="$emit('discard', character)" class="button is-danger">Discard</button>
-			<button v-if="!isNewCharacter" @click="$emit('delete', character)" class="button is-danger">Delete</button>
+			<button v-if="isNewCharacter" @click="saveNewCharacter" class="button is-success">Save</button>
+			<button v-else @click="saveChanges" class="button is-success">Save</button>
+			<button @click="discardChanges" class="button is-danger">Discard</button>
+			<button v-if="!isNewCharacter" @click="deleteCharacter" class="button is-danger">Delete</button>
 		</section>
 		<section class="columns is-centered">
 			<div class="column is-half">
 				<div class="has-text-centered is-centered columns">
 					<b-field type="is-link" label="Name" class="field column is-7">
-						<b-input v-model="character.name" size="is-medium"></b-input>
+						<b-input v-model="characterToEdit.newName" size="is-medium"></b-input>
 					</b-field>
 				</div>
 				<div class="has-text-centered is-centered columns">
 					<b-field type="is-link" label="Origin" class="field column is-7">
-						<b-input v-model="character.origin" size="is-medium"></b-input>
+						<b-input v-model="characterToEdit.newOrigin" size="is-medium"></b-input>
 					</b-field>
 				</div>
 				<div class="has-text-centered is-centered columns">
 					<b-field type="is-link" label="Image URL" class="field column is-7">
-						<b-input v-model="character.imageUrl" size="is-medium"></b-input>
+						<b-input v-model="characterToEdit.newImageUrl" size="is-medium"></b-input>
 					</b-field>
 				</div>
-				<div class="card image-card" v-if="character.imageUrl">
+				<div class="card image-card" v-if="characterToEdit.newImageUrl">
 					<div class="card-image" v-show="imageVisible">
 						<figure class="character-image-container columns is-centered image is-4by7">
 							<img
 								@mouseover="imageHovered = true"
 								@mouseleave="imageHovered = false"
-								:src="character.imageUrl"
-								:alt="character.name"
+								:src="characterToEdit.newImageUrl"
+								:alt="characterToEdit.newName"
 								class="character-image column is-7"
 							/>
 						</figure>
@@ -67,11 +67,13 @@
 							</div>
 							<moe-edit-sub-character-element
 								class="is-centered"
-								v-for="(variant, index) in character.variants"
+								v-for="(variant, index) in characterToEdit.newVariants
+									? characterToEdit.newVariants
+									: []"
 								:key="index"
 								:initial-character="variant"
 								:is-sub-character="true"
-								@delete-character="character.variants.splice(character.variants.indexOf($event), 1)"
+								@delete-character="deleteVariant(variant)"
 							>
 							</moe-edit-sub-character-element>
 						</div>
@@ -89,12 +91,12 @@
 								</button>
 							</div>
 							<moe-edit-sub-character-element
-								@delete-character="character.partners.splice(character.partners.indexOf($event), 1)"
 								class="is-centered"
-								v-for="(partner, index) in character.partners"
+								v-for="(partner, index) in characterToEdit.partners"
 								:key="index"
 								:initial-character="partner"
 								:is-sub-character="true"
+								@delete-character="deletePartner(partner)"
 							>
 							</moe-edit-sub-character-element>
 						</div>
@@ -109,37 +111,131 @@
 	import { Component, Prop, Vue } from "vue-property-decorator";
 
 	import MoeEditSubCharacterElement from "@/components/editor/MoeEditSubCharacterElement.vue";
-	import { CharacterForEdit } from "../../models/CharacterForEdit";
-	import { Character } from "../../models/Character";
+	import { Character, SubCharacter } from "../../models/Character";
 
 	import scrollTo from "vue-scrollto";
 
 	@Component({ components: { MoeEditSubCharacterElement } })
 	export default class MoeEditor extends Vue {
 		@Prop({ required: true, type: Object })
-		private initialCharacter!: CharacterForEdit;
+		private characterToEdit!: Character;
 		@Prop({ required: true, type: Boolean })
 		private isNewCharacter!: boolean;
+		@Prop({ required: true, type: Array })
+		private characters!: Array<Character>;
 
-		private character: CharacterForEdit = this.initialCharacter;
-		private hasVariants: boolean = this.character.variants.length > 0;
-		private hasPartners: boolean = this.character.partners.length > 0;
+		private hasVariants: boolean = this.characterToEdit.newVariants
+			? this.characterToEdit.newVariants.length > 0
+			: false;
+		private hasPartners: boolean = this.characterToEdit.newPartners
+			? this.characterToEdit.newPartners.length > 0
+			: false;
 		private imageVisible: boolean = true;
 		private imageHovered: boolean = false;
+
+		private created(): void {
+			this.characterToEdit.newName = this.characterToEdit.name;
+			this.characterToEdit.newOrigin = this.characterToEdit.origin;
+			this.characterToEdit.newImageUrl = this.characterToEdit.imageUrl;
+			this.characterToEdit.newVariants = [];
+			this.characterToEdit.newPartners = [];
+			this.characterToEdit.variants.forEach(variant => {
+				this.characterToEdit.newVariants!.push(variant);
+			});
+			this.characterToEdit.partners.forEach(partner => {
+				this.characterToEdit.newPartners!.push(partner);
+			});
+			this.hasVariants = this.characterToEdit.newVariants ? this.characterToEdit.newVariants.length > 0 : false;
+			this.hasPartners = this.characterToEdit.newPartners ? this.characterToEdit.newPartners.length > 0 : false;
+		}
+
+		private changed() {
+			this.$emit("changed");
+			this.close();
+		}
+
+		private close() {
+			this.$emit("close");
+		}
 
 		private toggleImage(): void {
 			this.imageVisible = !this.imageVisible;
 		}
 
 		private addVariant(): void {
-			this.character.variants.push({ name: "" });
+			this.characterToEdit.variants.push({ name: "" });
 			const ref = this.$refs.variants as Element;
 			scrollTo.scrollTo(ref, { offset: ref.clientHeight - 20 });
 		}
 		private addPartner(): void {
-			this.character.partners.push({ name: "" });
+			this.characterToEdit.partners.push({ name: "" });
 			const ref = this.$refs.partners as Element;
 			scrollTo.scrollTo(ref, { offset: ref.clientHeight - 20 });
+		}
+
+		private saveNewCharacter(): void {
+			this.characters.push(this.characterToEdit);
+			this.changed();
+		}
+		private saveChanges(): void {
+			this.characterToEdit.name = this.characterToEdit.newName
+				? this.characterToEdit.newName
+				: this.characterToEdit.name;
+			this.characterToEdit.origin = this.characterToEdit.newOrigin
+				? this.characterToEdit.newOrigin
+				: this.characterToEdit.origin;
+			this.characterToEdit.imageUrl = this.characterToEdit.newImageUrl
+				? this.characterToEdit.newImageUrl
+				: this.characterToEdit.imageUrl;
+			this.characterToEdit.variants = [];
+			this.characterToEdit.partners = [];
+			this.characterToEdit.variants.forEach((variant: SubCharacter) => {
+				variant.name = variant.newName ? variant.newName : variant.name;
+				variant.imageUrl = variant.newImageUrl ? variant.newImageUrl : variant.imageUrl;
+			});
+			this.characterToEdit.partners.forEach((partner: SubCharacter) => {
+				partner.name = partner.newName ? partner.newName : partner.name;
+				partner.imageUrl = partner.newImageUrl ? partner.newImageUrl : partner.imageUrl;
+			});
+			if (this.characterToEdit.newVariants !== undefined && this.characterToEdit.newVariants.length > 0) {
+				this.characterToEdit.newVariants.forEach(newVariant => {
+					if (newVariant.name !== "") {
+						this.characterToEdit.variants.push(newVariant);
+					}
+				});
+			}
+			if (this.characterToEdit.newPartners !== undefined && this.characterToEdit.newPartners.length > 0) {
+				this.characterToEdit.newPartners.forEach(newPartner => {
+					if (newPartner.name !== "") {
+						this.characterToEdit.partners.push(newPartner);
+					}
+				});
+			}
+			this.characterToEdit.newName = undefined;
+			this.characterToEdit.newOrigin = undefined;
+			this.characterToEdit.newImageUrl = undefined;
+			this.characterToEdit.newVariants = undefined;
+			this.characterToEdit.newPartners = undefined;
+			this.changed();
+		}
+		private discardChanges(): void {
+			this.close();
+		}
+		private deleteCharacter(): void {
+			this.characters.splice(this.characters.indexOf(this.characterToEdit), 1);
+			this.changed();
+		}
+		private deleteVariant(variant: SubCharacter) {
+			if (this.characterToEdit.newVariants) {
+				this.characterToEdit.newVariants.splice(this.characterToEdit.newVariants.indexOf(variant), 1);
+			}
+			this.$forceUpdate();
+		}
+		private deletePartner(partner: SubCharacter) {
+			if (this.characterToEdit.newPartners) {
+				this.characterToEdit.newPartners.splice(this.characterToEdit.newPartners.indexOf(partner), 1);
+			}
+			this.$forceUpdate();
 		}
 	}
 </script>

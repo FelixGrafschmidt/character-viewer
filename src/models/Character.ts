@@ -4,6 +4,15 @@ export interface Character {
 	variants: Array<SubCharacter>;
 	partners: Array<SubCharacter>;
 	origin?: string;
+
+	detailsOpened: boolean;
+	editing: boolean;
+
+	newVariants?: Array<SubCharacter>;
+	newPartners?: Array<SubCharacter>;
+	newName?: string;
+	newOrigin?: string;
+	newImageUrl?: string;
 }
 
 export interface SubCharacter {

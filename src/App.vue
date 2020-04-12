@@ -77,21 +77,18 @@
 			v-if="mode === 'viewer' && displayMode === 'carousel'"
 		/>
 		<moe-table
-			@save-changes="saveCharacterChanges"
-			@delete-character="deleteCharacter"
-			:characters="charactersForTable"
+			@changed="saveCharacters"
+			:characters="characters"
 			v-if="mode === 'viewer' && displayMode === 'table'"
 		/>
 		<moe-exporter @close="openExport = false" :active="openExport" :characters="characters"></moe-exporter>
 		<moe-editor
-			:initial-character="characterToEdit"
-			:is-new-character="newCharacter"
+			@changed="saveCharacters"
+			@close="mode = 'viewer'"
+			:is-new-character="isNewCharacter"
+			:character-to-edit="characterToEdit"
+			:characters="characters"
 			v-if="mode === 'editor'"
-			@back-to-list="mode = 'viewer'"
-			@save="saveCharacterChanges($event)"
-			@save-new="saveNewCharacter($event)"
-			@delete="deleteCharacter($event)"
-			@discard="discardCharacterChanges($event)"
 		/>
 	</div>
 </template>
@@ -106,15 +103,12 @@
 	import MoeEditor from "@/components/editor/MoeEditor.vue";
 	import MoeNavigation from "@/components/navigation/MoeNavigation.vue";
 	import MoeNavigationOption from "@/components/navigation/MoeNavigationOption.vue";
+	// 3rdParty
 	import { isMobile } from "mobile-device-detect";
-
 	import { v4 as uuidv4 } from "uuid";
-
 	// models
 	import { Character, SubCharacter } from "@/models/Character";
-	import { CharacterForTable } from "@/models/CharacterForTable";
 	import { List } from "@/models/List";
-
 	// services
 	import { saveCharacters, loadCharacters, saveCollection, loadCollection } from "@/services/AjaxService";
 
@@ -152,18 +146,6 @@
 				loadCharacters(this.currentList.id)
 					.then(response => {
 						this.characters = response.data;
-						this.charactersForTable = [];
-						this.characters.forEach(character => {
-							this.charactersForTable.push({
-								name: character.name,
-								origin: character.origin,
-								imageUrl: character.imageUrl,
-								variants: character.variants,
-								partners: character.partners,
-								detailsOpened: false,
-								editing: false
-							});
-						});
 						this.currentCharacter = this.characters[0];
 					})
 					.catch(error => {
@@ -200,15 +182,26 @@
 		private mode: string = "viewer";
 
 		private characters: Array<Character> = new Array<Character>();
-		private charactersForTable: Array<CharacterForTable> = new Array<CharacterForTable>();
 		private collection: Array<List> = new Array<List>();
 
-		private currentCharacter: Character = { name: "", variants: [], partners: [] };
-		private characterToEdit: Character = { name: "", variants: [], partners: [] };
+		private currentCharacter: Character = {
+			name: "",
+			variants: [],
+			partners: [],
+			detailsOpened: false,
+			editing: false
+		};
 
+		private characterToEdit: Character = {
+			name: "",
+			variants: [],
+			partners: [],
+			detailsOpened: false,
+			editing: false
+		};
 		private displayMode: String = isMobile ? "carousel" : "table";
 
-		private newCharacter: boolean = false;
+		private isNewCharacter: boolean = false;
 
 		private openExport: boolean = false;
 		private openImport: boolean = false;
@@ -218,81 +211,53 @@
 		private collectionId: string = "";
 
 		private addNewCharacter(): void {
-			this.newCharacter = true;
-			this.characterToEdit = { name: "", variants: [], partners: [] };
+			this.characterToEdit = {
+				name: "",
+				variants: [],
+				partners: [],
+				detailsOpened: false,
+				editing: false
+			};
+			this.isNewCharacter = true;
 			this.mode = "editor";
 		}
 		private editThisCharacter(): void {
-			this.newCharacter = false;
-			this.characterToEdit = {
-				name: this.currentCharacter.name,
-				origin: this.currentCharacter.origin,
-				imageUrl: this.currentCharacter.imageUrl,
-				variants: this.currentCharacter.variants,
-				partners: this.currentCharacter.partners
-			};
+			this.characterToEdit = this.currentCharacter;
+			this.isNewCharacter = false;
 			this.mode = "editor";
 		}
-		private deleteCharacter(character: Character): void {
-			this.characters.splice(this.characters.indexOf(character), 1);
-			this.characterToEdit = { name: "", variants: [], partners: [] };
-			this.currentCharacter = this.characters[0];
-			this.mode = "viewer";
-			this.saveCharacters();
-		}
+		// private deleteCharacter(character: Character): void {
+		// 	this.characters.splice(this.characters.indexOf(character), 1);
+		// 	this.currentCharacter = this.characters[0];
+		// 	this.mode = "viewer";
+		// 	this.saveCharacters();
+		// }
 		private updateCurrentCharacter(index: number): void {
 			this.currentCharacter = this.characters[index];
 		}
 		private changeDisplayMode(): void {
-			this.charactersForTable = [];
 			if (this.displayMode === "carousel") {
-				this.characters.forEach(character => {
-					this.charactersForTable.push({
-						name: character.name,
-						origin: character.origin,
-						imageUrl: character.imageUrl,
-						variants: character.variants,
-						partners: character.partners,
-						detailsOpened: false,
-						editing: false
-					});
-				});
 				this.displayMode = "table";
 			} else {
 				this.displayMode = "carousel";
 			}
 		}
-		private saveCharacterChanges(character: Character): void {
-			this.mode = "viewer";
-			this.characters[this.characters.indexOf(this.currentCharacter)] = character;
-			this.currentCharacter = character;
-			this.characterToEdit = { name: "", variants: [], partners: [] };
-			this.saveCharacters();
-		}
-		private saveNewCharacter(character: Character): void {
-			this.mode = "viewer";
-			this.characters.push(character);
-			this.characterToEdit = { name: "", variants: [], partners: [] };
-			this.currentCharacter = character;
-			this.charactersForTable = [];
-			this.characters.forEach(character => {
-				this.charactersForTable.push({
-					name: character.name,
-					origin: character.origin,
-					imageUrl: character.imageUrl,
-					variants: character.variants,
-					partners: character.partners,
-					detailsOpened: false,
-					editing: false
-				});
-			});
-			this.saveCharacters();
-		}
+		// private saveCharacterChanges(character: Character): void {
+		// 	this.mode = "viewer";
+		// 	this.characters[this.characters.indexOf(this.currentCharacter)] = character;
+		// 	this.currentCharacter = character;
+		// 	this.saveCharacters();
+		// }
+		// private saveNewCharacter(character: Character): void {
+		// 	this.mode = "viewer";
+		// 	this.characters.push(character);
+		// 	this.currentCharacter = character;
+		// 	this.saveCharacters();
+		// }
 
-		private discardCharacterChanges(character: Character): void {
-			this.mode = "viewer";
-			this.characterToEdit = { name: "", variants: [], partners: [] };
-		}
+		// private discardCharacterChanges(character: Character): void {
+		// 	this.mode = "viewer";
+		// }
 
 		private importList(): void {
 			this.$buefy.dialog.prompt({
@@ -349,18 +314,6 @@
 				const currentCharacter = characters[0];
 				this.characters = characters;
 				this.currentCharacter = currentCharacter;
-				this.charactersForTable = [];
-				this.characters.forEach(character => {
-					this.charactersForTable.push({
-						name: character.name,
-						origin: character.origin,
-						imageUrl: character.imageUrl,
-						variants: character.variants,
-						partners: character.partners,
-						editing: false,
-						detailsOpened: false
-					});
-				});
 				this.saveCharacters();
 			} catch (error) {}
 		}
