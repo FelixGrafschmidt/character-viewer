@@ -16,7 +16,7 @@
 				slot="start"
 				@click.native="addNewCharacter"
 				:text="'Add new character'"
-				v-if="mode === 'viewer'"
+				v-if="mode === 'viewer' && currentList !== undefined"
 			></moe-navigation-option>
 			<moe-navigation-option
 				slot="start"
@@ -43,10 +43,10 @@
 				tag="div"
 			></moe-navigation-option>
 			<b-navbar-dropdown slot="end" label="Display mode">
-				<b-navbar-item @click.native="changeDisplayMode">
+				<b-navbar-item @click.native="displayMode = 'carousel'">
 					{{ (displayMode === "carousel" ? "> " : "") + "Carousel" }}
 				</b-navbar-item>
-				<b-navbar-item @click.native="changeDisplayMode">
+				<b-navbar-item @click.native="displayMode = 'table'">
 					{{ (displayMode === "table" ? "> " : "") + "Table" }}
 				</b-navbar-item>
 			</b-navbar-dropdown>
@@ -242,6 +242,10 @@
 				inputAttrs: { placeholder: "list" },
 				onConfirm: value => {
 					this.refreshCharacters(JSON.parse(value) as Array<Character>);
+					this.characters.forEach(character => {
+						character.variants = character.variants ? character.variants : [];
+						character.partners = character.partners ? character.partners : [];
+					});
 				}
 			});
 		}
@@ -362,7 +366,6 @@
 		private saveCharacters() {
 			saveCharacters(this.characters, this.currentList.id)
 				.then(response => {
-					console.log(response);
 					this.saveCollection();
 				})
 				.catch(error => {
@@ -375,13 +378,9 @@
 			}
 			localStorage.setItem("collection", JSON.stringify(this.collection));
 			localStorage.setItem("collectionId", this.collectionId);
-			saveCollection(this.collection, this.collectionId)
-				.then(response => {
-					console.log(response);
-				})
-				.catch(error => {
-					console.error(error);
-				});
+			saveCollection(this.collection, this.collectionId).catch(error => {
+				console.error(error);
+			});
 		}
 		private loadCollection() {
 			this.$buefy.dialog.prompt({

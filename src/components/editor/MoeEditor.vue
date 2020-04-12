@@ -92,7 +92,9 @@
 							</div>
 							<moe-edit-sub-character-element
 								class="is-centered"
-								v-for="(partner, index) in characterToEdit.partners"
+								v-for="(partner, index) in characterToEdit.newPartners
+									? characterToEdit.newPartners
+									: []"
 								:key="index"
 								:initial-character="partner"
 								:is-sub-character="true"
@@ -163,12 +165,14 @@
 		}
 
 		private addVariant(): void {
-			this.characterToEdit.variants.push({ name: "" });
+			this.characterToEdit.newVariants!.push({ name: "" });
+			this.$forceUpdate();
 			const ref = this.$refs.variants as Element;
 			scrollTo.scrollTo(ref, { offset: ref.clientHeight - 20 });
 		}
 		private addPartner(): void {
-			this.characterToEdit.partners.push({ name: "" });
+			this.characterToEdit.newPartners!.push({ name: "" });
+			this.$forceUpdate();
 			const ref = this.$refs.partners as Element;
 			scrollTo.scrollTo(ref, { offset: ref.clientHeight - 20 });
 		}
