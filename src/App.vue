@@ -397,7 +397,7 @@
 						.then(response => {
 							this.collection = response.data;
 							this.currentList = this.collection[0];
-							loadCharacters(this.currentList.id);
+							this.loadCharacters(this.currentList.id);
 						})
 						.catch();
 				}
