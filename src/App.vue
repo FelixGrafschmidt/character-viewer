@@ -122,59 +122,72 @@
 	})
 	export default class App extends Vue {
 		private created(): void {
-			const collectionFromLocalStorage = localStorage.getItem("collection");
-			const collectionIdFromLocalStorage = localStorage.getItem("collectionId");
-			if (collectionIdFromLocalStorage !== null) {
-				this.collectionId = collectionIdFromLocalStorage;
-			}
-			if (collectionFromLocalStorage !== null) {
-				this.collection = JSON.parse(collectionFromLocalStorage) as Array<List>;
-			} else {
+			const params = new URLSearchParams(window.location.search);
+			let potentialId = params.get("collectionId");
+			if (potentialId !== null) {
+				this.collectionId = potentialId;
 				loadCollection(this.collectionId)
 					.then(response => {
 						this.collection = response.data;
 					})
 					.catch(() => {
-						this.collection = new Array<List>();
-					});
-			}
-			this.currentList = this.collection[0];
-			if (this.currentList !== undefined) {
-				loadCharacters(this.currentList.id)
-					.then(response => {
-						this.characters = response.data;
-						this.currentCharacter = this.characters[0];
+						const collectionFromLocalStorage = localStorage.getItem("collection");
+						const collectionIdFromLocalStorage = localStorage.getItem("collectionId");
+						if (collectionIdFromLocalStorage !== null) {
+							this.collectionId = collectionIdFromLocalStorage;
+						}
+						if (collectionFromLocalStorage !== null) {
+							this.collection = JSON.parse(collectionFromLocalStorage) as Array<List>;
+						} else {
+							loadCollection(this.collectionId)
+								.then(response => {
+									this.collection = response.data;
+								})
+								.catch(() => {
+									this.collection = new Array<List>();
+								});
+						}
 					})
-					.catch(error => {
-						console.error(error);
-						this.$buefy.dialog.confirm({
-							message: "The list could not be found. What do you want to do?",
-							title: "List not found",
-							confirmText: "Create new list",
-							cancelText: "Try a different id",
-							canCancel: ["button"],
-							onConfirm: () => {
-								this.newList();
-							},
-							onCancel: () => {
-								this.alertLoadStart();
-							}
-						});
+					.finally(() => {
+						this.currentList = this.collection[0];
+						if (this.currentList !== undefined) {
+							loadCharacters(this.currentList.id)
+								.then(response => {
+									this.characters = response.data;
+									this.currentCharacter = this.characters[0];
+								})
+								.catch(error => {
+									console.error(error);
+									this.$buefy.dialog.confirm({
+										message: "The list could not be found. What do you want to do?",
+										title: "List not found",
+										confirmText: "Create new list",
+										cancelText: "Try a different id",
+										canCancel: ["button"],
+										onConfirm: () => {
+											this.newList();
+										},
+										onCancel: () => {
+											this.alertLoadStart();
+										}
+									});
+								});
+						} else {
+							this.$buefy.dialog.confirm({
+								message: "What do you want to do?",
+								confirmText: "Load collection",
+								cancelText: "New collection",
+								title: "",
+								canCancel: ["button"],
+								onConfirm: () => {
+									this.loadCollection();
+								},
+								onCancel: () => {
+									this.newList();
+								}
+							});
+						}
 					});
-			} else {
-				this.$buefy.dialog.confirm({
-					message: "What do you want to do?",
-					confirmText: "Load collection",
-					cancelText: "New collection",
-					title: "",
-					canCancel: ["button"],
-					onConfirm: () => {
-						this.loadCollection();
-					},
-					onCancel: () => {
-						this.newList();
-					}
-				});
 			}
 		}
 
