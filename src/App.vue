@@ -8,10 +8,12 @@
 					</b-navbar-item>
 					<hr class="navbar-divider" />
 				</template>
-				<b-navbar-item @click.native="newList()">
-					Add new
-				</b-navbar-item>
 			</b-navbar-dropdown>
+			<moe-navigation-option
+				slot="start"
+				@click.native="mode === 'manager' ? (mode = 'viewer') : (mode = 'manager')"
+				:text="(mode === 'manager' ? 'Close' : 'Open') + ' list manager'"
+			></moe-navigation-option>
 			<moe-navigation-option
 				slot="start"
 				@click.native="addNewCharacter"
@@ -25,19 +27,7 @@
 				v-if="mode === 'viewer' && displayMode === 'carousel' && characters.length > 0"
 			></moe-navigation-option>
 			<moe-navigation-option
-				v-if="collection.length > 0"
-				slot="start"
-				:text="'Rename list'"
-				@click.native="changeListName"
-			></moe-navigation-option>
-			<moe-navigation-option
-				v-if="collection.length > 0"
-				slot="start"
-				:text="'Delete list'"
-				@click.native="deleteList"
-			></moe-navigation-option>
-			<moe-navigation-option
-				v-if="collection.length > 0"
+				v-if="mode === 'manager' && collection.length > 0"
 				slot="start"
 				:text="'Collection id: ' + collectionId"
 				tag="div"
@@ -87,6 +77,7 @@
 			:characters="characters"
 			v-if="mode === 'editor'"
 		/>
+		<moe-list-manager v-if="mode === 'manager'" :collection="collection"> </moe-list-manager>
 	</div>
 </template>
 <script lang="ts">
@@ -100,6 +91,7 @@
 	import MoeEditor from "@/components/editor/MoeEditor.vue";
 	import MoeNavigation from "@/components/navigation/MoeNavigation.vue";
 	import MoeNavigationOption from "@/components/navigation/MoeNavigationOption.vue";
+	import MoeListManager from "@/components/manager/MoeListManager.vue";
 	// 3rdParty
 	import { isMobile } from "mobile-device-detect";
 	import { v4 as uuidv4 } from "uuid";
@@ -108,6 +100,7 @@
 	import { List } from "@/models/List";
 	// services
 	import { saveCharacters, loadCharacters, saveCollection, loadCollection } from "@/services/AjaxService";
+	import { AxiosError } from "axios";
 
 	@Component({
 		components: {
@@ -117,77 +110,40 @@
 			MoeTable,
 			MoeExporter,
 			MoeImporter,
-			MoeEditor
+			MoeEditor,
+			MoeListManager
 		}
 	})
 	export default class App extends Vue {
 		private created(): void {
-			const params = new URLSearchParams(window.location.search);
-			let potentialId = params.get("collectionId");
-			if (potentialId !== null) {
-				this.collectionId = potentialId;
-				loadCollection(this.collectionId)
-					.then(response => {
-						this.collection = response.data;
-					})
-					.catch(() => {
-						const collectionFromLocalStorage = localStorage.getItem("collection");
-						const collectionIdFromLocalStorage = localStorage.getItem("collectionId");
-						if (collectionIdFromLocalStorage !== null) {
-							this.collectionId = collectionIdFromLocalStorage;
-						}
-						if (collectionFromLocalStorage !== null) {
-							this.collection = JSON.parse(collectionFromLocalStorage) as Array<List>;
-						} else {
-							loadCollection(this.collectionId)
-								.then(response => {
-									this.collection = response.data;
-								})
-								.catch(() => {
-									this.collection = new Array<List>();
-								});
-						}
-					})
-					.finally(() => {
-						this.currentList = this.collection[0];
-						if (this.currentList !== undefined) {
-							loadCharacters(this.currentList.id)
-								.then(response => {
-									this.characters = response.data;
-									this.currentCharacter = this.characters[0];
-								})
-								.catch(error => {
-									console.error(error);
-									this.$buefy.dialog.confirm({
-										message: "The list could not be found. What do you want to do?",
-										title: "List not found",
-										confirmText: "Create new list",
-										cancelText: "Try a different id",
-										canCancel: ["button"],
-										onConfirm: () => {
-											this.newList();
-										},
-										onCancel: () => {
-											this.alertLoadStart();
-										}
-									});
-								});
-						} else {
-							this.$buefy.dialog.confirm({
-								message: "What do you want to do?",
-								confirmText: "Load collection",
-								cancelText: "New collection",
-								title: "",
-								canCancel: ["button"],
-								onConfirm: () => {
-									this.loadCollection();
-								},
-								onCancel: () => {
-									this.newList();
-								}
-							});
-						}
-					});
+			const collectionIdFromUrl = window.location.pathname.substr(1);
+			const collectionIdFromLocalStorage = localStorage.getItem("collectionId");
+			if (
+				collectionIdFromUrl !== "" &&
+				collectionIdFromUrl.match(/[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}/)
+			) {
+				this.collectionId = collectionIdFromUrl;
+			} else {
+				if (collectionIdFromLocalStorage !== null) {
+					this.collectionId = collectionIdFromLocalStorage;
+				}
+			}
+			if (this.collectionId !== "") {
+				this.loadInitialCollection();
+			} else {
+				this.$buefy.dialog.confirm({
+					message: "What do you want to do?",
+					confirmText: "Load collection",
+					cancelText: "New collection",
+					title: "",
+					canCancel: ["button"],
+					onConfirm: () => {
+						this.loadCollection("Please enter the id of the collection you wish to load.");
+					},
+					onCancel: () => {
+						this.newList();
+					}
+				});
 			}
 		}
 
@@ -218,7 +174,7 @@
 		private openExport: boolean = false;
 		private openImport: boolean = false;
 
-		private currentList: List = { name: "My list", id: uuidv4() };
+		private currentList: List = { name: "My list", id: uuidv4(), editing: false };
 
 		private collectionId: string = "";
 
@@ -262,10 +218,10 @@
 				}
 			});
 		}
-		private alertLoadStart(): void {
+		private alertLoadStart(message: string = "This will add a new list to your collection."): void {
 			this.$buefy.dialog.prompt({
 				title: "Load characters",
-				message: "This will add a new list to your collection.",
+				message: message,
 				inputAttrs: {
 					placeholder: "id"
 				},
@@ -281,7 +237,7 @@
 			loadCharacters(id)
 				.then(response => {
 					this.refreshCharacters(response.data);
-					const newList = { id: id, name: "Imported list" };
+					const newList = { id: id, name: "Imported list", editing: false };
 					this.collection.push(newList);
 					this.currentList = newList;
 					this.saveCollection();
@@ -313,7 +269,7 @@
 		private newList() {
 			this.$buefy.dialog.prompt({
 				title: "New list",
-				message: "Please enter a name.",
+				message: "Please enter a name for your list.",
 				inputAttrs: {
 					placeholder: "name"
 				},
@@ -323,7 +279,7 @@
 				ariaModal: true,
 				trapFocus: true,
 				onConfirm: value => {
-					this.currentList = { name: value, id: uuidv4() };
+					this.currentList = { name: value, id: uuidv4(), editing: false };
 					this.refreshCharacters(new Array<Character>());
 					this.collection.push(this.currentList);
 					this.saveCollection();
@@ -349,33 +305,6 @@
 				}
 			});
 		}
-		private deleteList() {
-			this.$buefy.dialog.confirm({
-				title: "Delete list",
-				message: "This will permanently delete your list. Are you sure?",
-				type: "is-link",
-				ariaRole: "alertdialog",
-				ariaModal: true,
-				confirmText: "Delete",
-				onConfirm: () => {
-					this.collection.splice(this.collection.indexOf(this.currentList), 1);
-					this.currentList = this.collection[0];
-					if (this.currentList) {
-						loadCharacters(this.currentList.id)
-							.then(response => {
-								this.refreshCharacters(response.data);
-							})
-							.catch(error => {
-								this.refreshCharacters(new Array<Character>());
-							});
-					} else {
-						this.characters = [];
-					}
-
-					this.saveCollection();
-				}
-			});
-		}
 		private saveCharacters() {
 			saveCharacters(this.characters, this.currentList.id)
 				.then(response => {
@@ -395,10 +324,67 @@
 				console.error(error);
 			});
 		}
-		private loadCollection() {
+		private loadInitialCollection() {
+			loadCollection(this.collectionId)
+				.then(response => {
+					this.collection = response.data;
+					this.currentList = this.collection[0];
+					loadCharacters(this.currentList.id)
+						.then(response => {
+							this.characters = response.data;
+							this.currentCharacter = this.characters[0];
+						})
+						.catch((error: AxiosError) => {
+							if (error.code === "404") {
+								this.$buefy.dialog.confirm({
+									message: "The list could not be found. What do you want to do?",
+									title: "List not found",
+									confirmText: "Create new list",
+									cancelText: "Try a different id",
+									canCancel: ["button"],
+									onConfirm: () => {
+										this.newList();
+									},
+									onCancel: () => {
+										this.alertLoadStart("Enter the id of the list you wish to load.");
+									}
+								});
+							} else {
+								this.$buefy.dialog.prompt({
+									message:
+										"An error occurred while trying to load your collection. Please try again later or try a different collection.",
+									title: "Error while loading collection",
+									confirmText: "Load collection",
+									canCancel: false,
+									onConfirm: () => {
+										this.loadCollection();
+									}
+								});
+							}
+						});
+				})
+				.catch(() => {
+					this.collection = new Array<List>();
+					this.$buefy.dialog.confirm({
+						message: "What do you want to do?",
+						confirmText: "Load collection",
+						cancelText: "New collection",
+						title: "",
+						canCancel: ["button"],
+						onConfirm: () => {
+							this.loadCollection("Enter the id of the collection you wish to load");
+						},
+						onCancel: () => {
+							this.newList();
+						}
+					});
+				});
+		}
+		private loadCollection(
+			message: string = "This will replace your collection, i.e. your lists with all characters with a new collection. Make sure you have written down your collection's id if you wish to use it in the future."
+		) {
 			this.$buefy.dialog.prompt({
-				message:
-					"This will replace your collection, i.e. your lists with all characters with a new collection. Make sure you have written down you collection's id if you wish to use it in the future.",
+				message: message,
 				title: "Load collection",
 				inputAttrs: {
 					placeholder: "Collection id"
@@ -412,7 +398,9 @@
 							this.currentList = this.collection[0];
 							this.loadCharacters(this.currentList.id);
 						})
-						.catch();
+						.catch(() => {
+							this.loadCollection("The collection could not be loaded. Please try a different id.");
+						});
 				}
 			});
 		}

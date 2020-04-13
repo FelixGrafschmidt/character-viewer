@@ -62,7 +62,7 @@
 						<img @click="enlargeImage(variant.imageUrl)" :src="variant.imageUrl" alt="" />
 					</td>
 					<td>
-						<div>
+						<div v-if="props.row.editing">
 							<a @click="removeVariant(props.row, variant)">Remove variant</a>
 						</div>
 					</td>
@@ -116,7 +116,7 @@
 						<img @click="enlargeImage(partner.imageUrl)" :src="partner.imageUrl" alt="" />
 					</td>
 					<td>
-						<div>
+						<div v-if="props.row.editing">
 							<a @click="removePartner(props.row, partner)">Remove partner</a>
 						</div>
 					</td>
