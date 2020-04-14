@@ -1,5 +1,16 @@
 <template>
 	<div>
+		<div class="columns button-wrapper">
+			<b-tooltip class="column is-offset-1 is-10" label="Add new" position="is-bottom" type="is-link">
+				<b-button
+					@click="$emit('new-character')"
+					expanded
+					size="is-large"
+					icon-left="plus-circle-outline"
+					type="is-text"
+				/>
+			</b-tooltip>
+		</div>
 		<section class="columns section wrapper">
 			<b-table
 				class="column is-10 is-offset-1"
@@ -40,7 +51,9 @@
 						@click.native="enlargeImage(props.row.newImageUrl)"
 					>
 						<input @click.stop class="input" v-model="props.row.newImageUrl" type="text" />
-						<img :alt="props.row.name" :src="props.row.newImageUrl" />
+						<b-tooltip label="Click to enlarge" position="is-left" type="is-link">
+							<img :alt="props.row.name" :src="props.row.newImageUrl" />
+						</b-tooltip>
 					</b-table-column>
 					<b-table-column
 						v-else
@@ -49,7 +62,9 @@
 						width="200"
 						@click.native="enlargeImage(props.row.imageUrl)"
 					>
-						<img :alt="props.row.name" :src="props.row.imageUrl" />
+						<b-tooltip label="Click to enlarge" position="is-left" type="is-link">
+							<img :alt="props.row.name" :src="props.row.imageUrl" />
+						</b-tooltip>
 					</b-table-column>
 					<b-table-column width="20">
 						<b-tooltip v-if="!props.row.editing" label="Edit" type="is-link" position="is-right">
@@ -103,10 +118,14 @@
 						<td>{{ props.row.origin }}</td>
 						<td v-if="props.row.editing">
 							<input @click.stop class="input" v-model="variant.newImageUrl" type="text" />
-							<img @click="enlargeImage(variant.newImageUrl)" :src="variant.newImageUrl" alt="" />
+							<b-tooltip label="Click to enlarge" position="is-left" type="is-link">
+								<img @click="enlargeImage(variant.newImageUrl)" :src="variant.newImageUrl" alt="" />
+							</b-tooltip>
 						</td>
 						<td v-else>
-							<img @click="enlargeImage(variant.imageUrl)" :src="variant.imageUrl" alt="" />
+							<b-tooltip label="Click to enlarge" position="is-left" type="is-link">
+								<img @click="enlargeImage(variant.imageUrl)" :src="variant.imageUrl" alt="" />
+							</b-tooltip>
 						</td>
 						<td>
 							<b-tooltip v-if="props.row.editing" label="Remove" type="is-link" position="is-right">
@@ -132,12 +151,14 @@
 									type="text"
 									v-model="newVariant.imageUrl"
 								/>
-								<img
-									@click="enlargeImage(newVariant.imageUrl)"
-									:src="newVariant.imageUrl"
-									alt=""
-									:ref="props.row.name + index + '_new_variant'"
-								/>
+								<b-tooltip label="Click to enlarge" position="is-left" type="is-link">
+									<img
+										@click="enlargeImage(newVariant.imageUrl)"
+										:src="newVariant.imageUrl"
+										alt=""
+										:ref="props.row.name + index + '_new_variant'"
+									/>
+								</b-tooltip>
 							</td>
 							<td>
 								<b-tooltip
@@ -178,10 +199,14 @@
 						<td>{{ props.row.origin }}</td>
 						<td v-if="props.row.editing">
 							<input @click.stop class="input" v-model="partner.newImageUrl" type="text" />
-							<img @click="enlargeImage(partner.newImageUrl)" :src="partner.newImageUrl" alt="" />
+							<b-tooltip label="Click to enlarge" position="is-left" type="is-link">
+								<img @click="enlargeImage(partner.newImageUrl)" :src="partner.newImageUrl" alt="" />
+							</b-tooltip>
 						</td>
 						<td v-else>
-							<img @click="enlargeImage(partner.imageUrl)" :src="partner.imageUrl" alt="" />
+							<b-tooltip label="Click to enlarge" position="is-left" type="is-link">
+								<img @click="enlargeImage(partner.imageUrl)" :src="partner.imageUrl" alt="" />
+							</b-tooltip>
 						</td>
 						<td>
 							<b-tooltip v-if="props.row.editing" label="Remove" type="is-link" position="is-right">
@@ -242,6 +267,17 @@
 				</template>
 			</b-table>
 		</section>
+		<div class="columns button-wrapper">
+			<b-tooltip class="column is-offset-1 is-10" label="Add new" position="is-top" type="is-link">
+				<b-button
+					@click="$emit('new-character')"
+					expanded
+					size="is-large"
+					icon-left="plus-circle-outline"
+					type="is-text"
+				/>
+			</b-tooltip>
+		</div>
 		<b-modal @close="imageToEnlarge = ''" :active.sync="modalIsActive" scroll="keep">
 			<section @click="modalIsActive = false" class="section modal-section has-text-centered">
 				<img @click.stop class="enlarged-image" :src="imageToEnlarge" alt="enlargedImage" />
@@ -450,6 +486,11 @@
 		width: fit-content;
 	}
 	.wrapper {
+		max-width: 99.7vw;
+		padding-right: unset;
+		padding-left: unset;
+	}
+	.button-wrapper {
 		max-width: 99.7vw;
 		padding-right: unset;
 		padding-left: unset;

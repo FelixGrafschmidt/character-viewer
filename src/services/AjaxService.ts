@@ -1,4 +1,4 @@
-import { Character } from "@/models/Character";
+import { Collection } from "@/models/Collection";
 import { List } from "@/models/List";
 import axios, { AxiosResponse } from "axios";
 
@@ -9,16 +9,28 @@ if (process.env.NODE_ENV && process.env.NODE_ENV === "production") {
 } else {
 	host = "http://localhost:8081";
 }
-export function saveCharacters(characters: Array<Character>, id: string): Promise<AxiosResponse<string>> {
-	return axios.post(host + "/saveCharacters/" + id, characters);
+function saveList(list: List): Promise<AxiosResponse<string>> {
+	if (list.characters === null) {
+		list.characters = [];
+	}
+	return axios.post(host + "/saveList/" + list.id, list);
 }
-export function loadCharacters(id: string): Promise<AxiosResponse<Array<Character>>> {
-	return axios.get(host + "/getCharacters/" + id);
+export function loadList(id: string): Promise<AxiosResponse<List>> {
+	return axios.get(host + "/getList/" + id);
 }
 
-export function saveCollection(collection: Array<List>, id: string): Promise<AxiosResponse<string>> {
-	return axios.post(host + "/saveCollection/" + id, collection);
+export function saveCollection(collection: Collection): Promise<AxiosResponse<string>> {
+	collection.lists.forEach(list => {
+		if (list.characters === null) {
+			list.characters = [];
+		}
+		saveList(list);
+	})
+
+	localStorage.setItem("collection", JSON.stringify(collection));
+	localStorage.setItem("collectionId", collection.id);
+	return axios.post(host + "/saveCollection/" + collection.id, collection);
 }
-export function loadCollection(id: string): Promise<AxiosResponse<Array<List>>> {
+export function loadCollection(id: string): Promise<AxiosResponse<Collection>> {
 	return axios.get(host + "/getCollection/" + id);
 }

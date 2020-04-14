@@ -20,10 +20,10 @@
 				</div>
 				<div class="has-text-centered is-centered columns">
 					<b-field type="is-link" label="Image URL" class="field column is-7">
-						<b-input v-model="characterToEdit.newImageUrl" size="is-medium"></b-input>
+						<b-input :value="characterToEdit.newImageUrl" @input="changeImage" size="is-medium"></b-input>
 					</b-field>
 				</div>
-				<div class="card image-card" v-if="characterToEdit.newImageUrl">
+				<div class="card image-card" v-show="characterToEdit.newImageUrl">
 					<div class="card-image" v-show="imageVisible">
 						<figure class="character-image-container columns is-centered image is-4by7">
 							<img
@@ -178,6 +178,44 @@
 		}
 
 		private saveNewCharacter(): void {
+			this.characterToEdit.name = this.characterToEdit.newName
+				? this.characterToEdit.newName
+				: this.characterToEdit.name;
+			this.characterToEdit.origin = this.characterToEdit.newOrigin
+				? this.characterToEdit.newOrigin
+				: this.characterToEdit.origin;
+			this.characterToEdit.imageUrl = this.characterToEdit.newImageUrl
+				? this.characterToEdit.newImageUrl
+				: this.characterToEdit.imageUrl;
+			this.characterToEdit.variants = [];
+			this.characterToEdit.partners = [];
+			this.characterToEdit.variants.forEach((variant: SubCharacter) => {
+				variant.name = variant.newName ? variant.newName : variant.name;
+				variant.imageUrl = variant.newImageUrl ? variant.newImageUrl : variant.imageUrl;
+			});
+			this.characterToEdit.partners.forEach((partner: SubCharacter) => {
+				partner.name = partner.newName ? partner.newName : partner.name;
+				partner.imageUrl = partner.newImageUrl ? partner.newImageUrl : partner.imageUrl;
+			});
+			if (this.characterToEdit.newVariants !== undefined && this.characterToEdit.newVariants.length > 0) {
+				this.characterToEdit.newVariants.forEach(newVariant => {
+					if (newVariant.name !== "") {
+						this.characterToEdit.variants.push(newVariant);
+					}
+				});
+			}
+			if (this.characterToEdit.newPartners !== undefined && this.characterToEdit.newPartners.length > 0) {
+				this.characterToEdit.newPartners.forEach(newPartner => {
+					if (newPartner.name !== "") {
+						this.characterToEdit.partners.push(newPartner);
+					}
+				});
+			}
+			this.characterToEdit.newName = undefined;
+			this.characterToEdit.newOrigin = undefined;
+			this.characterToEdit.newImageUrl = undefined;
+			this.characterToEdit.newVariants = undefined;
+			this.characterToEdit.newPartners = undefined;
 			this.characters.push(this.characterToEdit);
 			this.changed();
 		}
@@ -239,6 +277,10 @@
 			if (this.characterToEdit.newPartners) {
 				this.characterToEdit.newPartners.splice(this.characterToEdit.newPartners.indexOf(partner), 1);
 			}
+			this.$forceUpdate();
+		}
+		private changeImage(newValue: string) {
+			this.characterToEdit.newImageUrl = newValue;
 			this.$forceUpdate();
 		}
 	}
