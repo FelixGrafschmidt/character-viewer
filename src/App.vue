@@ -148,6 +148,7 @@
 					message: "What do you want to do?",
 					confirmText: "Load collection",
 					cancelText: "New collection",
+					type: "is-link",
 					title: "",
 					canCancel: ["button"],
 					onConfirm: () => {
@@ -221,6 +222,7 @@
 						message: "What do you want to do?",
 						confirmText: "Load collection",
 						cancelText: "New collection",
+						type: "is-link",
 						title: "",
 						canCancel: ["button"],
 						onConfirm: () => {
@@ -236,6 +238,7 @@
 			this.$buefy.dialog.prompt({
 				message: message,
 				title: "Load collection",
+				type: "is-link",
 				confirmText: "Load",
 				onConfirm: value => {
 					loadCollection(value)

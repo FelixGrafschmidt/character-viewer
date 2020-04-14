@@ -1,6 +1,7 @@
 import "@/registerServiceWorker";
 
-import App from "@/App.vue";
+import router from "@/routing/router";
+import Wrapper from "@/Wrapper.vue";
 import Buefy from "buefy";
 import Vue from "vue";
 
@@ -9,5 +10,6 @@ Vue.config.productionTip = false;
 Vue.use(Buefy)
 
 new Vue({
-	render: h => h(App)
+	router,
+	render: h => h(Wrapper)
 }).$mount("#app");
