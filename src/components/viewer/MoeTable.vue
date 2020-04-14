@@ -1,107 +1,117 @@
 <template>
 	<div>
-		<div class="columns button-wrapper">
-			<b-tooltip class="column is-offset-1 is-10" label="Add new character" position="is-bottom" type="is-link">
-				<b-button
-					@click="$emit('new-character')"
-					expanded
-					size="is-large"
-					icon-left="plus-circle-outline"
-					type="is-text"
-				/>
-			</b-tooltip>
-		</div>
 		<section class="columns section wrapper">
 			<b-table
 				class="column is-10 is-offset-1"
 				detail-key="name"
 				custom-detail-row
+				draggable
 				detailed
-				:data="characters"
+				:data="createTableData()"
 				ref="table"
 				:show-detail-icon="false"
 			>
 				<template slot-scope="props">
-					<b-table-column field="expand" label="" width="100">
-						<a @click="toggle(props.row)"> {{ getTextForCharacter(props.row) }}</a>
-					</b-table-column>
-					<b-table-column field="name" label="Name" width="600" sortable searchable>
-						<input
-							v-if="props.row.editing"
-							class="text-input input"
-							type="text"
-							v-model="props.row.newName"
-						/>
-						<div v-else>{{ props.row.name }}</div>
-					</b-table-column>
-					<b-table-column field="origin" label="Origin" width="600" sortable searchable>
-						<input
-							v-if="props.row.editing"
-							class="text-input input"
-							type="text"
-							v-model="props.row.newOrigin"
-						/>
-						<div v-else>{{ props.row.origin }}</div>
-					</b-table-column>
-					<b-table-column
-						v-if="props.row.editing"
-						field="imageurl"
-						label="Image"
-						width="200"
-						@click.native="enlargeImage(props.row.newImageUrl)"
-					>
-						<input @click.stop class="input" v-model="props.row.newImageUrl" type="text" />
-						<b-tooltip label="Click to enlarge" position="is-left" type="is-link">
-							<img :alt="props.row.name" :src="props.row.newImageUrl" />
-						</b-tooltip>
-					</b-table-column>
-					<b-table-column
-						v-else
-						field="imageurl"
-						label="Image"
-						width="200"
-						@click.native="enlargeImage(props.row.imageUrl)"
-					>
-						<b-tooltip label="Click to enlarge" position="is-left" type="is-link">
-							<img :alt="props.row.name" :src="props.row.imageUrl" />
-						</b-tooltip>
-					</b-table-column>
-					<b-table-column width="20">
-						<b-tooltip v-if="!props.row.editing" label="Edit" type="is-link" position="is-right">
-							<b-button
-								@click="editCharacter(props.row)"
-								size="medium"
-								icon-left="pencil"
-								type="is-text"
-							/>
-						</b-tooltip>
-						<div v-else>
-							<b-tooltip label="Save" type="is-link" position="is-right">
+					<b-table-column v-if="props.row.isButton" colspan="8">
+						<div class="columns button-wrapper">
+							<b-tooltip
+								class="column is-offset-1 is-10"
+								label="Add new character"
+								position="is-bottom"
+								type="is-link"
+							>
 								<b-button
-									@click="saveChanges(props.row)"
-									size="medium"
-									icon-left="content-save"
-									type="is-text"
-								/>
-							</b-tooltip>
-							<b-tooltip label="Discard" type="is-link" position="is-right">
-								<b-button
-									@click="discardChanges(props.row)"
-									size="medium"
-									icon-left="undo"
-									type="is-text"
-								/>
-							</b-tooltip>
-							<b-tooltip label="Delete" type="is-link" position="is-right">
-								<b-button
-									@click="deleteCharacter(props.row)"
-									size="medium"
-									icon-left="delete"
+									@click="addCharacter(props.row)"
+									expanded
+									size="is-large"
+									icon-left="plus-circle-outline"
 									type="is-text"
 								/>
 							</b-tooltip>
 						</div>
 					</b-table-column>
+					<template v-else>
+						<b-table-column width="100">
+							<a @click="toggle(props.row)"> {{ getTextForCharacter(props.row) }}</a>
+						</b-table-column>
+						<b-table-column field="name" label="Name" width="600" sortable searchable>
+							<input
+								v-if="props.row.editing"
+								class="text-input input"
+								type="text"
+								v-model="props.row.newName"
+							/>
+							<div v-else>{{ props.row.name }}</div>
+						</b-table-column>
+						<b-table-column field="origin" label="Origin" width="600" sortable searchable>
+							<input
+								v-if="props.row.editing"
+								class="text-input input"
+								type="text"
+								v-model="props.row.newOrigin"
+							/>
+							<div v-else>{{ props.row.origin }}</div>
+						</b-table-column>
+						<b-table-column
+							v-if="props.row.editing"
+							field="imageurl"
+							label="Image"
+							width="200"
+							@click.native="enlargeImage(props.row.newImageUrl)"
+						>
+							<input @click.stop class="input" v-model="props.row.newImageUrl" type="text" />
+							<b-tooltip label="Click to enlarge" position="is-left" type="is-link">
+								<img :alt="props.row.name" :src="props.row.newImageUrl" />
+							</b-tooltip>
+						</b-table-column>
+						<b-table-column
+							v-else
+							field="imageurl"
+							label="Image"
+							width="200"
+							@click.native="enlargeImage(props.row.imageUrl)"
+						>
+							<b-tooltip label="Click to enlarge" position="is-left" type="is-link">
+								<img :alt="props.row.name" :src="props.row.imageUrl" />
+							</b-tooltip>
+						</b-table-column>
+						<b-table-column width="20">
+							<b-tooltip v-if="!props.row.editing" label="Edit" type="is-link" position="is-right">
+								<b-button
+									@click="editCharacter(props.row)"
+									size="medium"
+									icon-left="pencil"
+									type="is-text"
+								/>
+							</b-tooltip>
+							<div v-else>
+								<b-tooltip label="Save" type="is-link" position="is-right">
+									<b-button
+										@click="saveChanges(props.row)"
+										size="medium"
+										icon-left="content-save"
+										type="is-text"
+									/>
+								</b-tooltip>
+								<b-tooltip label="Discard" type="is-link" position="is-right">
+									<b-button
+										@click="discardChanges(props.row)"
+										size="medium"
+										icon-left="undo"
+										type="is-text"
+									/>
+								</b-tooltip>
+								<b-tooltip label="Delete" type="is-link" position="is-right">
+									<b-button
+										@click="deleteCharacter(props.row)"
+										size="medium"
+										icon-left="delete"
+										type="is-text"
+									/>
+								</b-tooltip>
+							</div>
+						</b-table-column>
+					</template>
 				</template>
 				<template slot="detail" slot-scope="props">
 					<tr class="sub-character-row" v-for="variant in props.row.variants" :key="variant.name">
@@ -267,17 +277,6 @@
 				</template>
 			</b-table>
 		</section>
-		<div class="columns button-wrapper">
-			<b-tooltip class="column is-offset-1 is-10" label="Add new character" position="is-top" type="is-link">
-				<b-button
-					@click="$emit('new-character')"
-					expanded
-					size="is-large"
-					icon-left="plus-circle-outline"
-					type="is-text"
-				/>
-			</b-tooltip>
-		</div>
 		<b-modal @close="imageToEnlarge = ''" :active.sync="modalIsActive" scroll="keep">
 			<section @click="modalIsActive = false" class="section modal-section has-text-centered">
 				<img @click.stop class="enlarged-image" :src="imageToEnlarge" alt="enlargedImage" />
@@ -414,7 +413,7 @@
 			(this.$refs.table as any).resetMultiSorting();
 		}
 		private getTextForCharacter(character: Character): string {
-			if (character.variants.length > 0 || character.partners.length > 0) {
+			if (character.editing || character.variants.length > 0 || character.partners.length > 0) {
 				if (character.detailsOpened) {
 					return "Hide sub characters";
 				} else {
@@ -468,6 +467,38 @@
 		private removePartner(character: Character, partner: SubCharacter): void {
 			character.partners.splice(character.partners.indexOf(partner), 1);
 			(this.$refs.table as any).resetMultiSorting();
+		}
+		private createTableData(): Array<any> {
+			const array: Array<any> = [{ isFirst: true, isButton: true }];
+
+			const array2 = array.concat(this.characters);
+
+			return array2.concat([
+				{
+					isLast: true,
+					isButton: true
+				}
+			]);
+		}
+		private addCharacter(row: any): void {
+			const character: Character = {
+				name: "",
+				origin: "",
+				partners: [],
+				variants: [],
+				// partners: [{ name: "" }],
+				// variants: [{ name: "" }],
+				editing: false,
+				detailsOpened: false
+			};
+			if (row.isFirst) {
+				this.characters.unshift(character);
+			} else if (row.isLast) {
+				this.characters.push(character);
+			}
+			this.editCharacter(character);
+			(this.$refs.table as Vue).$forceUpdate();
+			this.$forceUpdate();
 		}
 	}
 </script>
