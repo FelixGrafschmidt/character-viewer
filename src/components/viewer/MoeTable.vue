@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="columns button-wrapper">
-			<b-tooltip class="column is-offset-1 is-10" label="Add new" position="is-bottom" type="is-link">
+			<b-tooltip class="column is-offset-1 is-10" label="Add new character" position="is-bottom" type="is-link">
 				<b-button
 					@click="$emit('new-character')"
 					expanded
@@ -111,7 +111,7 @@
 								v-if="props.row.editing"
 								class="text-input input"
 								type="text"
-								:value="variant.newName"
+								v-model="variant.newName"
 							/>
 							<div v-else>{{ variant.name }}</div>
 						</td>
@@ -192,7 +192,7 @@
 								v-if="props.row.editing"
 								class="text-input input"
 								type="text"
-								:value="partner.newName"
+								v-model="partner.newName"
 							/>
 							<div v-else>{{ partner.name }}</div>
 						</td>
@@ -268,7 +268,7 @@
 			</b-table>
 		</section>
 		<div class="columns button-wrapper">
-			<b-tooltip class="column is-offset-1 is-10" label="Add new" position="is-top" type="is-link">
+			<b-tooltip class="column is-offset-1 is-10" label="Add new character" position="is-top" type="is-link">
 				<b-button
 					@click="$emit('new-character')"
 					expanded
