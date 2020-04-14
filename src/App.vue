@@ -1,49 +1,15 @@
 <template>
 	<div>
-		<moe-navigation>
-			<b-navbar-dropdown slot="start" :label="currentList !== undefined ? currentList.name : 'Your lists'">
-				<template v-if="collection.length > 0">
-					<b-navbar-item @click.native="loadList(list)" v-for="list in collection" :key="list.id">
-						{{ (currentList.id === list.id ? "> " : "") + list.name }}
-					</b-navbar-item>
-					<hr class="navbar-divider" />
-				</template>
-			</b-navbar-dropdown>
+		<moe-navigation v-if="mode === 'manager'">
 			<moe-navigation-option
 				slot="start"
-				@click.native="mode === 'manager' ? (mode = 'viewer') : (mode = 'manager')"
-				:text="(mode === 'manager' ? 'Close' : 'Open') + ' list manager'"
+				@click.native="mode = determineViewMode()"
+				:text="'Close list manager'"
 			></moe-navigation-option>
 			<moe-navigation-option
-				slot="start"
-				@click.native="addNewCharacter"
-				:text="'Add new character'"
-				v-if="mode === 'viewer' && currentList !== undefined"
-			></moe-navigation-option>
-			<moe-navigation-option
-				slot="start"
-				@click.native="editThisCharacter"
-				:text="'Edit this character'"
-				v-if="mode === 'viewer' && displayMode === 'carousel' && characters.length > 0"
-			></moe-navigation-option>
-			<moe-navigation-option
-				v-if="mode === 'manager' && collection.length > 0"
 				slot="start"
 				:text="'Collection id: ' + collectionId"
 				tag="div"
-			></moe-navigation-option>
-			<b-navbar-dropdown slot="end" label="Display mode">
-				<b-navbar-item @click.native="displayMode = 'carousel'">
-					{{ (displayMode === "carousel" ? "> " : "") + "Carousel" }}
-				</b-navbar-item>
-				<b-navbar-item @click.native="displayMode = 'table'">
-					{{ (displayMode === "table" ? "> " : "") + "Table" }}
-				</b-navbar-item>
-			</b-navbar-dropdown>
-			<moe-navigation-option
-				@click.native="openExport = true"
-				slot="end"
-				:text="'Export characters'"
 			></moe-navigation-option>
 			<moe-navigation-option @click.native="importList" slot="end" :text="'Import list'"></moe-navigation-option>
 			<moe-navigation-option
@@ -57,21 +23,80 @@
 				:text="'Load collection'"
 			></moe-navigation-option>
 		</moe-navigation>
+		<moe-navigation v-else-if="mode === 'editor'">
+			<moe-navigation-option
+				slot="start"
+				@click.native="mode = 'manager'"
+				:text="'Open list manager'"
+			></moe-navigation-option>
+		</moe-navigation>
+		<moe-navigation v-else-if="mode === 'carousel'">
+			<b-navbar-dropdown slot="start" :label="currentList !== undefined ? currentList.name : 'Your lists'">
+				<template v-if="collection.length > 0">
+					<b-navbar-item @click.native="loadList(list)" v-for="list in collection" :key="list.id">
+						{{ (currentList.id === list.id ? "> " : "") + list.name }}
+					</b-navbar-item>
+				</template>
+			</b-navbar-dropdown>
+			<moe-navigation-option
+				slot="start"
+				@click.native="addNewCharacter"
+				:text="'Add new character'"
+				v-if="currentList !== undefined"
+			></moe-navigation-option>
+			<moe-navigation-option
+				slot="start"
+				@click.native="editThisCharacter"
+				:text="'Edit this character'"
+				v-if="characters.length > 0"
+			></moe-navigation-option>
+			<moe-navigation-option
+				slot="start"
+				@click.native="mode = 'manager'"
+				:text="'Open list manager'"
+			></moe-navigation-option>
+			<b-navbar-dropdown slot="end" label="Display mode">
+				<b-navbar-item>
+					{{ "> Carousel" }}
+				</b-navbar-item>
+				<b-navbar-item @click.native="mode = 'table'">
+					{{ "Table" }}
+				</b-navbar-item>
+			</b-navbar-dropdown>
+		</moe-navigation>
+		<moe-navigation v-else-if="mode === 'table'">
+			<b-navbar-dropdown slot="start" :label="currentList !== undefined ? currentList.name : 'Your lists'">
+				<template v-if="collection.length > 0">
+					<b-navbar-item @click.native="loadList(list)" v-for="list in collection" :key="list.id">
+						{{ (currentList.id === list.id ? "> " : "") + list.name }}
+					</b-navbar-item>
+				</template>
+			</b-navbar-dropdown>
+			<moe-navigation-option
+				slot="start"
+				@click.native="mode = 'manager'"
+				:text="'Open list manager'"
+			></moe-navigation-option>
+			<b-navbar-dropdown slot="end" label="Display mode">
+				<b-navbar-item @click.native="mode = 'carousel'">
+					{{ "Carousel" }}
+				</b-navbar-item>
+				<b-navbar-item>
+					{{ "> Table" }}
+				</b-navbar-item>
+			</b-navbar-dropdown>
+		</moe-navigation>
 		<moe-viewer
 			:start-position="characters.indexOf(currentCharacter)"
 			@change-character="updateCurrentCharacter"
 			:characters="characters"
-			v-if="mode === 'viewer' && displayMode === 'carousel'"
+			v-if="mode === 'carousel'"
 		/>
-		<moe-table
-			@changed="saveCharacters"
-			:characters="characters"
-			v-if="mode === 'viewer' && displayMode === 'table'"
-		/>
+		<moe-table @changed="saveCharacters" :characters="characters" v-if="mode === 'table'" />
 		<moe-exporter @close="openExport = false" :active="openExport" :characters="characters"></moe-exporter>
 		<moe-editor
 			@changed="saveCharacters"
-			@close="mode = 'viewer'"
+			@close="mode = 'carousel'"
 			:is-new-character="isNewCharacter"
 			:character-to-edit="characterToEdit"
 			:characters="characters"
@@ -147,7 +172,7 @@
 			}
 		}
 
-		private mode: string = "viewer";
+		private mode: string = isMobile ? "carousel" : "table";
 
 		private characters: Array<Character> = new Array<Character>();
 		private collection: Array<List> = new Array<List>();
@@ -167,7 +192,6 @@
 			detailsOpened: false,
 			editing: false
 		};
-		private displayMode: String = isMobile ? "carousel" : "table";
 
 		private isNewCharacter: boolean = false;
 
@@ -196,13 +220,6 @@
 		}
 		private updateCurrentCharacter(index: number): void {
 			this.currentCharacter = this.characters[index];
-		}
-		private changeDisplayMode(): void {
-			if (this.displayMode === "carousel") {
-				this.displayMode = "table";
-			} else {
-				this.displayMode = "carousel";
-			}
 		}
 		private importList(): void {
 			this.$buefy.dialog.prompt({
@@ -403,6 +420,13 @@
 						});
 				}
 			});
+		}
+		private determineViewMode(): string {
+			if (isMobile) {
+				return "carousel";
+			} else {
+				return "table";
+			}
 		}
 	}
 </script>

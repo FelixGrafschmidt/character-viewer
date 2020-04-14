@@ -1,168 +1,253 @@
 <template>
-	<section>
-		<b-table detail-key="name" custom-detail-row detailed :data="characters" ref="table" :show-detail-icon="false">
-			<template slot-scope="props">
-				<b-table-column field="expand" label="" width="100">
-					<a @click="toggle(props.row)"> {{ getTextForCharacter(props.row) }}</a>
-				</b-table-column>
-				<b-table-column field="name" label="Name" width="700" sortable searchable>
-					<input v-if="props.row.editing" class="text-input input" type="text" v-model="props.row.newName" />
-					<div v-else>{{ props.row.name }}</div>
-				</b-table-column>
-				<b-table-column field="origin" label="Origin" width="690" sortable searchable>
-					<input
+	<div>
+		<section class="columns section wrapper">
+			<b-table
+				class="column is-10 is-offset-1"
+				detail-key="name"
+				custom-detail-row
+				detailed
+				:data="characters"
+				ref="table"
+				:show-detail-icon="false"
+			>
+				<template slot-scope="props">
+					<b-table-column field="expand" label="" width="100">
+						<a @click="toggle(props.row)"> {{ getTextForCharacter(props.row) }}</a>
+					</b-table-column>
+					<b-table-column field="name" label="Name" width="600" sortable searchable>
+						<input
+							v-if="props.row.editing"
+							class="text-input input"
+							type="text"
+							v-model="props.row.newName"
+						/>
+						<div v-else>{{ props.row.name }}</div>
+					</b-table-column>
+					<b-table-column field="origin" label="Origin" width="600" sortable searchable>
+						<input
+							v-if="props.row.editing"
+							class="text-input input"
+							type="text"
+							v-model="props.row.newOrigin"
+						/>
+						<div v-else>{{ props.row.origin }}</div>
+					</b-table-column>
+					<b-table-column
 						v-if="props.row.editing"
-						class="text-input input"
-						type="text"
-						v-model="props.row.newOrigin"
-					/>
-					<div v-else>{{ props.row.origin }}</div>
-				</b-table-column>
-				<b-table-column
-					v-if="props.row.editing"
-					field="imageurl"
-					label="Image"
-					width="200"
-					@click.native="enlargeImage(props.row.newImageUrl)"
-				>
-					<input @click.stop class="input" v-model="props.row.newImageUrl" type="text" />
-					<img :alt="props.row.name" :src="props.row.newImageUrl" />
-				</b-table-column>
-				<b-table-column
-					v-else
-					field="imageurl"
-					label="Image"
-					width="200"
-					@click.native="enlargeImage(props.row.imageUrl)"
-				>
-					<img :alt="props.row.name" :src="props.row.imageUrl" />
-				</b-table-column>
-				<b-table-column field="edit" label="" width="50">
-					<a v-if="!props.row.editing" @click="editCharacter(props.row)">Edit</a>
-					<div v-else>
-						<div><a @click="saveChanges(props.row)">Save changes</a></div>
-						<div><a @click="discardChanges(props.row)">Discard changes</a></div>
-						<div><a @click="deleteCharacter(props.row)">Delete character</a></div>
-					</div>
-				</b-table-column>
-			</template>
-			<template slot="detail" slot-scope="props">
-				<tr class="sub-character-row" v-for="variant in props.row.variants" :key="variant.name">
-					<td>Variant of {{ props.row.name }}</td>
-					<td>
-						<input v-if="props.row.editing" class="text-input input" type="text" :value="variant.newName" />
-						<div v-else>{{ variant.name }}</div>
-					</td>
-					<td>{{ props.row.origin }}</td>
-					<td v-if="props.row.editing">
-						<input @click.stop class="input" v-model="variant.newImageUrl" type="text" />
-						<img @click="enlargeImage(variant.newImageUrl)" :src="variant.newImageUrl" alt="" />
-					</td>
-					<td v-else>
-						<img @click="enlargeImage(variant.imageUrl)" :src="variant.imageUrl" alt="" />
-					</td>
-					<td>
-						<div v-if="props.row.editing">
-							<a @click="removeVariant(props.row, variant)">Remove variant</a>
+						field="imageurl"
+						label="Image"
+						width="200"
+						@click.native="enlargeImage(props.row.newImageUrl)"
+					>
+						<input @click.stop class="input" v-model="props.row.newImageUrl" type="text" />
+						<img :alt="props.row.name" :src="props.row.newImageUrl" />
+					</b-table-column>
+					<b-table-column
+						v-else
+						field="imageurl"
+						label="Image"
+						width="200"
+						@click.native="enlargeImage(props.row.imageUrl)"
+					>
+						<img :alt="props.row.name" :src="props.row.imageUrl" />
+					</b-table-column>
+					<b-table-column width="20">
+						<b-tooltip v-if="!props.row.editing" label="Edit" type="is-link" position="is-right">
+							<b-button
+								@click="editCharacter(props.row)"
+								size="medium"
+								icon-left="pencil"
+								type="is-text"
+							/>
+						</b-tooltip>
+						<div v-else>
+							<b-tooltip label="Save" type="is-link" position="is-right">
+								<b-button
+									@click="saveChanges(props.row)"
+									size="medium"
+									icon-left="content-save"
+									type="is-text"
+								/>
+							</b-tooltip>
+							<b-tooltip label="Discard" type="is-link" position="is-right">
+								<b-button
+									@click="discardChanges(props.row)"
+									size="medium"
+									icon-left="undo"
+									type="is-text"
+								/>
+							</b-tooltip>
+							<b-tooltip label="Delete" type="is-link" position="is-right">
+								<b-button
+									@click="deleteCharacter(props.row)"
+									size="medium"
+									icon-left="delete"
+									type="is-text"
+								/>
+							</b-tooltip>
 						</div>
-					</td>
-				</tr>
-				<template v-if="props.row.editing">
-					<tr v-for="(newVariant, index) in props.row.newVariants" :key="'variant' + index">
-						<td>New Variant for {{ props.row.name }}</td>
-						<td><input class="text-input input" type="text" v-model="newVariant.name" /></td>
-						<td>{{ props.row.origin }}</td>
+					</b-table-column>
+				</template>
+				<template slot="detail" slot-scope="props">
+					<tr class="sub-character-row" v-for="variant in props.row.variants" :key="variant.name">
+						<td>Variant of {{ props.row.name }}</td>
 						<td>
 							<input
-								@input="updateNewVariantImage(props.row, index, newVariant, $event)"
-								@click.stop
-								class="input"
+								v-if="props.row.editing"
+								class="text-input input"
 								type="text"
-								v-model="newVariant.imageUrl"
+								:value="variant.newName"
 							/>
-							<img
-								@click="enlargeImage(newVariant.imageUrl)"
-								:src="newVariant.imageUrl"
-								alt=""
-								:ref="props.row.name + index + '_new_variant'"
-							/>
+							<div v-else>{{ variant.name }}</div>
+						</td>
+						<td>{{ props.row.origin }}</td>
+						<td v-if="props.row.editing">
+							<input @click.stop class="input" v-model="variant.newImageUrl" type="text" />
+							<img @click="enlargeImage(variant.newImageUrl)" :src="variant.newImageUrl" alt="" />
+						</td>
+						<td v-else>
+							<img @click="enlargeImage(variant.imageUrl)" :src="variant.imageUrl" alt="" />
 						</td>
 						<td>
-							<div>
-								<a v-if="index === props.row.newVariants.length - 1" @click="addNewVariant(props.row)"
-									>Add variant</a
-								>
-							</div>
-							<div>
-								<a v-if="index !== 0" @click="removeNewVariant(props.row, newVariant)"
-									>Remove variant</a
-								>
-							</div>
+							<b-tooltip v-if="props.row.editing" label="Remove" type="is-link" position="is-right">
+								<b-button
+									@click="removeVariant(props.row, variant)"
+									size="medium"
+									icon-left="delete"
+									type="is-text"
+								/>
+							</b-tooltip>
 						</td>
 					</tr>
-				</template>
-				<tr class="sub-character-row" v-for="partner in props.row.partners" :key="partner.name">
-					<td>Partner of {{ props.row.name }}</td>
-					<td>
-						<input v-if="props.row.editing" class="text-input input" type="text" :value="partner.newName" />
-						<div v-else>{{ partner.name }}</div>
-					</td>
-					<td>{{ props.row.origin }}</td>
-					<td v-if="props.row.editing">
-						<input @click.stop class="input" v-model="partner.newImageUrl" type="text" />
-						<img @click="enlargeImage(partner.newImageUrl)" :src="partner.newImageUrl" alt="" />
-					</td>
-					<td v-else>
-						<img @click="enlargeImage(partner.imageUrl)" :src="partner.imageUrl" alt="" />
-					</td>
-					<td>
-						<div v-if="props.row.editing">
-							<a @click="removePartner(props.row, partner)">Remove partner</a>
-						</div>
-					</td>
-				</tr>
-				<template v-if="props.row.editing">
-					<tr v-for="(newPartner, index) in props.row.newPartners" :key="'partner' + index">
-						<td>New Partner for {{ props.row.name }}</td>
-						<td><input class="text-input input" type="text" v-model="newPartner.name" /></td>
-						<td>{{ props.row.origin }}</td>
+					<template v-if="props.row.editing">
+						<tr v-for="(newVariant, index) in props.row.newVariants" :key="'variant' + index">
+							<td>New Variant for {{ props.row.name }}</td>
+							<td><input class="text-input input" type="text" v-model="newVariant.name" /></td>
+							<td>{{ props.row.origin }}</td>
+							<td>
+								<input
+									@input="updateNewVariantImage(props.row, index, newVariant, $event)"
+									@click.stop
+									class="input"
+									type="text"
+									v-model="newVariant.imageUrl"
+								/>
+								<img
+									@click="enlargeImage(newVariant.imageUrl)"
+									:src="newVariant.imageUrl"
+									alt=""
+									:ref="props.row.name + index + '_new_variant'"
+								/>
+							</td>
+							<td>
+								<b-tooltip
+									v-if="index === props.row.newVariants.length - 1"
+									label="Add"
+									type="is-link"
+									position="is-right"
+								>
+									<b-button
+										@click="addNewVariant(props.row)"
+										size="medium"
+										icon-left="plus"
+										type="is-text"
+									/>
+								</b-tooltip>
+								<b-tooltip v-if="index !== 0" label="Remove" type="is-link" position="is-right">
+									<b-button
+										@click="removeNewVariant(props.row, newVariant)"
+										size="medium"
+										icon-left="delete"
+										type="is-text"
+									/>
+								</b-tooltip>
+							</td>
+						</tr>
+					</template>
+					<tr class="sub-character-row" v-for="partner in props.row.partners" :key="partner.name">
+						<td>Partner of {{ props.row.name }}</td>
 						<td>
 							<input
-								@input="updateNewPartnerImage(props.row, index, newPartner, $event)"
-								@click.stop
-								class="input"
+								v-if="props.row.editing"
+								class="text-input input"
 								type="text"
-								v-model="newPartner.imageUrl"
+								:value="partner.newName"
 							/>
-							<img
-								@click="enlargeImage(newPartner.imageUrl)"
-								:src="newPartner.imageUrl"
-								alt=""
-								:ref="props.row.name + index + '_new_partner'"
-							/>
+							<div v-else>{{ partner.name }}</div>
+						</td>
+						<td>{{ props.row.origin }}</td>
+						<td v-if="props.row.editing">
+							<input @click.stop class="input" v-model="partner.newImageUrl" type="text" />
+							<img @click="enlargeImage(partner.newImageUrl)" :src="partner.newImageUrl" alt="" />
+						</td>
+						<td v-else>
+							<img @click="enlargeImage(partner.imageUrl)" :src="partner.imageUrl" alt="" />
 						</td>
 						<td>
-							<div>
-								<a v-if="index === props.row.newPartners.length - 1" @click="addNewPartner(props.row)"
-									>Add partner</a
-								>
-							</div>
-							<div>
-								<a v-if="index !== 0" @click="removeNewPartner(props.row, newPartner)"
-									>Remove partner</a
-								>
-							</div>
+							<b-tooltip v-if="props.row.editing" label="Remove" type="is-link" position="is-right">
+								<b-button
+									@click="removePartner(props.row, partner)"
+									size="medium"
+									icon-left="delete"
+									type="is-text"
+								/>
+							</b-tooltip>
 						</td>
 					</tr>
+					<template v-if="props.row.editing">
+						<tr v-for="(newPartner, index) in props.row.newPartners" :key="'partner' + index">
+							<td>New Partner for {{ props.row.name }}</td>
+							<td><input class="text-input input" type="text" v-model="newPartner.name" /></td>
+							<td>{{ props.row.origin }}</td>
+							<td>
+								<input
+									@input="updateNewPartnerImage(props.row, index, newPartner, $event)"
+									@click.stop
+									class="input"
+									type="text"
+									v-model="newPartner.imageUrl"
+								/>
+								<img
+									@click="enlargeImage(newPartner.imageUrl)"
+									:src="newPartner.imageUrl"
+									alt=""
+									:ref="props.row.name + index + '_new_partner'"
+								/>
+							</td>
+							<td>
+								<b-tooltip
+									v-if="index === props.row.newPartners.length - 1"
+									label="Add"
+									type="is-link"
+									position="is-right"
+								>
+									<b-button
+										@click="addNewPartner(props.row)"
+										size="medium"
+										icon-left="plus"
+										type="is-text"
+									/>
+								</b-tooltip>
+								<b-tooltip v-if="index !== 0" label="Remove" type="is-link" position="is-right">
+									<b-button
+										@click="removeNewPartner(props.row, newPartner)"
+										size="medium"
+										icon-left="delete"
+										type="is-text"
+									/>
+								</b-tooltip>
+							</td>
+						</tr>
+					</template>
 				</template>
-			</template>
-		</b-table>
+			</b-table>
+		</section>
 		<b-modal @close="imageToEnlarge = ''" :active.sync="modalIsActive" scroll="keep">
 			<section @click="modalIsActive = false" class="section modal-section has-text-centered">
 				<img @click.stop class="enlarged-image" :src="imageToEnlarge" alt="enlargedImage" />
 			</section>
 		</b-modal>
-	</section>
+	</div>
 </template>
 
 <script lang="ts">
@@ -352,6 +437,9 @@
 </script>
 
 <style lang="scss" scoped>
+	/deep/.mdi {
+		color: #00ffff;
+	}
 	.sub-character-row {
 		background-color: #202020;
 	}
@@ -360,5 +448,10 @@
 	}
 	.text-input {
 		width: fit-content;
+	}
+	.wrapper {
+		max-width: 99.7vw;
+		padding-right: unset;
+		padding-left: unset;
 	}
 </style>

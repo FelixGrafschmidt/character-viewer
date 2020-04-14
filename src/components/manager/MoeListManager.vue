@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div class="columns">
+		<div class="columns section wrapper">
 			<b-table class="column is-half is-offset-3" ref="table" :data="collection">
 				<template slot-scope="props">
 					<b-table-column field="id" label="ID" width="150">
@@ -56,6 +56,7 @@
 
 		private rename(list: List, event: MouseEvent): void {
 			list.name = ((event.target as HTMLElement).parentElement!.previousElementSibling as HTMLInputElement).value;
+			this.$buefy.toast.open({ message: "Name saved!", type: "is-link" });
 		}
 		private deleteList(list: List) {
 			this.$buefy.dialog.confirm({
@@ -96,5 +97,8 @@
 	}
 	.text-column {
 		padding-top: 0.4rem;
+	}
+	.wrapper {
+		padding-bottom: unset;
 	}
 </style>
