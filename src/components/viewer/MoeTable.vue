@@ -5,7 +5,6 @@
 				class="column is-10 is-offset-1"
 				detail-key="name"
 				custom-detail-row
-				draggable
 				detailed
 				:data="createTableData()"
 				ref="table"
@@ -59,7 +58,13 @@
 							width="200"
 							@click.native="enlargeImage(props.row.newImageUrl)"
 						>
-							<input @click.stop class="input" v-model="props.row.newImageUrl" type="text" />
+							<input
+								@click.stop
+								class="input"
+								@input="refreshTable"
+								v-model="props.row.newImageUrl"
+								type="text"
+							/>
 							<b-tooltip label="Click to enlarge" position="is-left" type="is-link">
 								<img :alt="props.row.name" :src="props.row.newImageUrl" />
 							</b-tooltip>
@@ -127,7 +132,13 @@
 						</td>
 						<td>{{ props.row.origin }}</td>
 						<td v-if="props.row.editing">
-							<input @click.stop class="input" v-model="variant.newImageUrl" type="text" />
+							<input
+								@click.stop
+								class="input"
+								@input="refreshTable"
+								v-model="variant.newImageUrl"
+								type="text"
+							/>
 							<b-tooltip label="Click to enlarge" position="is-left" type="is-link">
 								<img @click="enlargeImage(variant.newImageUrl)" :src="variant.newImageUrl" alt="" />
 							</b-tooltip>
@@ -208,7 +219,13 @@
 						</td>
 						<td>{{ props.row.origin }}</td>
 						<td v-if="props.row.editing">
-							<input @click.stop class="input" v-model="partner.newImageUrl" type="text" />
+							<input
+								@click.stop
+								@input="refreshTable"
+								class="input"
+								v-model="partner.newImageUrl"
+								type="text"
+							/>
 							<b-tooltip label="Click to enlarge" position="is-left" type="is-link">
 								<img @click="enlargeImage(partner.newImageUrl)" :src="partner.newImageUrl" alt="" />
 							</b-tooltip>
@@ -499,6 +516,9 @@
 			this.editCharacter(character);
 			(this.$refs.table as Vue).$forceUpdate();
 			this.$forceUpdate();
+		}
+		private refreshTable(): void {
+			(this.$refs.table as any).resetMultiSorting();
 		}
 	}
 </script>
